@@ -221,8 +221,69 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .wx-skeleton{background:linear-gradient(90deg,var(--g100) 25%,var(--g200) 50%,var(--g100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:20px;margin-bottom:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-.wx-error{text-align:center;padding:20px;color:var(--g400);font-size:13px}
-.wx-attribution{font-size:10px;color:var(--g300);text-align:center;padding:4px 0 8px}
+/* ── SPRAY WINDOW FORECAST ── */
+.forecast-section{margin-bottom:12px}
+.forecast-title{
+  font-size:12px;font-weight:700;color:var(--g400);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:8px;padding:0 2px;
+}
+
+/* Best window callout */
+.best-window{
+  border-radius:var(--radius);padding:10px 14px;
+  margin-bottom:10px;display:flex;align-items:center;gap:10px;
+  box-shadow:var(--shadow);
+}
+.best-window.go{background:var(--green-bg);border:1.5px solid #86efac}
+.best-window.none{background:var(--g100);border:1.5px solid var(--g200)}
+.best-window-icon{font-size:22px;flex-shrink:0}
+.best-window-text{flex:1}
+.best-window-label{font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.4px}
+.best-window-day{font-size:15px;font-weight:700;color:var(--green);margin-top:2px}
+.best-window-day.none{color:var(--g500)}
+
+/* Two-column today/tomorrow */
+.forecast-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.day-card{
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:12px;border-top:4px solid var(--g200);overflow:hidden;
+}
+.day-card.go    {border-top-color:#22c55e}
+.day-card.caution{border-top-color:#f59e0b}
+.day-card.nogo  {border-top-color:#ef4444}
+.day-card.unknown{border-top-color:var(--g200)}
+.day-card-label{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.day-card-status{font-size:24px;margin-bottom:4px;line-height:1}
+.day-card-verdict{font-size:12px;font-weight:700;margin-bottom:6px}
+.day-card.go     .day-card-verdict{color:#15803d}
+.day-card.caution .day-card-verdict{color:#92400e}
+.day-card.nogo   .day-card-verdict{color:#991b1b}
+.day-card.unknown .day-card-verdict{color:var(--g400)}
+.day-card-detail{font-size:11px;color:var(--g500);line-height:1.6}
+.day-card-detail span{display:block}
+
+/* Compact day list */
+.forecast-list{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.forecast-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-bottom:1px solid var(--g100);
+}
+.forecast-row:last-child{border-bottom:none}
+.forecast-row-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.forecast-row-dot.green{background:#22c55e}
+.forecast-row-dot.amber{background:#f59e0b}
+.forecast-row-dot.red  {background:#ef4444}
+.forecast-row-dot.gray {background:var(--g300)}
+.forecast-row-day{font-size:13px;font-weight:600;color:var(--g800);width:36px;flex-shrink:0}
+.forecast-row-date{font-size:11px;color:var(--g400);width:52px;flex-shrink:0}
+.forecast-row-reason{font-size:12px;color:var(--g500);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.forecast-row-verdict{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.forecast-row-verdict.green{background:#dcfce7;color:#15803d}
+.forecast-row-verdict.amber{background:#fef3c7;color:#92400e}
+.forecast-row-verdict.red  {background:#fee2e2;color:#991b1b}
+.forecast-row-verdict.gray {background:var(--g100);color:var(--g400)}
+.forecast-disclaimer{font-size:10px;color:var(--g300);text-align:center;padding:6px 0 2px}
 
 /* ── HOME SCREEN ── */
 .home-screen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:calc(100vh - 56px);padding:20px 20px 24px;gap:14px}
@@ -554,6 +615,41 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
           </div>
           <div class="precip-summary" id="precip-summary">—</div>
         </div>
+      </div>
+
+
+      <!-- 5. Spray Window Forecast -->
+      <div class="forecast-section" id="forecast-section" style="display:none">
+        <div class="forecast-title">📅 Spray Window Forecast — Next 7 Days</div>
+
+        <!-- Best window callout -->
+        <div class="best-window none" id="best-window">
+          <div class="best-window-icon">📅</div>
+          <div class="best-window-text">
+            <div class="best-window-label">Best upcoming spray window</div>
+            <div class="best-window-day none" id="best-window-day">—</div>
+          </div>
+        </div>
+
+        <!-- Today + Tomorrow side by side -->
+        <div class="forecast-top">
+          <div class="day-card unknown" id="fc-today">
+            <div class="day-card-label">Today</div>
+            <div class="day-card-status" id="fc-today-icon">—</div>
+            <div class="day-card-verdict" id="fc-today-verdict">—</div>
+            <div class="day-card-detail" id="fc-today-detail"></div>
+          </div>
+          <div class="day-card unknown" id="fc-tomorrow">
+            <div class="day-card-label">Tomorrow</div>
+            <div class="day-card-status" id="fc-tomorrow-icon">—</div>
+            <div class="day-card-verdict" id="fc-tomorrow-verdict">—</div>
+            <div class="day-card-detail" id="fc-tomorrow-detail"></div>
+          </div>
+        </div>
+
+        <!-- Days 3–7 compact list -->
+        <div class="forecast-list" id="forecast-list"></div>
+        <div class="forecast-disclaimer">Forecast confidence decreases beyond 48 hours</div>
       </div>
 
       <div class="wx-attribution">Weather data from NOAA National Weather Service · api.weather.gov · Fetched on demand only</div>
@@ -1881,9 +1977,144 @@ function renderWeather(periods, fieldName, fetchedAtStr) {
     : maxPrecip < THRESH.precipWarn ? `Low rain chance (max ${maxPrecip}%). Conditions look favorable.`
     : maxPrecip < THRESH.precipStop ? `Rain possible within 6 hours (up to ${maxPrecip}%). Most labels require ${THRESH.rainFreeHours} hrs rain-free. Proceed with caution.`
     : `Rain likely within 6 hours (up to ${maxPrecip}%). Wait for a better window — herbicides need ${THRESH.rainFreeHours} hrs to absorb.`;
+
+  // Render 7-day spray window forecast
+  renderForecast(periods);
 }
 
-// ── Status helpers ────────────────────────────
+// ── Spray Window Forecast ─────────────────────
+function renderForecast(periods) {
+  const section = document.getElementById('forecast-section');
+  if (!section || !periods || !periods.length) return;
+  section.style.display = 'block';
+
+  // Group hourly periods into days (use local date)
+  const days = {};
+  periods.forEach(p => {
+    const d = new Date(p.startTime);
+    const key = d.toDateString();
+    if (!days[key]) days[key] = [];
+    days[key].push(p);
+  });
+
+  const dayKeys = Object.keys(days).slice(0, 7);
+  const today = new Date().toDateString();
+  const tomorrow = new Date(Date.now() + 86400000).toDateString();
+
+  // Assess a single day from its hourly periods
+  function assessDay(periods) {
+    // Only look at daytime hours 7am–6pm
+    const daytime = periods.filter(p => {
+      const h = new Date(p.startTime).getHours();
+      return h >= 7 && h <= 18;
+    });
+    const src = daytime.length ? daytime : periods;
+    const winds = src.map(p => p.windSpeed ? parseInt(p.windSpeed) : 0);
+    const temps = src.map(p => p.temperature).filter(t => t !== undefined);
+    const humids = src.map(p => p.relativeHumidity?.value ?? null).filter(h => h !== null);
+    const precips = src.map(p => p.probabilityOfPrecipitation?.value ?? 0);
+    const maxWind  = Math.max(...winds, 0);
+    const avgWind  = winds.length ? Math.round(winds.reduce((a,b)=>a+b,0)/winds.length) : 0;
+    const highTemp = temps.length ? Math.max(...temps) : null;
+    const avgHumid = humids.length ? Math.round(humids.reduce((a,b)=>a+b,0)/humids.length) : null;
+    const maxPrecip = Math.max(...precips, 0);
+    const sky = src[Math.floor(src.length/2)]?.shortForecast || '';
+    const ws = windStatus(maxWind);
+    const ts = tempStatus(highTemp, avgHumid);
+    const ps = precipStatus(maxPrecip);
+    const overall = overallStatus(ws, ts, ps);
+    return { overall, maxWind, avgWind, highTemp, avgHumid, maxPrecip, sky, ws, ts, ps };
+  }
+
+  // Status to emoji
+  function statusEmoji(s) {
+    return s==='go'?'✅':s==='caution'?'⚠️':s==='nogo'?'🚫':'—';
+  }
+  function statusVerdict(s) {
+    return s==='go'?'Good to Spray':s==='caution'?'Use Caution':s==='nogo'?'Do Not Spray':'Unknown';
+  }
+  function dayReason(a) {
+    const parts = [];
+    if (a.ws==='nogo') parts.push(`Wind ${a.maxWind} MPH`);
+    else if (a.ws==='caution') parts.push(`Wind ${a.maxWind} MPH`);
+    else parts.push(`Wind ${a.avgWind} MPH`);
+    if (a.highTemp !== null) parts.push(`${a.highTemp}°F`);
+    if (a.maxPrecip >= THRESH.precipWarn) parts.push(`Rain ${a.maxPrecip}%`);
+    else parts.push('Dry');
+    return parts.join(' · ');
+  }
+
+  // Find best upcoming spray day (skip today)
+  let bestDay = null;
+  let bestKey = null;
+  dayKeys.slice(1).forEach(key => {
+    const a = assessDay(days[key]);
+    if (a.overall === 'go' && !bestKey) {
+      bestKey = key;
+      bestDay = new Date(key);
+    }
+  });
+
+  // Best window callout
+  const bwEl = document.getElementById('best-window');
+  const bwDay = document.getElementById('best-window-day');
+  if (bestDay) {
+    bwEl.className = 'best-window go';
+    bwDay.className = 'best-window-day';
+    const isNextDay = bestDay.toDateString() === tomorrow;
+    const label = isNextDay ? 'Tomorrow' :
+      bestDay.toLocaleDateString([], { weekday:'long', month:'short', day:'numeric' });
+    bwDay.textContent = label;
+    document.getElementById('best-window-icon').textContent = '🌟';
+  } else {
+    bwEl.className = 'best-window none';
+    bwDay.className = 'best-window-day none';
+    bwDay.textContent = 'No clear spray window in the next 7 days';
+    document.getElementById('best-window-icon').textContent = '📅';
+  }
+
+  // Render today and tomorrow cards
+  ['today', 'tomorrow'].forEach((which, idx) => {
+    const key = dayKeys[idx];
+    if (!key) return;
+    const a = assessDay(days[key]);
+    const card    = document.getElementById(`fc-${which}`);
+    const iconEl  = document.getElementById(`fc-${which}-icon`);
+    const verdEl  = document.getElementById(`fc-${which}-verdict`);
+    const detEl   = document.getElementById(`fc-${which}-detail`);
+    card.className = `day-card ${statusClass(a.overall)}`;
+    iconEl.textContent  = statusEmoji(a.overall);
+    verdEl.textContent  = statusVerdict(a.overall);
+    detEl.innerHTML = [
+      a.maxWind ? `<span>💨 Wind up to ${a.maxWind} MPH</span>` : '',
+      a.highTemp !== null ? `<span>🌡 High ${a.highTemp}°F</span>` : '',
+      a.avgHumid !== null ? `<span>💧 Humidity ~${a.avgHumid}%</span>` : '',
+      a.maxPrecip > 0 ? `<span>🌧 Rain ${a.maxPrecip}%</span>` : `<span>☀ No rain expected</span>`,
+    ].filter(Boolean).join('');
+  });
+
+  // Render days 3–7 compact list
+  const listEl = document.getElementById('forecast-list');
+  const restKeys = dayKeys.slice(2);
+  if (!restKeys.length) { listEl.innerHTML = ''; return; }
+  listEl.innerHTML = restKeys.map(key => {
+    const a = assessDay(days[key]);
+    const d = new Date(key);
+    const dayName  = d.toLocaleDateString([], { weekday:'short' });
+    const dateStr  = d.toLocaleDateString([], { month:'short', day:'numeric' });
+    const cls = statusClass(a.overall);
+    const isBest = key === bestKey;
+    return `<div class="forecast-row" style="${isBest ? 'background:var(--green-bg)' : ''}">
+      <div class="forecast-row-dot ${cls}"></div>
+      <div class="forecast-row-day">${dayName}</div>
+      <div class="forecast-row-date">${dateStr}</div>
+      <div class="forecast-row-reason">${dayReason(a)}${isBest ? ' ⭐' : ''}</div>
+      <div class="forecast-row-verdict ${cls}">${statusVerdict(a.overall).replace(' to Spray','').replace(' Caution','')}</div>
+    </div>`;
+  }).join('');
+}
+
+
 function statusClass(l){ return l==='go'?'green':l==='caution'?'amber':l==='nogo'?'red':'gray' }
 function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
 function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
