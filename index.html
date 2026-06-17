@@ -1263,23 +1263,6 @@ function renderFieldList(){
 }
 window.toggleCard=function(id){expandedIds.has(id)?expandedIds.delete(id):expandedIds.add(id);renderFieldList()};
 
-// ── ADD / EDIT FIELD ──────────────────────────
-window.showAddField=function(id){
-  editingId=id||null;
-  const f=id?localFields.find(x=>x.id===id):null;
-  document.getElementById('edit-section-label').textContent=f?'Edit field':'New field';
-  document.getElementById('f-name').value=f?f.name:'';
-  document.getElementById('f-sprayer').value=f?f.sprayer||'':'';
-  document.getElementById('f-notes').value=f?f.notes||'':'';
-  const sw=f?f.swath:30;
-  document.querySelectorAll('input[name="swath"]').forEach(r=>{r.checked=parseInt(r.value)===sw});
-window.deleteField=async function(id){
-  const f=localFields.find(x=>x.id===id);
-  if(!confirm(`Delete "${f.name}"?\n\nAll spray records for this field will also be removed.`)) return;
-  try{await fbDeleteField(id);showToast('Field deleted')}
-  catch(e){showToast('Delete failed — check connection')}
-};
-
 // ── TANK ──────────────────────────────────────
 function renderTankSummary(){
   const wrap=document.getElementById('tank-summary-wrap');
