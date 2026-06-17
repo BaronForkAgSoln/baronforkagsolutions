@@ -1,1 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Baron Fork Ag Solutions</title>
+<style>
+:root{
+  --green:#2d6a2d;--green-lt:#3d8b3d;--green-bg:#f0f7f0;
+  --amber:#b45309;--amber-bg:#fef3c7;
+  --red:#dc2626;--red-bg:#fee2e2;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;
+  --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+  --g400:#9ca3af;--g500:#6b7280;--g600:#4b5563;--g700:#374151;
+  --g800:#1f2937;--g900:#111827;
+  --radius:10px;
+  --shadow:0 1px 4px rgba(0,0,0,.10),0 0 0 .5px rgba(0,0,0,.06);
+  --shadow-lg:0 4px 16px rgba(0,0,0,.13),0 0 0 .5px rgba(0,0,0,.06);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(--g800);overscroll-behavior:none}
 
+/* ── LOGIN SCREEN ── */
+.login-wrap{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px 20px;
+  background:linear-gradient(160deg,#1a3d1a 0%,#2d6a2d 60%,#3d8b3d 100%);
+}
+.login-logo{font-size:56px;margin-bottom:8px}
+.login-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;text-align:center}
+.login-sub{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:32px;text-align:center}
+.login-card{background:#fff;border-radius:16px;padding:24px 20px;width:100%;max-width:380px;box-shadow:var(--shadow-lg)}
+.login-card .form-group{margin-bottom:14px}
+.login-card .form-label{font-size:13px;font-weight:500;color:var(--g700);display:block;margin-bottom:5px}
+.login-card .form-input{width:100%;padding:11px 14px;font-size:15px;border:1.5px solid var(--g200);border-radius:9px;background:#fff;color:var(--g800);font-family:var(--font)}
+.login-card .form-input:focus{outline:none;border-color:var(--green-lt);box-shadow:0 0 0 3px rgba(61,139,61,.12)}
+.login-btn{width:100%;padding:13px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;font-family:var(--font)}
+.login-btn:hover{background:var(--green-lt)}
+.login-btn:disabled{background:var(--g300);cursor:default}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:18px}
+.login-version{font-size:11px;color:rgba(255,255,255,.35);margin-top:24px}
+
+/* ── APP HEADER ── */
+.app-header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;height:56px;box-shadow:0 2px 8px rgba(0,0,0,.25);gap:8px;
+}
+.app-header-left{display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0}
+.app-title{font-size:16px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-sub{font-size:10px;opacity:.7;margin-top:1px}
+.app-header-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.hdr-btn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.hdr-btn:hover{background:rgba(255,255,255,.28)}
+.hdr-icon-btn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 10px;font-size:18px;cursor:pointer;line-height:1;display:none}
+.hdr-icon-btn:hover{background:rgba(255,255,255,.28)}
+.hdr-icon-btn.visible{display:block}
+
+/* ── SCREENS ── */
+.screen{display:none;padding-top:56px;padding-bottom:16px;min-height:100vh}
+.screen.active{display:block}
+.screen-body{padding:14px;max-width:620px;margin:0 auto}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-header{padding:12px 14px 0;font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px}
+.section-label{font-size:11px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.6px;margin:4px 4px 8px}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:12px}
+.form-group:last-child{margin-bottom:0}
+.form-label{font-size:13px;font-weight:500;color:var(--g700);display:block;margin-bottom:4px}
+.form-label span{font-weight:400;color:var(--g400);font-size:11px;margin-left:4px}
+.form-input,.form-select{width:100%;padding:10px 12px;font-size:14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g800);font-family:var(--font)}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--green-lt);box-shadow:0 0 0 3px rgba(61,139,61,.12)}
+.form-hint{font-size:11px;color:var(--g400);margin-top:3px}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+
+/* ── SWATH RADIOS ── */
+.swath-radios{display:flex;gap:8px}
+.swath-radio{flex:1;display:flex;align-items:center;justify-content:center}
+.swath-radio input{display:none}
+.swath-radio span{display:block;width:100%;text-align:center;padding:9px 0;border-radius:8px;font-size:14px;font-weight:600;border:2px solid var(--g200);color:var(--g500);cursor:pointer;background:#fff;transition:all .15s}
+.swath-radio input:checked+span{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+
+/* ── CORNERS — dynamic polygon list ── */
+.corners-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.corner-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--g50);border:1.5px solid var(--g200);
+  border-radius:8px;padding:8px 10px;
+  transition:border-color .15s;
+}
+.corner-item.set{border-color:var(--green-lt);background:var(--green-bg)}
+.corner-num{
+  font-size:11px;font-weight:700;color:var(--g400);
+  text-transform:uppercase;letter-spacing:.4px;
+  width:52px;flex-shrink:0;
+}
+.corner-item.set .corner-num{color:var(--green)}
+.corner-inputs{flex:1;display:flex;gap:6px}
+.corner-coord-input{
+  flex:1;padding:7px 8px;font-size:12px;font-family:'Courier New',monospace;
+  border:1px solid var(--g200);border-radius:6px;background:#fff;color:var(--g800);
+  min-width:0;
+}
+.corner-coord-input:focus{outline:none;border-color:var(--green-lt)}
+.corner-remove{
+  background:none;border:none;color:var(--g300);cursor:pointer;
+  font-size:16px;padding:0 2px;flex-shrink:0;line-height:1;
+}
+.corner-remove:hover{color:var(--red)}
+.corner-remove:disabled{color:var(--g200);cursor:default}
+.add-corner-btn{
+  width:100%;padding:9px;border-radius:8px;border:1.5px dashed var(--g300);
+  background:none;color:var(--g500);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .15s;margin-bottom:10px;
+}
+.add-corner-btn:hover{border-color:var(--green-lt);color:var(--green);background:var(--green-bg)}
+.add-corner-btn:disabled{border-color:var(--g200);color:var(--g300);cursor:default;background:none}
+
+/* ── GPS ── */
+.gps-row{display:flex;align-items:center;gap:8px;background:var(--blue-bg);border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.gps-dot{width:8px;height:8px;border-radius:50%;background:var(--g300);flex-shrink:0}
+.gps-dot.on{background:#22c55e;animation:gp 1.4s ease-in-out infinite}
+.gps-dot.srch{background:var(--amber);animation:gp .8s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:1}50%{opacity:.3}}
+.gps-status{font-size:12px;color:var(--blue);flex:1}
+.gps-status.on{color:#15803d}
+.gps-cap-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.gps-cap-btn:disabled{background:var(--g300);cursor:default}
+.gps-cap-btn.on{background:#15803d}
+.gps-bar{display:flex;align-items:center;gap:8px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--g600)}
+.gps-bar-dot{width:8px;height:8px;border-radius:50%;background:var(--g300);flex-shrink:0}
+.gps-bar-dot.on{background:#22c55e;animation:gp 1.4s ease-in-out infinite}
+.gps-bar-dot.srch{background:var(--amber);animation:gp .8s ease-in-out infinite}
+
+/* ── PREVIEW MAP ── */
+.preview-map{width:100%;height:150px;border-radius:8px;background:#1e3212;border:1.5px solid var(--g200);position:relative;overflow:hidden;margin-top:10px}
+.preview-map svg{width:100%;height:100%}
+.preview-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.3);text-align:center;padding:16px}
+.preview-stats{font-size:12px;color:var(--g500);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+
+/* ── PLANNING TAB ── */
+.plan-screen{background:var(--g100)}
+.plan-refresh{display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px}
+.plan-timestamp{font-size:11px;color:var(--g400)}
+.plan-refresh-btn{background:none;border:1px solid var(--g200);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--g500);cursor:pointer}
+.plan-refresh-btn:hover{background:var(--g100)}
+
+/* Overall recommendation card */
+.rec-card{border-radius:var(--radius);padding:18px 16px;margin-bottom:12px;box-shadow:var(--shadow-lg)}
+.rec-card.go{background:linear-gradient(135deg,#15803d,#22c55e)}
+.rec-card.caution{background:linear-gradient(135deg,#92400e,#f59e0b)}
+.rec-card.nogo{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.rec-card.loading{background:linear-gradient(135deg,#374151,#6b7280)}
+.rec-status{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px}
+.rec-reason{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5}
+.rec-icon{font-size:48px;float:right;margin-top:-8px}
+
+/* Weather detail cards */
+.wx-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.wx-card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;border-bottom:1px solid var(--g100)}
+.wx-card-title{font-size:12px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.wx-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.wx-status-dot.green{background:#22c55e}
+.wx-status-dot.amber{background:#f59e0b}
+.wx-status-dot.red{background:#ef4444}
+.wx-status-dot.gray{background:var(--g300)}
+.wx-status-label{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+.wx-status-label.green{background:#dcfce7;color:#15803d}
+.wx-status-label.amber{background:#fef3c7;color:#92400e}
+.wx-status-label.red{background:#fee2e2;color:#991b1b}
+.wx-status-label.gray{background:var(--g100);color:var(--g400)}
+.wx-body{padding:12px 14px}
+.wx-main{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.wx-big{font-size:36px;font-weight:700;color:var(--g900);line-height:1}
+.wx-big-unit{font-size:16px;font-weight:400;color:var(--g400)}
+.wx-big-label{font-size:12px;color:var(--g500);margin-top:2px}
+.wx-details{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px}
+.wx-detail-item{background:var(--g50);border-radius:6px;padding:7px 10px}
+.wx-detail-label{color:var(--g400);font-size:10px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.wx-detail-val{color:var(--g800);font-weight:600;font-size:13px}
+
+/* Wind direction arrow */
+.wind-arrow-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.wind-arrow{font-size:32px;line-height:1;display:block;transition:transform .3s}
+.wind-compass{font-size:13px;font-weight:700;color:var(--g600)}
+
+/* Hourly forecast strip */
+.hourly-strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
+.hourly-strip::-webkit-scrollbar{height:3px}
+.hourly-strip::-webkit-scrollbar-track{background:var(--g100)}
+.hourly-strip::-webkit-scrollbar-thumb{background:var(--g300);border-radius:2px}
+.hourly-item{flex-shrink:0;width:58px;background:var(--g50);border-radius:8px;padding:7px 4px;text-align:center;border:1.5px solid var(--g200)}
+.hourly-item.good{border-color:#86efac;background:#f0fdf4}
+.hourly-item.caution{border-color:#fcd34d;background:#fffbeb}
+.hourly-item.bad{border-color:#fca5a5;background:#fff1f2}
+.hourly-time{font-size:10px;color:var(--g400);margin-bottom:4px}
+.hourly-wind{font-size:13px;font-weight:700;color:var(--g800)}
+.hourly-dir{font-size:10px;color:var(--g500);margin-top:1px}
+.hourly-dot{width:8px;height:8px;border-radius:50%;margin:4px auto 0}
+.hourly-dot.green{background:#22c55e}
+.hourly-dot.amber{background:#f59e0b}
+.hourly-dot.red{background:#ef4444}
+
+/* Precip bars */
+.precip-hours{display:flex;gap:4px;align-items:flex-end;height:48px;margin-bottom:6px}
+.precip-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.precip-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;background:var(--blue);opacity:.7;transition:height .3s}
+.precip-bar-label{font-size:9px;color:var(--g400)}
+.precip-summary{font-size:12px;color:var(--g600);margin-top:6px;line-height:1.5}
+
+/* Loading skeleton */
+.wx-skeleton{background:linear-gradient(90deg,var(--g100) 25%,var(--g200) 50%,var(--g100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:20px;margin-bottom:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.wx-error{text-align:center;padding:20px;color:var(--g400);font-size:13px}
+.wx-attribution{font-size:10px;color:var(--g300);text-align:center;padding:4px 0 8px}
+
+/* ── HOME SCREEN ── */
+.home-screen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:calc(100vh - 56px);padding:20px 20px 24px;gap:14px}
+.home-greeting{text-align:center;margin-bottom:4px}
+.home-greeting-title{font-size:22px;font-weight:700;color:var(--g900);margin-bottom:4px}
+.home-greeting-sub{font-size:14px;color:var(--g500)}
+.home-btn{display:flex;align-items:center;gap:20px;width:100%;max-width:400px;background:#fff;border:none;border-radius:16px;padding:22px 24px;cursor:pointer;box-shadow:var(--shadow-lg);text-align:left;transition:transform .12s,box-shadow .12s}
+.home-btn:active{transform:scale(.98);box-shadow:var(--shadow)}
+.home-btn-icon{font-size:48px;line-height:1;flex-shrink:0}
+.home-btn-title{font-size:19px;font-weight:700;color:var(--g900);margin-bottom:3px}
+.home-btn-sub{font-size:13px;color:var(--g500);line-height:1.4}
+.home-btn.green{border-left:5px solid var(--green)}
+.home-btn.amber{border-left:5px solid var(--amber)}
+.home-btn.blue{border-left:5px solid var(--blue)}
+.home-user{font-size:12px;color:var(--g400);margin-top:4px}
+.home-version{font-size:11px;color:var(--g300);margin-top:8px}
+
+/* ── FIELD CARDS ── */
+.field-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;cursor:pointer}
+.field-card:hover{box-shadow:var(--shadow-lg)}
+.field-card-top{display:flex;gap:12px;padding:12px 14px;align-items:flex-start}
+.field-thumb{width:64px;height:52px;border-radius:7px;flex-shrink:0;background:#2d4a1e;overflow:hidden}
+.field-thumb svg{width:100%;height:100%}
+.field-info{flex:1;min-width:0}
+.field-name{font-size:15px;font-weight:600;color:var(--g900);margin-bottom:2px}
+.field-meta{font-size:12px;color:var(--g500);line-height:1.6}
+.field-notes{font-size:11px;color:var(--g400);margin-top:2px;font-style:italic}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:5px;text-transform:uppercase;letter-spacing:.4px}
+.badge-ready{background:var(--green-bg);color:var(--green)}
+.badge-setup{background:var(--amber-bg);color:var(--amber)}
+.badge-sprayed{background:var(--g100);color:var(--g500)}
+.field-card-actions{border-top:1px solid var(--g100);display:flex}
+.fc-btn{flex:1;padding:10px 0;font-size:12px;font-weight:500;border:none;background:none;cursor:pointer;color:var(--blue);transition:background .1s}
+.fc-btn:hover{background:var(--blue-bg)}
+.fc-btn:not(:last-child){border-right:1px solid var(--g100)}
+.fc-btn.spray{color:var(--green);font-weight:600}
+.fc-btn.spray:hover{background:var(--green-bg)}
+.fc-btn.danger{color:var(--red)}
+.fc-btn.danger:hover{background:var(--red-bg)}
+.history-section{background:var(--g50);border-top:1px solid var(--g100);padding:10px 14px 12px}
+.history-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.history-entry{margin-bottom:10px}
+.history-entry:last-child{margin-bottom:0}
+.history-row{display:flex;justify-content:space-between;font-size:12px;padding:2px 0}
+.history-date{color:var(--g600);font-weight:500}
+.history-detail{color:var(--g400);text-align:right;font-size:11px}
+.history-grid-img{display:block;width:100%;height:80px;border-radius:6px;margin-top:6px;border:1px solid var(--g200);object-fit:cover;background:#1a2e10}
+.history-empty{font-size:12px;color:var(--g400);font-style:italic}
+
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:9px;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);width:100%}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-lt)}
+.btn-secondary{background:var(--g100);color:var(--g700);border:1.5px solid var(--g200)}
+.btn-secondary:hover{background:var(--g200)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1.5px solid #fca5a5}
+.btn-row{display:flex;gap:10px;margin-top:8px}
+.btn-row .btn{flex:1}
+
+/* ── SPRAY SCREEN ── */
+.spray-screen{background:var(--g900);color:#fff}
+.spray-header{padding:12px 16px 8px;border-bottom:1px solid rgba(255,255,255,.07)}
+.spray-field-name{font-size:17px;font-weight:700}
+.spray-field-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.spray-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.07)}
+.spray-stat{padding:9px 4px;text-align:center;background:var(--g900)}
+.spray-stat-val{font-size:17px;font-weight:700;color:#fff;line-height:1}
+.spray-stat-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.spray-map-wrap{width:100%;height:240px;overflow:hidden;position:relative}
+#sprayCanvas{display:block;width:100%;height:100%}
+.guidance-bar{background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);padding:9px 14px;display:flex;align-items:center;gap:10px}
+.guidance-arrow{font-size:24px;width:30px;text-align:center;flex-shrink:0}
+.guidance-text{flex:1;min-width:0}
+.guidance-main{font-size:13px;font-weight:600}
+.guidance-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+.g-dev{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.dev-good{background:rgba(34,197,94,.2);color:#86efac}
+.dev-warn{background:rgba(251,191,36,.2);color:#fcd34d}
+.dev-bad{background:rgba(239,68,68,.2);color:#fca5a5}
+.deviation-bar{padding:6px 14px;display:flex;align-items:center;gap:8px;border-top:1px solid rgba(255,255,255,.05)}
+.dev-track{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+.dev-fill{position:absolute;top:0;bottom:0;border-radius:4px;transition:left .3s,width .3s;background:#22c55e}
+.dev-center{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.3);transform:translateX(-1px)}
+.dev-label{font-size:10px;color:rgba(255,255,255,.4);width:48px;text-align:center;white-space:nowrap}
+.spray-btn-panel{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.spray-btn{padding:14px 0;border-radius:11px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.sb-start{background:#15803d;color:#fff;box-shadow:0 2px 8px rgba(21,128,61,.4)}
+.sb-start:disabled{background:#374151;color:rgba(255,255,255,.35);box-shadow:none;cursor:default}
+.sb-row{display:flex;gap:8px}
+.sb-row .spray-btn{flex:1}
+.sb-pause{background:#b45309;color:#fff}
+.sb-stop{background:#dc2626;color:#fff;box-shadow:0 2px 6px rgba(220,38,38,.35)}
+
+/* ── RECORDS ── */
+.record-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.record-header{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px 8px}
+.record-field{font-size:14px;font-weight:600;color:var(--g900)}
+.record-date{font-size:11px;color:var(--g400);margin-top:1px}
+.record-detail{font-size:12px;color:var(--g500);padding:0 14px 12px;line-height:1.7}
+.record-grid{width:100%;height:72px;object-fit:cover;border-top:1px solid var(--g100);display:block;background:#1a2e10}
+.export-bar{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.export-bar-text{flex:1;font-size:13px;color:var(--g600)}
+.export-btn{background:var(--green);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
+
+/* ── TANK ── */
+.tank-icon{font-size:48px;text-align:center;padding:8px 0 4px}
+.tank-summary{background:var(--green);color:#fff;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+.tank-summary-title{font-size:12px;opacity:.75;margin-bottom:6px;font-weight:500}
+.tank-summary-vals{display:flex;gap:16px;flex-wrap:wrap}
+.tank-sv{text-align:center}
+.tank-sv-val{font-size:20px;font-weight:700}
+.tank-sv-lbl{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.4px}
+.no-session{text-align:center;padding:24px;color:var(--g400);font-size:13px}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.5);align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:540px;padding:20px 20px 32px;box-shadow:var(--shadow-lg);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:14px;color:var(--g900)}
+.modal-close{float:right;background:var(--g100);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--g500);display:flex;align-items:center;justify-content:center}
+
+/* ── LOADING ── */
+.loading-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--green)}
+.loading-icon{font-size:56px;margin-bottom:16px}
+.loading-text{font-size:15px;color:rgba(255,255,255,.8);font-weight:500}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 24px;color:var(--g400)}
+.empty-state .e-icon{font-size:48px;margin-bottom:12px}
+.empty-state .e-title{font-size:16px;font-weight:500;color:var(--g600);margin-bottom:6px}
+.empty-state .e-sub{font-size:13px;line-height:1.5}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g900);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);z-index:400;transition:transform .3s ease;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:400px){
+  .corners-grid{grid-template-columns:1fr}
+  .spray-stats{grid-template-columns:repeat(2,1fr)}
+  .swath-radios{gap:5px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOADING ══ -->
+<div id="loading-screen" class="loading-wrap">
+  <div class="loading-icon">🌾</div>
+  <div class="loading-text">Baron Fork Ag Solutions</div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen" style="display:none">
+  <div class="login-wrap">
+    <div class="login-logo">🌾</div>
+    <div class="login-title">Baron Fork Ag Solutions</div>
+    <div class="login-sub">Field Spray Manager</div>
+    <div class="login-card">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
+    <div class="login-version">Baron Fork Ag Solutions · v1.0</div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="app-header-left">
+      <div class="app-title">Baron Fork Ag Solutions</div>
+      <div class="app-sub" id="app-sub">Field Spray Manager</div>
+    </div>
+    <div class="app-header-right">
+      <button class="hdr-btn" id="hdr-action-btn" onclick="hdrAction()" style="display:none">+ New field</button>
+      <button class="hdr-icon-btn" id="hdr-home-btn" onclick="switchTab('home')" title="Home">🏠</button>
+      <button class="hdr-icon-btn visible" id="hdr-logout-btn" onclick="doLogout()" title="Log out" style="font-size:14px;padding:6px 9px">⬡ Out</button>
+    </div>
+  </div>
+
+  <!-- SCREENS -->
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="home-screen">
+      <div class="home-greeting">
+        <div class="home-greeting-title">Baron Fork Ag Solutions</div>
+        <div class="home-greeting-sub">Select a section to get started</div>
+        <div class="home-user" id="home-user-label"></div>
+      </div>
+      <button class="home-btn green" onclick="switchTab('fields')">
+        <div class="home-btn-icon">🌾</div>
+        <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Manage field boundaries, spray fields, and view coverage history</div></div>
+      </button>
+      <button class="home-btn" style="border-left:5px solid #0369a1" onclick="switchTab('planning')">
+        <div class="home-btn-icon">🌤️</div>
+        <div><div class="home-btn-title">Planning</div><div class="home-btn-sub">Spray day checklist — wind, temperature, humidity, and precipitation</div></div>
+      </button>
+      <button class="home-btn amber" onclick="switchTab('tank')">
+        <div class="home-btn-icon">🛢️</div>
+        <div><div class="home-btn-title">Tank</div><div class="home-btn-sub">Set up your tank mix, herbicide, surfactant, and tractor speed</div></div>
+      </button>
+      <button class="home-btn blue" onclick="switchTab('records')">
+        <div class="home-btn-icon">📋</div>
+        <div><div class="home-btn-title">Records</div><div class="home-btn-sub">View all spray events, coverage grids, and export to Excel</div></div>
+      </button>
+      <div class="home-version">v1.1</div>
+    </div>
+  </div>
+
+  <!-- FIELDS -->
+  <div id="screen-fields" class="screen">
+    <div class="screen-body" id="field-list-body"></div>
+  </div>
+
+  <!-- PLANNING -->
+  <div id="screen-planning" class="screen plan-screen">
+    <div class="screen-body">
+
+      <!-- Field selector + Check Weather -->
+      <div class="card" style="padding:14px;margin-bottom:12px">
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Field to spray</label>
+          <select class="form-select" id="wx-field-sel" onchange="onWxFieldChange()">
+            <option value="">— Select a field —</option>
+          </select>
+          <div class="form-hint" id="wx-field-centroid" style="margin-top:4px"></div>
+        </div>
+        <button class="btn btn-primary" id="wx-check-btn" onclick="fetchWeather()" disabled
+          style="padding:11px;font-size:14px">
+          🌤️ Check Weather for this Field
+        </button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+          <div class="plan-timestamp" id="wx-timestamp">No weather data yet — select a field and tap Check Weather</div>
+        </div>
+      </div>
+
+      <!-- 1. Overall Recommendation -->
+      <div class="rec-card loading" id="rec-card">
+        <div class="rec-icon" id="rec-icon">🌤️</div>
+        <div class="rec-status" id="rec-status">Select a field above</div>
+        <div class="rec-reason" id="rec-reason">Choose the field you plan to spray, then tap Check Weather</div>
+      </div>
+
+      <!-- 2. Wind Conditions -->
+      <div class="wx-card">
+        <div class="wx-card-header">
+          <div class="wx-card-title">🌬️ Wind Conditions</div>
+          <span class="wx-status-label gray" id="wind-status-label">—</span>
+        </div>
+        <div class="wx-body">
+          <div class="wx-main">
+            <div>
+              <div class="wx-big"><span id="wind-speed">—</span><span class="wx-big-unit"> mph</span></div>
+              <div class="wx-big-label">Current wind speed</div>
+            </div>
+            <div class="wind-arrow-wrap">
+              <span class="wind-arrow" id="wind-arrow">↑</span>
+              <span class="wind-compass" id="wind-compass">—</span>
+            </div>
+          </div>
+          <div class="wx-details">
+            <div class="wx-detail-item">
+              <div class="wx-detail-label">Direction</div>
+              <div class="wx-detail-val" id="wind-dir-full">—</div>
+            </div>
+            <div class="wx-detail-item">
+              <div class="wx-detail-label">Gusts</div>
+              <div class="wx-detail-val" id="wind-gust">—</div>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="wx-detail-label" style="margin-bottom:6px;font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px">Next 8 hours</div>
+            <div class="hourly-strip" id="wind-hourly"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Temperature & Humidity -->
+      <div class="wx-card">
+        <div class="wx-card-header">
+          <div class="wx-card-title">🌡️ Temperature &amp; Humidity</div>
+          <span class="wx-status-label gray" id="temp-status-label">—</span>
+        </div>
+        <div class="wx-body">
+          <div class="wx-main">
+            <div>
+              <div class="wx-big"><span id="temp-val">—</span><span class="wx-big-unit">°F</span></div>
+              <div class="wx-big-label">Current temperature</div>
+            </div>
+            <div>
+              <div class="wx-big"><span id="humid-val">—</span><span class="wx-big-unit">%</span></div>
+              <div class="wx-big-label">Humidity</div>
+            </div>
+          </div>
+          <div class="wx-details">
+            <div class="wx-detail-item">
+              <div class="wx-detail-label">Conditions</div>
+              <div class="wx-detail-val" id="sky-val">—</div>
+            </div>
+            <div class="wx-detail-item">
+              <div class="wx-detail-label">Spray window</div>
+              <div class="wx-detail-val" id="temp-window">60–90°F ideal</div>
+            </div>
+          </div>
+          <div class="precip-summary" id="temp-advice" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <!-- 4. Precipitation Forecast -->
+      <div class="wx-card">
+        <div class="wx-card-header">
+          <div class="wx-card-title">🌧️ Precipitation Forecast</div>
+          <span class="wx-status-label gray" id="precip-status-label">—</span>
+        </div>
+        <div class="wx-body">
+          <div style="margin-bottom:6px">
+            <div class="wx-detail-label" style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Rain probability — next 6 hours</div>
+            <div class="precip-hours" id="precip-bars"></div>
+          </div>
+          <div class="precip-summary" id="precip-summary">—</div>
+        </div>
+      </div>
+
+      <div class="wx-attribution">Weather data from NOAA National Weather Service · api.weather.gov · Fetched on demand only</div>
+    </div>
+  </div>
+
+  <!-- TANK -->
+  <div id="screen-tank" class="screen">
+    <div class="screen-body">
+      <div class="tank-icon">🛢️</div>
+      <div class="section-label">Current tank session</div>
+      <div id="tank-summary-wrap"></div>
+      <div class="section-label">Tank setup</div>
+      <div class="card" style="padding:14px">
+        <div class="form-group">
+          <label class="form-label">Tank size <span>(gallons)</span></label>
+          <input class="form-input" id="tk-size" type="number" value="500" min="1" max="5000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Herbicide name</label>
+          <input class="form-input" id="tk-herb" type="text" placeholder="e.g. Roundup, Crossbow…">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Herbicide added <span>(oz)</span></label>
+            <input class="form-input" id="tk-herb-amt" type="number" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Surfactant added <span>(oz)</span></label>
+            <input class="form-input" id="tk-surf" type="number" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tank start <span>(gal)</span></label>
+            <input class="form-input" id="tk-start" type="number" placeholder="500" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tank end <span>(gal)</span></label>
+            <input class="form-input" id="tk-end" type="number" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tractor speed <span>(MPH)</span></label>
+          <input class="form-input" id="tk-speed" type="number" placeholder="4" min="1" max="20" step="0.5">
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-secondary" onclick="clearTank()">Clear</button>
+          <button class="btn btn-primary" onclick="saveTank()">💾 Save tank session</button>
+        </div>
+      </div>
+      <div class="form-hint" style="padding:0 4px">Fill this out before heading to the field. Details attach to each spray event logged today.</div>
+    </div>
+  </div>
+
+  <!-- RECORDS -->
+  <div id="screen-records" class="screen">
+    <div class="screen-body">
+      <div class="export-bar">
+        <div class="export-bar-text">All spray events across all fields</div>
+        <button class="export-btn" onclick="exportExcel()">⬇ Export Excel</button>
+      </div>
+      <div id="records-body"></div>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT FIELD -->
+  <div id="screen-edit" class="screen" style="background:var(--g50)">
+    <div class="screen-body">
+      <div class="section-label" id="edit-section-label">New field</div>
+      <div class="card" style="padding:14px">
+        <div class="card-header" style="padding:0 0 10px">Field information</div>
+        <div class="form-group">
+          <label class="form-label">Field name <span>required</span></label>
+          <input class="form-input" id="f-name" type="text" placeholder="e.g. North pasture, Back 40…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Swath width <span>(ft)</span></label>
+          <div class="swath-radios">
+            <label class="swath-radio"><input type="radio" name="swath" value="15" onchange="updatePreview()"><span>15</span></label>
+            <label class="swath-radio"><input type="radio" name="swath" value="20" onchange="updatePreview()"><span>20</span></label>
+            <label class="swath-radio"><input type="radio" name="swath" value="25" onchange="updatePreview()"><span>25</span></label>
+            <label class="swath-radio"><input type="radio" name="swath" value="30" onchange="updatePreview()"><span>30</span></label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Sprayer / vehicle</label>
+            <input class="form-input" id="f-sprayer" type="text" placeholder="ATV, tractor…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes <span>optional</span></label>
+            <input class="form-input" id="f-notes" type="text" placeholder="Wet corner, gate…">
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div class="card-header" style="padding:0 0 10px">Corner coordinates <span style="font-size:11px;font-weight:400;color:var(--g400);text-transform:none;letter-spacing:0">(4–8 points, walk perimeter in order)</span></div>
+        <div class="gps-bar" id="gps-bar">
+          <div class="gps-bar-dot" id="gps-bar-dot"></div>
+          <span id="gps-bar-text">No GPS — enter coordinates manually or connect a GPS receiver.</span>
+        </div>
+        <div class="gps-row">
+          <div class="gps-dot" id="gps-cap-dot"></div>
+          <div class="gps-status" id="gps-cap-status">GPS not connected</div>
+          <select id="gps-corner-sel" style="font-size:12px;padding:5px 7px;border-radius:6px;border:1px solid var(--g200);background:#fff;margin-right:4px"></select>
+          <button class="gps-cap-btn" id="gps-cap-btn" onclick="captureGPSCorner()" disabled>📍 Capture</button>
+        </div>
+        <div class="form-hint" style="margin-bottom:10px">Decimal degrees — e.g. 36.1234, -94.5678. Negative longitude for all of North America.</div>
+        <div class="corners-list" id="corners-list"></div>
+        <button class="add-corner-btn" id="add-corner-btn" onclick="addCorner()">+ Add corner</button>
+        <div class="preview-map"><div class="preview-empty" id="preview-empty">Enter at least 4 corners to preview field and passes</div><svg id="preview-svg" style="display:none"></svg></div>
+        <div class="preview-stats" id="preview-stats" style="display:none"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveField()">💾 Save field</button>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- SPRAY -->
+  <div id="screen-spray" class="screen spray-screen">
+    <div class="spray-header">
+      <div class="spray-field-name" id="spray-field-name">Field</div>
+      <div class="spray-field-sub" id="spray-field-sub"></div>
+    </div>
+    <div class="spray-stats">
+      <div class="spray-stat"><div class="spray-stat-val" id="ss-curr">—</div><div class="spray-stat-lbl">In pass</div></div>
+      <div class="spray-stat"><div class="spray-stat-val" id="ss-done">0</div><div class="spray-stat-lbl">Done</div></div>
+      <div class="spray-stat"><div class="spray-stat-val" id="ss-total">—</div><div class="spray-stat-lbl">Total</div></div>
+      <div class="spray-stat"><div class="spray-stat-val" id="ss-pct">0%</div><div class="spray-stat-lbl">Complete</div></div>
+    </div>
+    <div class="spray-map-wrap"><canvas id="sprayCanvas"></canvas></div>
+    <div class="deviation-bar">
+      <div class="dev-label" id="dev-left">◀ Left</div>
+      <div class="dev-track"><div class="dev-fill" id="dev-fill" style="left:45%;width:10%"></div><div class="dev-center"></div></div>
+      <div class="dev-label" id="dev-right">Right ▶</div>
+    </div>
+    <div class="guidance-bar">
+      <div class="guidance-arrow" id="guidance-arrow">📍</div>
+      <div class="guidance-text">
+        <div class="guidance-main" id="guidance-main">Acquiring GPS…</div>
+        <div class="guidance-sub" id="guidance-sub">Start button enables when GPS locks</div>
+      </div>
+      <div class="g-dev dev-warn" id="guidance-dev">No GPS</div>
+    </div>
+    <div class="spray-btn-panel">
+      <button class="spray-btn sb-start" id="btn-start" onclick="beginTracking()" disabled>▶ &nbsp;Start</button>
+      <div class="sb-row" id="pause-stop-row" style="display:none">
+        <button class="spray-btn sb-pause" id="btn-pause" onclick="togglePause()">⏸ &nbsp;Pause</button>
+        <button class="spray-btn sb-stop" onclick="stopSpray()">⏹ &nbsp;Stop &amp; Save</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<!-- LOG MODAL -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogModal()">✕</button>
+    <div class="modal-title">Log spray event</div>
+    <div class="form-group">
+      <label class="form-label">Field</label>
+      <div id="log-field-name" style="font-size:14px;font-weight:600;color:var(--g700);padding:4px 0"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date</label>
+      <input class="form-input" id="log-date" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Herbicide <span>from tank session if set</span></label>
+      <input class="form-input" id="log-product" type="text" placeholder="e.g. Roundup, Crossbow…">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tractor speed <span>(MPH)</span></label>
+        <input class="form-input" id="log-speed" type="number" placeholder="4" step="0.5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Passes done / total</label>
+        <input class="form-input" id="log-passes" type="text" readonly style="color:var(--g500)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes <span>optional</span></label>
+      <input class="form-input" id="log-notes" type="text" placeholder="Weather, observations…">
+    </div>
+    <div id="log-tank-preview" style="display:none;background:var(--g50);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--g600)"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeLogModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLog()">💾 Save record</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ FIREBASE SDK ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, collection, getDocs, setDoc, deleteDoc, onSnapshot, query }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── Firebase config ──────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyB3RsxZIBKCyGny8l44LRcDVzmJSgteJwk",
+  authDomain: "baron-fork-ag-solutions.firebaseapp.com",
+  projectId: "baron-fork-ag-solutions",
+  storageBucket: "baron-fork-ag-solutions.firebasestorage.app",
+  messagingSenderId: "342982181935",
+  appId: "1:342982181935:web:470c7384be1bb64b72b2da"
+};
+const fbApp  = initializeApp(firebaseConfig);
+const auth   = getAuth(fbApp);
+const db     = getFirestore(fbApp);
+
+// ── State ────────────────────────────────────
+let currentUser = null;
+let localFields  = [];
+let localRecords = [];
+let localTank    = {};
+let editingId    = null;
+let sprayFieldId = null;
+let expandedIds  = new Set();
+let currentTab   = 'home';
+let unsubFields  = null;
+let unsubRecords = null;
+
+// Spray state
+const MIN_TICKS = 6;
+let passState=[], passProgress=[], sprayTracking=false, sprayPaused=false, currentPassIdx=-1;
+let gpsWatchId=null, lastGPS=null, gpsActive=false;
+let _logGrid=null, _logDone=0, _logTotal=0, pendingLogFieldId=null;
+
+// ── Auth state listener ───────────────────────
+onAuthStateChanged(auth, user => {
+  document.getElementById('loading-screen').style.display='none';
+  if(user){
+    currentUser=user;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('home-user-label').textContent='Signed in as '+user.email;
+    document.getElementById('hdr-logout-btn').classList.add('visible');
+    subscribeToData();
+    switchTab('home');
+  } else {
+    currentUser=null;
+    document.getElementById('app').style.display='none';
+    document.getElementById('login-screen').style.display='block';
+    if(unsubFields){unsubFields();unsubFields=null}
+    if(unsubRecords){unsubRecords();unsubRecords=null}
+  }
+});
+
+// ── Login / Logout ────────────────────────────
+window.doLogin = async function(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  const btn=document.getElementById('login-btn');
+  const err=document.getElementById('login-error');
+  err.textContent=''; btn.disabled=true; btn.textContent='Signing in…';
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+  } catch(e){
+    err.textContent=e.code==='auth/invalid-credential'?'Incorrect email or password. Please try again.':'Login failed. Check your email and password.';
+    btn.disabled=false; btn.textContent='Log In';
+  }
+};
+
+window.doLogout = async function(){
+  if(!confirm('Sign out?')) return;
+  stopGPS();
+  await signOut(auth);
+  switchTab('home');
+};
+
+// Allow Enter key on login form
+document.getElementById('login-password').addEventListener('keydown',e=>{if(e.key==='Enter') window.doLogin()});
+document.getElementById('login-email').addEventListener('keydown',e=>{if(e.key==='Enter') document.getElementById('login-password').focus()});
+
+// ── Firestore paths ───────────────────────────
+function userDoc(path){ return doc(db,`users/${currentUser.uid}/${path}`) }
+function userCol(path){ return collection(db,`users/${currentUser.uid}/${path}`) }
+
+// ── Real-time listeners ───────────────────────
+function subscribeToData(){
+  // Fields
+  if(unsubFields) unsubFields();
+  unsubFields = onSnapshot(query(userCol('fields')), snap=>{
+    localFields=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(currentTab==='fields') renderFieldList();
+    if(currentTab==='planning') populateWxFieldSel();
+  });
+  // Records
+  if(unsubRecords) unsubRecords();
+  unsubRecords = onSnapshot(query(userCol('records')), snap=>{
+    localRecords=snap.docs.map(d=>({id:d.id,...d.data()}));
+    localRecords.sort((a,b)=>new Date(b.dateRaw||0)-new Date(a.dateRaw||0));
+    if(currentTab==='records') renderRecords();
+    if(currentTab==='fields') renderFieldList();
+  });
+  // Tank (single doc)
+  onSnapshot(doc(db,`users/${currentUser.uid}/tank/current`), snap=>{
+    localTank = snap.exists()?snap.data():{};
+    if(currentTab==='tank') renderTankSummary();
+  });
+}
+
+// ── CRUD: Fields ──────────────────────────────
+async function fbSaveField(id, data){
+  await setDoc(doc(db,`users/${currentUser.uid}/fields/${id}`), data);
+}
+async function fbDeleteField(id){
+  await deleteDoc(doc(db,`users/${currentUser.uid}/fields/${id}`));
+  // delete associated records
+  const recs=localRecords.filter(r=>r.fieldId===id);
+  for(const r of recs) await deleteDoc(doc(db,`users/${currentUser.uid}/records/${r.id}`));
+}
+async function fbSaveRecord(id, data){
+  await setDoc(doc(db,`users/${currentUser.uid}/records/${id}`), data);
+}
+async function fbSaveTank(data){
+  await setDoc(doc(db,`users/${currentUser.uid}/tank/current`), data);
+}
+
+// ── NAVIGATION ───────────────────────────────
+window.switchTab = function(tab){
+  currentTab=tab;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  const hdrBtn=document.getElementById('hdr-action-btn');
+  const homeBtn=document.getElementById('hdr-home-btn');
+  const appSub=document.getElementById('app-sub');
+  homeBtn.classList.toggle('visible', tab!=='home');
+  if(tab==='home'){
+    hdrBtn.style.display='none';
+    appSub.textContent='Field Spray Manager';
+  } else if(tab==='planning'){
+    hdrBtn.style.display='none';
+    appSub.textContent='Spray Day Planning';
+    populateWxFieldSel();
+    loadCachedWeather(document.getElementById('wx-field-sel')?.value || '');
+  } else if(tab==='fields'){
+    hdrBtn.textContent='+ New field'; hdrBtn.style.display='block';
+    appSub.textContent='Fields';
+    renderFieldList();
+  } else if(tab==='tank'){
+    hdrBtn.style.display='none';
+    appSub.textContent='Tank & Mix';
+    renderTankSummary();
+  } else if(tab==='records'){
+    hdrBtn.style.display='none';
+    appSub.textContent='Spray Records';
+    renderRecords();
+  }
+  window.scrollTo(0,0);
+};
+window.hdrAction=function(){if(currentTab==='fields') showAddField()};
+
+function showEditScreen(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-edit').classList.add('active');
+  document.getElementById('hdr-action-btn').style.display='none';
+  document.getElementById('hdr-home-btn').classList.add('visible');
+  document.getElementById('app-sub').textContent='Field Setup';
+}
+function showSprayScreen(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-spray').classList.add('active');
+  document.getElementById('hdr-action-btn').style.display='none';
+  document.getElementById('hdr-home-btn').classList.remove('visible');
+  document.getElementById('app-sub').textContent='Spraying';
+}
+
+// ── FIELD MATH — polygon-capable ─────────────
+function haversineDist(lat1,lng1,lat2,lng2){
+  const R=20925524.9;
+  const dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// Point-in-polygon (ray casting)
+function pointInPolygon(lat, lng, corners) {
+  let inside = false;
+  const n = corners.length;
+  for (let i = 0, j = n-1; i < n; j = i++) {
+    const xi = +corners[i].lng, yi = +corners[i].lat;
+    const xj = +corners[j].lng, yj = +corners[j].lat;
+    if (((yi > lat) !== (yj > lat)) && (lng < (xj-xi)*(lat-yi)/(yj-yi)+xi)) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+// Compute passes from polygon bounding box
+function computePasses(field){
+  const c=field.corners;
+  if(!c||c.filter(x=>x.lat&&x.lng).length<4) return null;
+  const validC = c.filter(x=>x.lat&&x.lng);
+  const lats = validC.map(x=>+x.lat);
+  const lngs = validC.map(x=>+x.lng);
+  const minLat=Math.min(...lats), maxLat=Math.max(...lats);
+  const minLng=Math.min(...lngs), maxLng=Math.max(...lngs);
+  // Width = east-west extent of bounding box
+  const midLat=(minLat+maxLat)/2;
+  const width  = haversineDist(midLat, minLng, midLat, maxLng);
+  const length = haversineDist(minLat, (minLng+maxLng)/2, maxLat, (minLng+maxLng)/2);
+  const swath=field.swath||30;
+  const num=Math.ceil(width/swath);
+  const lastW=width-(num-1)*swath;
+  const overlapFt=num>1?Math.max(0,swath-lastW):0;
+  const overlapPct=width>0?(overlapFt/width*100).toFixed(1):0;
+  // Polygon area via shoelace (approximate in degrees, convert to sq ft)
+  let area = 0;
+  for(let i=0,j=validC.length-1;i<validC.length;j=i++){
+    area += (+validC[i].lng + +validC[j].lng) * (+validC[i].lat - +validC[j].lat);
+  }
+  const latScale = 364000; // ft per degree lat
+  const lngScale = Math.cos(midLat*Math.PI/180) * 364000;
+  const acreSqFt = Math.abs(area) / 2 * latScale * lngScale;
+  const acres = (acreSqFt / 43560).toFixed(2);
+  return{num,width:Math.round(width),length:Math.round(length),swath,acres,overlapFt:overlapFt.toFixed(1),overlapPct,minLat,maxLat,minLng,maxLng,midLat};
+}
+
+function isSameSeason(dateStr){
+  if(!dateStr) return false;
+  const d=new Date(dateStr),now=new Date();
+  const s=m=>m<6?'spring':'fall';
+  return d.getFullYear()===now.getFullYear()&&s(d.getMonth())===s(now.getMonth());
+}
+function getSwath(){const r=document.querySelector('input[name="swath"]:checked');return r?parseInt(r.value):30}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// ── THUMB SVG ─────────────────────────────────
+function buildThumbSVG(field,passes){
+  if(!passes) return`<svg viewBox="0 0 64 52"><rect width="64" height="52" fill="#2d4a1e" rx="5"/><text x="32" y="30" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8" font-family="sans-serif">No corners</text></svg>`;
+  const n=passes.num,sp=60/n;
+  let lines='';
+  for(let i=0;i<n;i++){const x=2+(i+.5)*sp;lines+=`<line x1="${x}" y1="3" x2="${x}" y2="49" stroke="${i%2===0?'rgba(34,197,94,.7)':'rgba(59,130,246,.6)'}" stroke-width="${Math.max(.8,sp*.45)}"/>`}
+  return`<svg viewBox="0 0 64 52"><rect width="64" height="52" fill="#2d4a1e" rx="5"/><rect x="2" y="3" width="60" height="46" fill="#2d4a1e" rx="3"/>${lines}<rect x="2" y="3" width="60" height="46" fill="none" stroke="rgba(255,255,255,.15)" stroke-width=".5" rx="3"/></svg>`;
+}
+
+// ── CORNER LIST STATE ─────────────────────────
+const MAX_CORNERS = 8;
+const MIN_CORNERS = 4;
+let cornerCount = 4; // current number of corner rows
+
+function renderCornerList(corners) {
+  // corners = array of {lat,lng} objects (may be empty strings)
+  cornerCount = Math.max(MIN_CORNERS, corners.length);
+  const list = document.getElementById('corners-list');
+  list.innerHTML = '';
+  for (let i = 0; i < cornerCount; i++) {
+    const lat = corners[i]?.lat || '';
+    const lng = corners[i]?.lng || '';
+    list.appendChild(makeCornerRow(i, lat, lng));
+  }
+  updateAddBtn();
+  updateGPSCornerSel();
+  updatePreviewFromList();
+}
+
+function makeCornerRow(i, lat, lng) {
+  const div = document.createElement('div');
+  div.className = 'corner-item' + (lat && lng ? ' set' : '');
+  div.id = `ci-${i}`;
+  div.innerHTML = `
+    <div class="corner-num">Corner ${i+1}</div>
+    <div class="corner-inputs">
+      <input class="corner-coord-input" id="cl${i}-lat" type="number" step="0.000001"
+        placeholder="Latitude" value="${lat}" onchange="onCornerChange(${i})">
+      <input class="corner-coord-input" id="cl${i}-lng" type="number" step="0.000001"
+        placeholder="Longitude" value="${lng}" onchange="onCornerChange(${i})">
+    </div>
+    <button class="corner-remove" onclick="removeCorner(${i})"
+      ${cornerCount <= MIN_CORNERS ? 'disabled' : ''} title="Remove corner">✕</button>`;
+  return div;
+}
+
+function onCornerChange(i) {
+  const lat = document.getElementById(`cl${i}-lat`)?.value;
+  const lng = document.getElementById(`cl${i}-lng`)?.value;
+  const item = document.getElementById(`ci-${i}`);
+  if (item) item.classList.toggle('set', !!(lat && lng));
+  updatePreviewFromList();
+}
+
+window.addCorner = function() {
+  if (cornerCount >= MAX_CORNERS) return;
+  cornerCount++;
+  const list = document.getElementById('corners-list');
+  list.appendChild(makeCornerRow(cornerCount-1, '', ''));
+  updateAddBtn();
+  updateGPSCornerSel();
+};
+
+window.removeCorner = function(i) {
+  if (cornerCount <= MIN_CORNERS) return;
+  // Shift values up from i+1 onward
+  for (let j = i; j < cornerCount - 1; j++) {
+    const nextLat = document.getElementById(`cl${j+1}-lat`)?.value || '';
+    const nextLng = document.getElementById(`cl${j+1}-lng`)?.value || '';
+    document.getElementById(`cl${j}-lat`).value = nextLat;
+    document.getElementById(`cl${j}-lng`).value = nextLng;
+    document.getElementById(`ci-${j}`).classList.toggle('set', !!(nextLat && nextLng));
+  }
+  cornerCount--;
+  // Remove last row
+  const last = document.getElementById(`ci-${cornerCount}`);
+  if (last) last.remove();
+  // Re-render remove buttons (enable/disable based on new count)
+  for (let j = 0; j < cornerCount; j++) {
+    const btn = document.querySelector(`#ci-${j} .corner-remove`);
+    if (btn) btn.disabled = cornerCount <= MIN_CORNERS;
+  }
+  updateAddBtn();
+  updateGPSCornerSel();
+  updatePreviewFromList();
+};
+
+function updateAddBtn() {
+  const btn = document.getElementById('add-corner-btn');
+  if (!btn) return;
+  btn.disabled = cornerCount >= MAX_CORNERS;
+  btn.textContent = cornerCount >= MAX_CORNERS
+    ? `Maximum ${MAX_CORNERS} corners reached`
+    : `+ Add corner (${cornerCount}/${MAX_CORNERS})`;
+}
+
+function updateGPSCornerSel() {
+  const sel = document.getElementById('gps-corner-sel');
+  if (!sel) return;
+  const prev = parseInt(sel.value) || 0;
+  sel.innerHTML = Array.from({length: cornerCount}, (_,i) =>
+    `<option value="${i}" ${i===prev?'selected':''}>Corner ${i+1}</option>`
+  ).join('');
+}
+
+function getCornersFromList() {
+  return Array.from({length: cornerCount}, (_,i) => ({
+    lat: document.getElementById(`cl${i}-lat`)?.value || '',
+    lng: document.getElementById(`cl${i}-lng`)?.value || '',
+  }));
+}
+
+// ── ADD / EDIT FIELD ──────────────────────────
+window.showAddField=function(id){
+  editingId=id||null;
+  const f=id?localFields.find(x=>x.id===id):null;
+  document.getElementById('edit-section-label').textContent=f?'Edit field':'New field';
+  document.getElementById('f-name').value=f?f.name:'';
+  document.getElementById('f-sprayer').value=f?f.sprayer||'':'';
+  document.getElementById('f-notes').value=f?f.notes||'':'';
+  const sw=f?f.swath:30;
+  document.querySelectorAll('input[name="swath"]').forEach(r=>{r.checked=parseInt(r.value)===sw});
+  if(![15,20,25,30].includes(sw)) document.querySelector('input[name="swath"][value="30"]').checked=true;
+  // Load corners — default 4 empty
+  const corners = f?.corners?.length >= MIN_CORNERS ? f.corners
+    : [{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''}];
+  renderCornerList(corners);
+  startGPS(); showEditScreen();
+};
+window.cancelEdit=function(){stopGPS();switchTab('fields')};
+
+window.captureGPSCorner=function(){
+  if(!lastGPS){showToast('No GPS signal');return}
+  const i=parseInt(document.getElementById('gps-corner-sel').value);
+  const latEl = document.getElementById(`cl${i}-lat`);
+  const lngEl = document.getElementById(`cl${i}-lng`);
+  if (!latEl || !lngEl) return;
+  latEl.value=lastGPS.latitude.toFixed(6);
+  lngEl.value=lastGPS.longitude.toFixed(6);
+  document.getElementById(`ci-${i}`)?.classList.add('set');
+  // Auto-advance selector to next unfilled corner
+  const sel=document.getElementById('gps-corner-sel');
+  if(i<cornerCount-1) sel.value=i+1;
+  updatePreviewFromList();
+  showToast(`Corner ${i+1} captured`);
+};
+
+window.updatePreview = function() { updatePreviewFromList(); };
+
+function updatePreviewFromList() {
+  const corners = getCornersFromList();
+  const filled = corners.filter(c=>c.lat&&c.lng);
+  const svg=document.getElementById('preview-svg');
+  const empty=document.getElementById('preview-empty');
+  const stats=document.getElementById('preview-stats');
+  if(filled.length < MIN_CORNERS){
+    svg.style.display='none';
+    empty.style.display='flex';
+    empty.textContent=`Enter at least ${MIN_CORNERS} corners to preview field and passes (${filled.length}/${cornerCount} set)`;
+    stats.style.display='none';
+    return;
+  }
+  // Use only filled corners for preview
+  const swath=getSwath();
+  const passes=computePasses({corners:filled,swath});
+  if(!passes) return;
+  const W=340,H=140,pad=10;
+  const lats=filled.map(c=>+c.lat),lngs=filled.map(c=>+c.lng);
+  const minLat=Math.min(...lats),maxLat=Math.max(...lats);
+  const minLng=Math.min(...lngs),maxLng=Math.max(...lngs);
+  const sc=Math.min((W-pad*2)/(maxLng-minLng||1),(H-pad*2)/(maxLat-minLat||1))*.88;
+  const toX=lng=>pad+(lng-minLng)*sc+(W-pad*2-(maxLng-minLng)*sc)/2;
+  const toY=lat=>H-pad-(lat-minLat)*sc-(H-pad*2-(maxLat-minLat)*sc)/2;
+  const pts=filled.map(c=>`${toX(+c.lng)},${toY(+c.lat)}`).join(' ');
+  const n=passes.num, dLng=(maxLng-minLng)/n;
+  let pl='';
+  for(let i=0;i<n;i++){
+    const cx=toX(minLng+(i+.5)*dLng);
+    // Clip pass line to polygon — find entry/exit latitudes
+    const passMinLng=minLng+i*dLng, passMaxLng=minLng+(i+1)*dLng;
+    const passMidLng=(passMinLng+passMaxLng)/2;
+    // Sample points along the pass to find clipped extent
+    let yTop=null, yBot=null;
+    const steps=20;
+    for(let s=0;s<=steps;s++){
+      const sLat=minLat+(maxLat-minLat)*s/steps;
+      if(pointInPolygon(sLat, passMidLng, filled)){
+        const sy=toY(sLat);
+        if(yTop===null||sy<yTop) yTop=sy;
+        if(yBot===null||sy>yBot) yBot=sy;
+      }
+    }
+    if(yTop!==null&&yBot!==null){
+      pl+=`<line x1="${cx}" y1="${yTop}" x2="${cx}" y2="${yBot}" stroke="${i%2===0?'rgba(34,197,94,.8)':'rgba(96,165,250,.8)'}" stroke-width="1.5"/>`;
+    }
+  }
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#1e3212"/>
+    <polygon points="${pts}" fill="rgba(45,74,30,.9)" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+    ${pl}
+    ${filled.map((c,i)=>`<circle cx="${toX(+c.lng)}" cy="${toY(+c.lat)}" r="4" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+      <text x="${toX(+c.lng)+7}" y="${toY(+c.lat)+4}" fill="rgba(255,255,255,.7)" font-size="8" font-family="sans-serif">${i+1}</text>`).join('')}`;
+  svg.style.display='block';empty.style.display='none';
+  stats.style.display='flex';
+  stats.innerHTML=`<span>📐 ${passes.width}×${passes.length} ft</span><span>🌾 ${passes.num} passes</span><span>📏 ${passes.acres} ac</span><span>↔ ${passes.overlapPct}% overlap</span><span>📍 ${filled.length} corners</span>`;
+}
+
+window.saveField=async function(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){showToast('Please enter a field name');return}
+  const corners=getCornersFromList();
+  const filled=corners.filter(c=>c.lat&&c.lng);
+  if(filled.length<MIN_CORNERS){showToast(`Enter at least ${MIN_CORNERS} corners`);return}
+  const id=editingId||genId();
+  const obj={name,swath:getSwath(),
+    sprayer:document.getElementById('f-sprayer').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    corners:corners};
+  try{
+    await fbSaveField(id,obj);
+    showToast(`"${name}" saved`);
+    stopGPS();switchTab('fields');
+  }catch(e){showToast('Save failed — check connection')}
+};
+function renderFieldList(){
+  const body=document.getElementById('field-list-body');
+  if(!localFields.length){
+    body.innerHTML=`<div class="empty-state"><div class="e-icon">🌾</div><div class="e-title">No fields yet</div><div class="e-sub">Tap "+ New field" to add your first field.</div></div>`;
+    return;
+  }
+  const sorted=[...localFields].sort((a,b)=>a.name.localeCompare(b.name));
+  body.innerHTML=sorted.map(f=>{
+    const isOpen=expandedIds.has(f.id);
+    const allSet=(f.corners||[]).filter(c=>c.lat&&c.lng).length===4;
+    const passes=allSet?computePasses(f):null;
+    const recs=localRecords.filter(r=>r.fieldId===f.id).sort((a,b)=>new Date(b.dateRaw||0)-new Date(a.dateRaw||0));
+    const badge=!allSet?`<span class="badge badge-setup">⚠ Needs corners</span>`
+      :(recs.length&&isSameSeason(recs[0].dateRaw))?`<span class="badge badge-sprayed">✓ Sprayed this season</span>`
+      :`<span class="badge badge-ready">Ready to spray</span>`;
+    const meta=[passes?`${passes.num} passes`:'',f.swath?`${f.swath} ft swath`:'',passes?`~${passes.acres} ac`:'',f.sprayer||''].filter(Boolean).join(' · ');
+    const histHTML=isOpen?`<div class="history-section"><div class="history-label">Spray history</div>${
+      recs.length?recs.slice(0,5).map(r=>`<div class="history-entry">
+        <div class="history-row"><span class="history-date">${r.date}</span><span class="history-detail">${r.product}${r.speed?' · '+r.speed+' MPH':''}${r.passes?' · '+r.passes:''}</span></div>
+        ${r.notes?`<div style="font-size:11px;color:var(--g400);padding:2px 0">${r.notes}</div>`:''}
+        ${r.gridImage?`<img src="${r.gridImage}" class="history-grid-img" alt="Coverage grid">`:''}
+      </div>`).join(''):`<div class="history-empty">No spray events logged yet</div>`
+    }</div>`:'';
+    return`<div class="field-card">
+      <div class="field-card-top" onclick="toggleCard('${f.id}')">
+        <div class="field-thumb">${buildThumbSVG(f,passes)}</div>
+        <div class="field-info">
+          <div class="field-name">${f.name}</div>
+          <div class="field-meta">${meta||'No details yet'}</div>
+          ${f.notes?`<div class="field-notes">${f.notes}</div>`:''}
+          ${badge}
+        </div>
+      </div>
+      ${histHTML}
+      <div class="field-card-actions">
+        <button class="fc-btn spray" onclick="startSpray('${f.id}')" ${!allSet?'disabled':''}>▶ Spray</button>
+        <button class="fc-btn" onclick="showAddField('${f.id}')">✏ Edit</button>
+        <button class="fc-btn" onclick="openLogModal('${f.id}')">📋 Log</button>
+        <button class="fc-btn danger" onclick="deleteField('${f.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+window.toggleCard=function(id){expandedIds.has(id)?expandedIds.delete(id):expandedIds.add(id);renderFieldList()};
+
+// ── ADD / EDIT FIELD ──────────────────────────
+window.showAddField=function(id){
+  editingId=id||null;
+  const f=id?localFields.find(x=>x.id===id):null;
+  document.getElementById('edit-section-label').textContent=f?'Edit field':'New field';
+  document.getElementById('f-name').value=f?f.name:'';
+  document.getElementById('f-sprayer').value=f?f.sprayer||'':'';
+  document.getElementById('f-notes').value=f?f.notes||'':'';
+  const sw=f?f.swath:30;
+  document.querySelectorAll('input[name="swath"]').forEach(r=>{r.checked=parseInt(r.value)===sw});
+window.deleteField=async function(id){
+  const f=localFields.find(x=>x.id===id);
+  if(!confirm(`Delete "${f.name}"?\n\nAll spray records for this field will also be removed.`)) return;
+  try{await fbDeleteField(id);showToast('Field deleted')}
+  catch(e){showToast('Delete failed — check connection')}
+};
+
+// ── TANK ──────────────────────────────────────
+function renderTankSummary(){
+  const wrap=document.getElementById('tank-summary-wrap');
+  const t=localTank;
+  if(!t||!t.herb){wrap.innerHTML=`<div class="no-session">No tank session set up yet.<br>Fill in the form below before heading to the field.</div>`;return}
+  wrap.innerHTML=`<div class="tank-summary">
+    <div class="tank-summary-title">Active tank session</div>
+    <div class="tank-summary-vals">
+      <div class="tank-sv"><div class="tank-sv-val">${t.size||500}</div><div class="tank-sv-lbl">Gal tank</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.herb||'—'}</div><div class="tank-sv-lbl">Herbicide</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.herbAmt||0} oz</div><div class="tank-sv-lbl">Herb added</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.surf||0} oz</div><div class="tank-sv-lbl">Surfactant</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.speed||'—'} MPH</div><div class="tank-sv-lbl">Speed</div></div>
+    </div>
+  </div>`;
+  document.getElementById('tk-size').value=t.size||500;
+  document.getElementById('tk-herb').value=t.herb||'';
+  document.getElementById('tk-herb-amt').value=t.herbAmt||'';
+  document.getElementById('tk-surf').value=t.surf||'';
+  document.getElementById('tk-start').value=t.start||'';
+  document.getElementById('tk-end').value=t.end||'';
+  document.getElementById('tk-speed').value=t.speed||'';
+}
+window.saveTank=async function(){
+  const data={
+    size:document.getElementById('tk-size').value||500,
+    herb:document.getElementById('tk-herb').value.trim(),
+    herbAmt:document.getElementById('tk-herb-amt').value,
+    surf:document.getElementById('tk-surf').value,
+    start:document.getElementById('tk-start').value,
+    end:document.getElementById('tk-end').value,
+    speed:document.getElementById('tk-speed').value,
+    saved:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+  };
+  try{await fbSaveTank(data);showToast('Tank session saved')}
+  catch(e){showToast('Save failed — check connection')}
+};
+window.clearTank=async function(){
+  if(!confirm('Clear the current tank session?')) return;
+  try{await fbSaveTank({});showToast('Tank cleared')}
+  catch(e){showToast('Clear failed')}
+};
+
+// ── SPRAY ─────────────────────────────────────
+window.startSpray=function(id){
+  const field=localFields.find(f=>f.id===id);
+  if(!field) return;
+  const passes=computePasses(field);
+  if(!passes){showToast('Set all 4 corners first');return}
+  sprayFieldId=id;sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
+  passState=Array(passes.num).fill('untouched');
+  passProgress=Array(passes.num).fill(0);
+  document.getElementById('spray-field-name').textContent=field.name;
+  document.getElementById('spray-field-sub').textContent=`${passes.acres} ac · ${passes.num} passes · ${field.swath} ft swath`;
+  document.getElementById('ss-total').textContent=passes.num;
+  document.getElementById('ss-done').textContent='0';
+  document.getElementById('ss-curr').textContent='—';
+  document.getElementById('ss-pct').textContent='0%';
+  setSprayButtons('idle');setGuidance('waiting');setDeviationBar(null);
+  showSprayScreen();setTimeout(drawSprayCanvas,80);startGPS();
+};
+
+function setSprayButtons(state){
+  const btnStart=document.getElementById('btn-start');
+  const psRow=document.getElementById('pause-stop-row');
+  const btnPause=document.getElementById('btn-pause');
+  if(state==='idle'){btnStart.disabled=true;btnStart.style.display='block';psRow.style.display='none'}
+  else if(state==='gps-ready'){btnStart.disabled=false;btnStart.style.display='block';psRow.style.display='none'}
+  else if(state==='tracking'){btnStart.style.display='none';psRow.style.display='flex';btnPause.textContent='⏸ \u00a0Pause';btnPause.style.background='#b45309'}
+  else if(state==='paused'){btnStart.style.display='none';psRow.style.display='flex';btnPause.textContent='▶ \u00a0Resume';btnPause.style.background='#15803d'}
+}
+window.beginTracking=function(){sprayTracking=true;sprayPaused=false;setSprayButtons('tracking');setGuidance('tracking');showToast('Tracking started — drive your passes')};
+window.togglePause=function(){
+  if(!sprayPaused){sprayPaused=true;sprayTracking=false;currentPassIdx=-1;setSprayButtons('paused');setGuidance('paused');setDeviationBar(null);showToast('Paused')}
+  else{sprayPaused=false;sprayTracking=true;setSprayButtons('tracking');setGuidance('tracking');showToast('Resumed')}
+};
+window.stopSpray=function(){
+  const done=passState.filter(s=>s==='done').length;
+  const total=passState.length;
+  const pct=total?Math.round(done/total*100):0;
+  const msg=(sprayTracking||sprayPaused||done>0)
+    ?`Stop spraying?\n\n${done} of ${total} passes complete (${pct}%).\nA grid snapshot will be saved.`
+    :'Cancel and return to fields?';
+  if(!confirm(msg)) return;
+  const gridImage=done>0?captureGridSnapshot():null;
+  stopGPS();sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
+  if(done>0||sprayFieldId) openLogModal(sprayFieldId,gridImage,done,total);
+  switchTab('fields');
+};
+
+function captureGridSnapshot(){
+  const canvas=document.getElementById('sprayCanvas');
+  if(!canvas) return null;
+  try{drawSprayCanvas();const off=document.createElement('canvas');off.width=320;off.height=100;off.getContext('2d').drawImage(canvas,0,0,320,100);return off.toDataURL('image/png')}catch{return null}
+}
+
+function setGuidance(mode,passNum){
+  const arrow=document.getElementById('guidance-arrow');
+  const main=document.getElementById('guidance-main');
+  const sub=document.getElementById('guidance-sub');
+  const dev=document.getElementById('guidance-dev');
+  if(!arrow) return;
+  const G={
+    waiting:    ['📍','Acquiring GPS…','Start button enables when GPS locks','No GPS','dev-warn'],
+    'gps-ready':['✅','GPS locked — tap Start when ready','Drive into field and tap Start to begin tracking','GPS ready','dev-good'],
+    tracking:   ['🚜','Tracking — drive your passes','Any order, any direction — grid fills as you go','Live','dev-good'],
+    paused:     ['⏸','Paused','Tap Resume when ready to continue','Paused','dev-warn'],
+    'in-pass':  ['🟡',`In pass ${passNum}`,'Keep driving — pass fills when complete',`Pass ${passNum}`,'dev-warn'],
+    'pass-done':['✅',`Pass ${passNum} complete`,'Move to next pass',`Pass ${passNum} ✓`,'dev-good'],
+    outside:    ['🚜','Between passes','Drive into the next pass strip','Tracking','dev-good'],
+    complete:   ['🎉','All passes complete!','Tap Stop & Save to finish','100%','dev-good'],
+  };
+  const[a,m,s,d,cls]=G[mode]||G.waiting;
+  arrow.textContent=a;main.textContent=m;sub.textContent=s;
+  dev.textContent=d;dev.className=`g-dev ${cls}`;
+}
+
+function setDeviationBar(deviationFt,swathFt){
+  const fill=document.getElementById('dev-fill');
+  const leftLbl=document.getElementById('dev-left');
+  const rightLbl=document.getElementById('dev-right');
+  if(!fill) return;
+  if(deviationFt===null||deviationFt===undefined||!swathFt){
+    fill.style.left='45%';fill.style.width='10%';fill.style.background='rgba(255,255,255,.2)';
+    leftLbl.style.opacity='.3';rightLbl.style.opacity='.3';return;
+  }
+  const maxDev=swathFt/2,clamp=Math.max(-maxDev,Math.min(maxDev,deviationFt));
+  const pct=50+clamp/maxDev*45;
+  fill.style.left=`${pct-5}%`;fill.style.width='10%';
+  const absDev=Math.abs(deviationFt);
+  fill.style.background=absDev<3?'#22c55e':absDev<8?'#fbbf24':'#ef4444';
+  leftLbl.textContent=deviationFt<0?`◀ ${absDev.toFixed(1)} ft`:'◀ Left';
+  rightLbl.textContent=deviationFt>0?`${absDev.toFixed(1)} ft ▶`:'Right ▶';
+  leftLbl.style.opacity=deviationFt<0?'1':'.3';
+  rightLbl.style.opacity=deviationFt>0?'1':'.3';
+}
+
+function computeDeviation(coords,field,passes,passIdx){
+  try{
+    const {minLng,maxLng,midLat}=passes;
+    const centerLng=minLng+(passIdx+0.5)*(maxLng-minLng)/passes.num;
+    return(coords.longitude-centerLng)*Math.cos(midLat*Math.PI/180)*364000;
+  }catch{return null}
+}
+
+function processGPSForTracking(coords){
+  if(!sprayTracking||sprayPaused) return;
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!field) return;
+  const passes=computePasses(field);if(!passes) return;
+  const corners=field.corners.filter(c=>c.lat&&c.lng);
+  const {minLng,maxLng,minLat,maxLat}=passes;
+
+  // Check if inside bounding box first (fast)
+  const fracX=(coords.longitude-minLng)/(maxLng-minLng);
+  const fracY=(coords.latitude-minLat)/(maxLat-minLat);
+  const inBbox=fracX>=0&&fracX<=1&&fracY>=0&&fracY<=1;
+
+  // Then check polygon boundary
+  const inField=inBbox && (corners.length===4
+    ? inBbox  // rectangle — bbox check is sufficient
+    : pointInPolygon(coords.latitude, coords.longitude, corners));
+
+  const passIdx=Math.floor(fracX*passes.num);
+
+  if(!inField||passIdx<0||passIdx>=passes.num){
+    if(currentPassIdx>=0){currentPassIdx=-1;setGuidance('outside')}
+    document.getElementById('ss-curr').textContent='—';
+    setDeviationBar(null);drawSprayCanvas();return;
+  }
+  currentPassIdx=passIdx;
+  setDeviationBar(computeDeviation(coords,field,passes,passIdx),passes.swath);
+  if(passState[passIdx]!=='done'){
+    passProgress[passIdx]++;passState[passIdx]='inprogress';
+    if(passProgress[passIdx]>=MIN_TICKS){
+      passState[passIdx]='done';
+      const doneCount=passState.filter(s=>s==='done').length;
+      const pct=Math.round(doneCount/passes.num*100);
+      document.getElementById('ss-done').textContent=doneCount;
+      document.getElementById('ss-pct').textContent=pct+'%';
+      if(doneCount===passes.num){setGuidance('complete');showToast('🎉 All passes complete!')}
+      else{setGuidance('pass-done',passIdx+1);showToast(`Pass ${passIdx+1} ✓`)}
+    }else setGuidance('in-pass',passIdx+1);
+  }else setGuidance('pass-done',passIdx+1);
+  document.getElementById('ss-curr').textContent=passState[passIdx]==='done'?`${passIdx+1} ✓`:passIdx+1;
+  drawSprayCanvas();
+}
+
+function drawSprayCanvas(){
+  const canvas=document.getElementById('sprayCanvas');
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!canvas||!field) return;
+  const passes=computePasses(field);if(!passes) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*(window.devicePixelRatio||1);canvas.height=H*(window.devicePixelRatio||1);
+  ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
+  const pad=20,n=passes.num,fw=W-pad*2,fh=H-pad*2,sp=fw/n;
+  ctx.fillStyle='#1a2e10';ctx.fillRect(pad,pad,fw,fh);
+  for(let i=0;i<n;i++){
+    const x=pad+i*sp,st=passState[i]||'untouched',cur=i===currentPassIdx&&sprayTracking;
+    ctx.fillStyle=st==='done'?'rgba(34,197,94,.55)':st==='inprogress'?'rgba(251,191,36,.4)':cur?'rgba(251,191,36,.15)':'rgba(255,255,255,.03)';
+    ctx.fillRect(x,pad,sp,fh);
+    const fs=Math.max(9,Math.min(13,sp*.55));
+    ctx.font=`${fs}px sans-serif`;ctx.textAlign='center';
+    ctx.fillStyle=st==='done'?'#86efac':st==='inprogress'?'#fcd34d':'rgba(255,255,255,.25)';
+    ctx.fillText(i+1,x+sp/2,pad+fh/2+4);
+    if(st==='done'&&sp>14){ctx.font=`${Math.max(8,sp*.38)}px sans-serif`;ctx.fillStyle='#86efac';ctx.fillText('✓',x+sp/2,pad+fh/2-fs+2)}
+    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,pad+fh);ctx.stroke();
+  }
+  if(lastGPS&&field.corners&&field.corners.filter(c=>c.lat&&c.lng).length>=4){
+    const {minLng,maxLng,minLat,maxLat}=passes;
+    const gx=pad+(lastGPS.longitude-minLng)/(maxLng-minLng||1)*fw;
+    const gy=pad+fh-(lastGPS.latitude-minLat)/(maxLat-minLat||1)*fh;
+    ctx.beginPath();ctx.arc(gx,gy,10,0,Math.PI*2);ctx.fillStyle='rgba(59,130,246,.25)';ctx.fill();
+    ctx.beginPath();ctx.arc(gx,gy,5,0,Math.PI*2);ctx.fillStyle='#3b82f6';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+  }
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.strokeRect(pad,pad,fw,fh);
+}
+
+// ── GPS ───────────────────────────────────────
+function startGPS(){
+  if(!navigator.geolocation){setGPSStatus(false);return}
+  setGPSStatus('searching');
+  gpsWatchId=navigator.geolocation.watchPosition(
+    pos=>{
+      lastGPS=pos.coords;gpsActive=true;setGPSStatus(true,pos.coords);
+      if(document.getElementById('screen-spray').classList.contains('active')){
+        if(!sprayTracking&&!sprayPaused){
+          const btn=document.getElementById('btn-start');
+          if(btn&&btn.disabled){btn.disabled=false;setGuidance('gps-ready');setSprayButtons('gps-ready')}
+        }
+        processGPSForTracking(pos.coords);drawSprayCanvas();
+      }
+    },
+    ()=>{gpsActive=false;setGPSStatus(false)},
+    {enableHighAccuracy:true,maximumAge:2000,timeout:10000}
+  );
+}
+function stopGPS(){
+  if(gpsWatchId!==null){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null}
+  gpsActive=false;lastGPS=null;
+}
+function setGPSStatus(state,coords){
+  const dot=document.getElementById('gps-bar-dot');
+  const text=document.getElementById('gps-bar-text');
+  const capDot=document.getElementById('gps-cap-dot');
+  const capStat=document.getElementById('gps-cap-status');
+  const capBtn=document.getElementById('gps-cap-btn');
+  if(state==='searching'){
+    dot&&(dot.className='gps-bar-dot srch');text&&(text.textContent='Searching for GPS…');
+    capDot&&(capDot.className='gps-dot srch');capStat&&(capStat.textContent='Searching…');
+    capBtn&&(capBtn.disabled=true);
+  }else if(state===true&&coords){
+    const acc=coords.accuracy?(coords.accuracy*3.28084).toFixed(1)+' ft':'—';
+    dot&&(dot.className='gps-bar-dot on');text&&(text.textContent=`GPS active · ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)} · ±${acc}`);
+    capDot&&(capDot.className='gps-dot on');
+    capStat&&(capStat.textContent=`${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`);
+    capStat&&(capStat.className='gps-status on');
+    capBtn&&(capBtn.disabled=false);capBtn&&(capBtn.className='gps-cap-btn on');
+  }else{
+    dot&&(dot.className='gps-bar-dot');text&&(text.textContent='No GPS — enter coordinates manually or connect a receiver.');
+    capDot&&(capDot.className='gps-dot');capStat&&(capStat.textContent='GPS not available');
+    capStat&&(capStat.className='gps-status');capBtn&&(capBtn.disabled=true);capBtn&&(capBtn.className='gps-cap-btn');
+  }
+}
+window.captureGPSCorner=function(){
+  if(!lastGPS){showToast('No GPS signal');return}
+  const i=parseInt(document.getElementById('gps-corner-sel').value);
+  const latEl=document.getElementById(`cl${i}-lat`);
+  const lngEl=document.getElementById(`cl${i}-lng`);
+  if(!latEl||!lngEl){showToast('Corner not found');return}
+  latEl.value=lastGPS.latitude.toFixed(6);
+  lngEl.value=lastGPS.longitude.toFixed(6);
+  document.getElementById(`ci-${i}`)?.classList.add('set');
+  const sel=document.getElementById('gps-corner-sel');
+  if(i<cornerCount-1) sel.value=i+1;
+  updatePreviewFromList();
+  showToast(`Corner ${i+1} captured`);
+};
+
+// ── LOG MODAL ─────────────────────────────────
+window.openLogModal=function(id,gridImage,done,total){
+  pendingLogFieldId=id;_logGrid=gridImage||null;_logDone=done||0;_logTotal=total||0;
+  const field=localFields.find(f=>f.id===id);
+  const t=localTank||{};
+  document.getElementById('log-field-name').textContent=field?field.name:'—';
+  document.getElementById('log-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('log-product').value=t.herb||'';
+  document.getElementById('log-speed').value=t.speed||'';
+  document.getElementById('log-passes').value=done!==undefined?`${done} / ${total}`:'';
+  document.getElementById('log-notes').value='';
+  const tp=document.getElementById('log-tank-preview');
+  if(t.herb||t.size){
+    tp.style.display='block';
+    tp.innerHTML=`🛢 Tank: ${t.size||500} gal · ${t.herb||'—'} (${t.herbAmt||0} oz) · Surfactant ${t.surf||0} oz · Start ${t.start||'?'} gal · End ${t.end||'?'} gal`;
+  }else tp.style.display='none';
+  document.getElementById('log-modal').classList.add('open');
+};
+window.closeLogModal=function(){document.getElementById('log-modal').classList.remove('open');_logGrid=null};
+window.saveLog=async function(){
+  const product=document.getElementById('log-product').value.trim();
+  if(!product){showToast('Enter a product name');return}
+  const t=localTank||{};
+  const dateVal=document.getElementById('log-date').value;
+  const displayDate=new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const record={
+    fieldId:pendingLogFieldId,
+    fieldName:(localFields.find(f=>f.id===pendingLogFieldId)||{}).name||'Unknown',
+    date:displayDate,dateRaw:dateVal,product,
+    speed:document.getElementById('log-speed').value,
+    passes:document.getElementById('log-passes').value,
+    notes:document.getElementById('log-notes').value.trim(),
+    tankSize:t.size||'',herbAmt:t.herbAmt||'',surf:t.surf||'',
+    tankStart:t.start||'',tankEnd:t.end||'',
+    gridImage:_logGrid||null
+  };
+  try{
+    await fbSaveRecord(genId(),record);
+    window.closeLogModal();showToast('Spray record saved');
+  }catch(e){showToast('Save failed — check connection')}
+};
+
+// ── RECORDS ───────────────────────────────────
+function renderRecords(){
+  const body=document.getElementById('records-body');
+  if(!localRecords.length){
+    body.innerHTML=`<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">No records yet</div><div class="e-sub">Spray events are saved here when you tap Stop & Save.</div></div>`;
+    return;
+  }
+  body.innerHTML=localRecords.map(r=>`
+    <div class="record-card">
+      <div class="record-header">
+        <div><div class="record-field">${r.fieldName}</div><div class="record-date">${r.date}</div></div>
+        <div style="text-align:right;font-size:11px;color:var(--g400)">${r.passes||''}</div>
+      </div>
+      <div class="record-detail">
+        <b>${r.product}</b>${r.speed?' · '+r.speed+' MPH':''}
+        ${r.tankSize?`<br>Tank: ${r.tankSize} gal · Herb: ${r.herbAmt||'?'} oz · Surf: ${r.surf||'?'} oz`:''}
+        ${r.tankStart||r.tankEnd?`<br>Start: ${r.tankStart||'?'} gal · End: ${r.tankEnd||'?'} gal`:''}
+        ${r.notes?`<br><span style="color:var(--g500)">${r.notes}</span>`:''}
+      </div>
+      ${r.gridImage?`<img src="${r.gridImage}" class="record-grid" alt="Coverage grid">`:''}
+    </div>`).join('');
+}
+
+// ── EXCEL EXPORT ──────────────────────────────
+window.exportExcel=function(){
+  if(!localRecords.length){showToast('No records to export');return}
+  const headers=['Date','Field','Product','Speed (MPH)','Passes','Tank Size (gal)','Herb Added (oz)','Surfactant (oz)','Tank Start (gal)','Tank End (gal)','Notes'];
+  const rows=localRecords.map(r=>[r.date,r.fieldName,r.product,r.speed||'',r.passes||'',r.tankSize||'',r.herbAmt||'',r.surf||'',r.tankStart||'',r.tankEnd||'',r.notes||'']);
+  const csv=[headers,...rows].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`BaronFork_SprayRecords_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('Exported — open in Excel');
+};
+
+// ══════════════════════════════════════════════
+// PLANNING TAB — NWS WEATHER
+// ══════════════════════════════════════════════
+
+const WX_CACHE_KEY = 'bfas_wx_cache';
+
+// Spray thresholds
+const THRESH = {
+  windGo: 10, windCaution: 15,
+  tempMin: 50, tempIdealMin: 60, tempIdealMax: 90, tempMax: 100,
+  humidMin: 40,
+  precipWarn: 30, precipStop: 60,
+  rainFreeHours: 6
+};
+
+// ── Field centroid ────────────────────────────
+function fieldCentroid(field) {
+  const corners = (field.corners || []).filter(c => c.lat && c.lng);
+  if (corners.length < 4) return null;
+  const lat = corners.reduce((s, c) => s + +c.lat, 0) / corners.length;
+  const lng = corners.reduce((s, c) => s + +c.lng, 0) / corners.length;
+  return { lat: +lat.toFixed(6), lng: +lng.toFixed(6) };
+}
+
+// ── Populate field selector ───────────────────
+function populateWxFieldSel() {
+  const sel = document.getElementById('wx-field-sel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Select a field —</option>';
+  const readyFields = localFields.filter(f =>
+    (f.corners || []).filter(c => c.lat && c.lng).length >= 4
+  ).sort((a, b) => a.name.localeCompare(b.name));
+  readyFields.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = f.name;
+    sel.appendChild(opt);
+  });
+  // Restore previous selection if still valid
+  if (prev && readyFields.find(f => f.id === prev)) sel.value = prev;
+  onWxFieldChange();
+}
+
+window.onWxFieldChange = function() {
+  const sel = document.getElementById('wx-field-sel');
+  const btn = document.getElementById('wx-check-btn');
+  const hint = document.getElementById('wx-field-centroid');
+  if (!sel || !btn || !hint) return;
+  const fieldId = sel.value;
+  const field = localFields.find(f => f.id === fieldId);
+  const centroid = field ? fieldCentroid(field) : null;
+  if (centroid) {
+    hint.textContent = `Field location: ${centroid.lat}, ${centroid.lng}`;
+    btn.disabled = false;
+    btn.textContent = `🌤️ Check Weather for ${field.name}`;
+  } else {
+    hint.textContent = fieldId ? 'This field needs corner coordinates set before weather can be checked.' : '';
+    btn.disabled = true;
+    btn.textContent = '🌤️ Check Weather for this Field';
+  }
+  // Load cached data for this field if available
+  loadCachedWeather(fieldId);
+};
+
+// ── localStorage cache ────────────────────────
+function saveWxCache(fieldId, fieldName, centroid, periods) {
+  const cache = {
+    fieldId, fieldName, centroid,
+    periods,
+    fetchedAt: Date.now(),
+    fetchedAtStr: new Date().toLocaleString([], {
+      weekday:'short', month:'short', day:'numeric',
+      hour:'numeric', minute:'2-digit'
+    }),
+    // Cache NWS grid URLs per location to avoid re-fetching
+    gridUrls: loadGridUrls()
+  };
+  try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify(cache)); } catch(e) {}
+}
+
+function loadCachedWeather(fieldId) {
+  try {
+    const raw = localStorage.getItem(WX_CACHE_KEY);
+    if (!raw) { setWxIdle(); return; }
+    const cache = JSON.parse(raw);
+    if (cache.fieldId !== fieldId) { setWxIdle(); return; }
+    // Show cached data with age indicator
+    renderWeather(cache.periods, cache.fieldName, cache.fetchedAtStr);
+  } catch(e) { setWxIdle(); }
+}
+
+function saveGridUrl(lat, lng, url) {
+  const urls = loadGridUrls();
+  urls[`${lat},${lng}`] = url;
+  try { localStorage.setItem('bfas_wx_grids', JSON.stringify(urls)); } catch(e) {}
+}
+function loadGridUrls() {
+  try { return JSON.parse(localStorage.getItem('bfas_wx_grids')) || {}; } catch { return {}; }
+}
+function getCachedGridUrl(lat, lng) {
+  return loadGridUrls()[`${lat},${lng}`] || null;
+}
+
+// ── Fetch weather ─────────────────────────────
+window.fetchWeather = async function() {
+  const sel = document.getElementById('wx-field-sel');
+  if (!sel || !sel.value) return;
+  const field = localFields.find(f => f.id === sel.value);
+  if (!field) return;
+  const centroid = fieldCentroid(field);
+  if (!centroid) return;
+
+  setWxLoading(field.name);
+
+  try {
+    const { lat, lng } = centroid;
+
+    // Step 1: NWS points lookup — use cached grid URL if available
+    let gridUrl = getCachedGridUrl(lat, lng);
+    if (!gridUrl) {
+      const ptRes = await fetch(
+        `https://api.weather.gov/points/${lat},${lng}`,
+        { headers: { 'User-Agent': '(BaronForkAgSolutions, contact@baronforkagsolutions.com)' } }
+      );
+      if (!ptRes.ok) throw new Error(`NWS points lookup failed (${ptRes.status})`);
+      const ptData = await ptRes.json();
+      gridUrl = ptData.properties.forecastHourly;
+      saveGridUrl(lat, lng, gridUrl);
+    }
+
+    // Step 2: Hourly forecast
+    const fcRes = await fetch(gridUrl,
+      { headers: { 'User-Agent': '(BaronForkAgSolutions, contact@baronforkagsolutions.com)' } }
+    );
+    if (!fcRes.ok) throw new Error(`Forecast fetch failed (${fcRes.status})`);
+    const fcData = await fcRes.json();
+    const periods = fcData.properties.periods;
+
+    // Save to localStorage
+    saveWxCache(field.id, field.name, centroid, periods);
+
+    // Render
+    const fetchedAtStr = new Date().toLocaleString([], {
+      weekday:'short', month:'short', day:'numeric',
+      hour:'numeric', minute:'2-digit'
+    });
+    renderWeather(periods, field.name, fetchedAtStr);
+
+  } catch(e) {
+    setWxError(e.message || 'Could not load weather data');
+  }
+};
+
+// ── Render weather ────────────────────────────
+function renderWeather(periods, fieldName, fetchedAtStr) {
+  if (!periods || !periods.length) { setWxError('No forecast data available'); return; }
+
+  const now = periods[0];
+  const windMph = now.windSpeed ? parseInt(now.windSpeed) : null;
+  const windDir  = now.windDirection || '—';
+  const windDeg  = dirToDeg(windDir);
+  const tempF    = now.temperature !== undefined ? now.temperature : null;
+  const humid    = now.relativeHumidity?.value ?? null;
+  const sky      = now.shortForecast || '—';
+  const gustStr  = now.windGust || null;
+  const gustMph  = gustStr ? parseInt(gustStr) : null;
+  const next6    = periods.slice(0, 6);
+  const precipPcts = next6.map(p => p.probabilityOfPrecipitation?.value ?? 0);
+  const maxPrecip  = Math.max(...precipPcts);
+
+  const ws = windStatus(windMph);
+  const ts = tempStatus(tempF, humid);
+  const ps = precipStatus(maxPrecip);
+  const overall = overallStatus(ws, ts, ps);
+
+  // ── Timestamp ─────────────────────────────
+  const tsEl = document.getElementById('wx-timestamp');
+  if (tsEl) tsEl.textContent = `Last checked ${fetchedAtStr}${fieldName ? ' for ' + fieldName : ''}`;
+
+  // ── Overall recommendation ────────────────
+  const recCard = document.getElementById('rec-card');
+  recCard.className = `rec-card ${overall === 'go' ? 'go' : overall === 'caution' ? 'caution' : overall === 'nogo' ? 'nogo' : 'loading'}`;
+  document.getElementById('rec-icon').textContent = overall === 'go' ? '✅' : overall === 'caution' ? '⚠️' : overall === 'nogo' ? '🚫' : '⏳';
+  document.getElementById('rec-status').textContent = overall === 'go' ? 'Good to Spray' : overall === 'caution' ? 'Use Caution' : overall === 'nogo' ? 'Do Not Spray' : 'Checking…';
+  const reasons = [];
+  if (ws === 'nogo') reasons.push(`Wind ${windMph} MPH — too high`);
+  else if (ws === 'caution') reasons.push(`Wind ${windMph} MPH — marginal`);
+  if (ts === 'nogo') reasons.push(tempF < THRESH.tempMin ? `${tempF}°F — too cold` : `${tempF}°F — too hot`);
+  else if (ts === 'caution') reasons.push(tempF < THRESH.tempIdealMin ? `${tempF}°F — below ideal` : humid < THRESH.humidMin ? `Low humidity (${humid}%)` : `${tempF}°F — above ideal`);
+  if (ps === 'nogo') reasons.push(`Rain likely (${maxPrecip}%)`);
+  else if (ps === 'caution') reasons.push(`Rain possible (${maxPrecip}%) within 6 hrs`);
+  if (overall === 'go') reasons.push(`Wind ${windMph} MPH · ${tempF}°F · Humidity ${humid}% · No rain expected`);
+  document.getElementById('rec-reason').textContent = reasons.join(' · ');
+
+  // ── Wind ──────────────────────────────────
+  const wsc = statusClass(ws);
+  document.getElementById('wind-status-label').textContent = statusLabel(ws);
+  document.getElementById('wind-status-label').className = `wx-status-label ${wsc}`;
+  document.getElementById('wind-speed').textContent = windMph !== null ? windMph : '—';
+  document.getElementById('wind-compass').textContent = windDir;
+  document.getElementById('wind-dir-full').textContent = `${windDir}${windDeg !== null ? ' (' + windDeg + '°)' : ''}`;
+  document.getElementById('wind-gust').textContent = gustMph ? `${gustMph} MPH` : 'None reported';
+  const arrowEl = document.getElementById('wind-arrow');
+  arrowEl.textContent = '↑';
+  arrowEl.style.transform = windDeg !== null ? `rotate(${windDeg}deg)` : 'none';
+  document.getElementById('wind-hourly').innerHTML = periods.slice(0, 8).map(p => {
+    const spd = p.windSpeed ? parseInt(p.windSpeed) : 0;
+    const dir = p.windDirection || '';
+    const st  = windStatus(spd);
+    const t   = new Date(p.startTime);
+    const hr  = t.getHours(); const h = hr % 12 || 12;
+    return `<div class="hourly-item ${st==='go'?'good':st==='caution'?'caution':'bad'}">
+      <div class="hourly-time">${h}${hr>=12?'PM':'AM'}</div>
+      <div class="hourly-wind">${spd}</div>
+      <div class="hourly-dir">${dir}</div>
+      <div class="hourly-dot ${statusClass(st)}"></div>
+    </div>`;
+  }).join('');
+
+  // ── Temp & Humidity ───────────────────────
+  const tsc = statusClass(ts);
+  document.getElementById('temp-status-label').textContent = statusLabel(ts);
+  document.getElementById('temp-status-label').className = `wx-status-label ${tsc}`;
+  document.getElementById('temp-val').textContent   = tempF !== null ? tempF : '—';
+  document.getElementById('humid-val').textContent  = humid !== null ? humid : '—';
+  document.getElementById('sky-val').textContent    = sky;
+  let tempAdvice = '';
+  if (tempF !== null) {
+    if (tempF < 50) tempAdvice = 'Too cold — most herbicides require above 50°F for adequate plant uptake.';
+    else if (tempF < 60) tempAdvice = 'Cool — herbicide absorption may be slower. Allow extra time before rain.';
+    else if (tempF > 95) tempAdvice = 'Hot — plant stress may reduce uptake. Consider early morning spraying.';
+    else tempAdvice = 'Temperature is within the ideal range for herbicide absorption.';
+    if (humid !== null && humid < 40) tempAdvice += ' Low humidity may cause droplets to evaporate before absorption.';
+  }
+  document.getElementById('temp-advice').textContent = tempAdvice;
+
+  // ── Precipitation ─────────────────────────
+  const psc = statusClass(ps);
+  document.getElementById('precip-status-label').textContent = statusLabel(ps);
+  document.getElementById('precip-status-label').className = `wx-status-label ${psc}`;
+  document.getElementById('precip-bars').innerHTML = next6.map(p => {
+    const pct = p.probabilityOfPrecipitation?.value ?? 0;
+    const h   = Math.max(2, Math.round(pct * 0.44));
+    const t   = new Date(p.startTime);
+    const hr  = t.getHours(); const hh = hr%12||12;
+    const col = pct >= THRESH.precipStop ? '#dc2626' : pct >= THRESH.precipWarn ? '#f59e0b' : '#1d4ed8';
+    return `<div class="precip-bar-wrap">
+      <div class="precip-bar" style="height:${h}px;background:${col}"></div>
+      <div class="precip-bar-label">${hh}${hr>=12?'p':'a'}<br>${pct}%</div>
+    </div>`;
+  }).join('');
+  document.getElementById('precip-summary').textContent =
+    maxPrecip === 0 ? `No rain expected in the next ${THRESH.rainFreeHours} hours — good spray window.`
+    : maxPrecip < THRESH.precipWarn ? `Low rain chance (max ${maxPrecip}%). Conditions look favorable.`
+    : maxPrecip < THRESH.precipStop ? `Rain possible within 6 hours (up to ${maxPrecip}%). Most labels require ${THRESH.rainFreeHours} hrs rain-free. Proceed with caution.`
+    : `Rain likely within 6 hours (up to ${maxPrecip}%). Wait for a better window — herbicides need ${THRESH.rainFreeHours} hrs to absorb.`;
+}
+
+// ── Status helpers ────────────────────────────
+function statusClass(l){ return l==='go'?'green':l==='caution'?'amber':l==='nogo'?'red':'gray' }
+function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
+function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
+function tempStatus(f,h){ if(f===null) return 'unknown'; if(f<THRESH.tempMin||f>THRESH.tempMax) return 'nogo'; if(f<THRESH.tempIdealMin||f>THRESH.tempIdealMax||(h!==null&&h<THRESH.humidMin)) return 'caution'; return 'go' }
+function precipStatus(p){ if(p===null) return 'unknown'; if(p>=THRESH.precipStop) return 'nogo'; if(p>=THRESH.precipWarn) return 'caution'; return 'go' }
+function overallStatus(ws,ts,ps){ if([ws,ts,ps].includes('nogo')) return 'nogo'; if([ws,ts,ps].includes('caution')) return 'caution'; if([ws,ts,ps].includes('unknown')) return 'unknown'; return 'go' }
+function dirToDeg(dir){ const m={N:0,NNE:22,NE:45,ENE:67,E:90,ESE:112,SE:135,SSE:157,S:180,SSW:202,SW:225,WSW:247,W:270,WNW:292,NW:315,NNW:337}; return m[dir]??null }
+
+function setWxLoading(fieldName) {
+  document.getElementById('rec-card').className = 'rec-card loading';
+  document.getElementById('rec-icon').textContent = '⏳';
+  document.getElementById('rec-status').textContent = 'Fetching weather…';
+  document.getElementById('rec-reason').textContent = `Getting NWS forecast for ${fieldName || 'this field'}`;
+  ['wind-status-label','temp-status-label','precip-status-label'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).className = 'wx-status-label gray';
+  });
+  document.getElementById('wx-timestamp').textContent = 'Fetching…';
+}
+
+function setWxIdle() {
+  document.getElementById('rec-card').className = 'rec-card loading';
+  document.getElementById('rec-icon').textContent = '🌤️';
+  document.getElementById('rec-status').textContent = 'Select a field above';
+  document.getElementById('rec-reason').textContent = 'Choose the field you plan to spray, then tap Check Weather';
+  ['wind-status-label','temp-status-label','precip-status-label'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).className = 'wx-status-label gray';
+  });
+  document.getElementById('wx-timestamp').textContent = 'No weather data yet — select a field and tap Check Weather';
+}
+
+function setWxError(msg) {
+  document.getElementById('rec-card').className = 'rec-card loading';
+  document.getElementById('rec-icon').textContent = '⚠️';
+  document.getElementById('rec-status').textContent = 'Weather Unavailable';
+  document.getElementById('rec-reason').textContent = msg + ' — check your connection and try again';
+  document.getElementById('wx-timestamp').textContent = 'Fetch failed';
+}
+
+
+let _tt;
+window.showToast=function(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600);
+};
+function showToast(msg){window.showToast(msg)}
+
+</script>
+</body>
+</html>
