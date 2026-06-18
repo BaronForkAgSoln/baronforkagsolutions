@@ -1904,7 +1904,7 @@ function renderWeather(periods, fieldName, fetchedAtStr) {
   const recCard = document.getElementById('rec-card');
   recCard.className = `rec-card ${overall === 'go' ? 'go' : overall === 'caution' ? 'caution' : overall === 'nogo' ? 'nogo' : 'loading'}`;
   document.getElementById('rec-icon').textContent = overall === 'go' ? '✅' : overall === 'caution' ? '⚠️' : overall === 'nogo' ? '🚫' : '⏳';
-  document.getElementById('rec-status').textContent = overall === 'go' ? 'Good to Spray' : overall === 'caution' ? 'Use Caution' : overall === 'nogo' ? 'Do Not Spray' : 'Checking…';
+  document.getElementById('rec-status').textContent = overall === 'go' ? 'Good to Spray' : overall === 'caution' ? 'Caution' : overall === 'nogo' ? 'Do Not Spray' : 'Checking…';
   const reasons = [];
   if (ws === 'nogo') reasons.push(`Wind ${windMph} MPH — too high`);
   else if (ws === 'caution') reasons.push(`Wind ${windMph} MPH — marginal`);
@@ -2031,7 +2031,7 @@ function renderForecast(periods) {
     return s==='go'?'✅':s==='caution'?'⚠️':s==='nogo'?'🚫':'—';
   }
   function statusVerdict(s) {
-    return s==='go'?'Good to Spray':s==='caution'?'Use Caution':s==='nogo'?'Do Not Spray':'Unknown';
+    return s==='go'?'Good to Spray':s==='caution'?'Caution':s==='nogo'?'Do Not Spray':'Unknown';
   }
   function dayReason(a) {
     const parts = [];
@@ -2109,7 +2109,7 @@ function renderForecast(periods) {
       <div class="forecast-row-day">${dayName}</div>
       <div class="forecast-row-date">${dateStr}</div>
       <div class="forecast-row-reason">${dayReason(a)}${isBest ? ' ⭐' : ''}</div>
-      <div class="forecast-row-verdict ${cls}">${statusVerdict(a.overall).replace(' to Spray','').replace(' Caution','')}</div>
+      <div class="forecast-row-verdict ${cls}">${statusVerdict(a.overall).replace(' to Spray','')}</div>
     </div>`;
   }).join('');
 }
