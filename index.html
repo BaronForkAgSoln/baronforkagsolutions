@@ -2201,6 +2201,15 @@ function renderForecast(periods, sunTimes) {
 }
 
 
+// ── Status helpers ────────────────────────────
+function statusClass(l){ return l==='go'?'green':l==='caution'?'amber':l==='nogo'?'red':'gray' }
+function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
+function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
+function tempStatus(f,h){ if(f===null) return 'unknown'; if(f<THRESH.tempMin||f>THRESH.tempMax) return 'nogo'; if(f<THRESH.tempIdealMin||f>THRESH.tempIdealMax||(h!==null&&h<THRESH.humidMin)) return 'caution'; return 'go' }
+function precipStatus(p){ if(p===null) return 'unknown'; if(p>=THRESH.precipStop) return 'nogo'; if(p>=THRESH.precipWarn) return 'caution'; return 'go' }
+function overallStatus(ws,ts,ps){ if([ws,ts,ps].includes('nogo')) return 'nogo'; if([ws,ts,ps].includes('caution')) return 'caution'; if([ws,ts,ps].includes('unknown')) return 'unknown'; return 'go' }
+function dirToDeg(dir){ const m={N:0,NNE:22,NE:45,ENE:67,E:90,ESE:112,SE:135,SSE:157,S:180,SSW:202,SW:225,WSW:247,W:270,WNW:292,NW:315,NNW:337}; return m[dir]??null }
+
 // ── Sunrise / Sunset ──────────────────────────
 async function fetchSunTimes(lat, lng, dateStr) {
   const cacheKey = `bfas_sun_${lat.toFixed(4)}_${lng.toFixed(4)}_${dateStr}`;
@@ -2253,13 +2262,6 @@ function getDaylightPeriods(periods, sunrise, sunset) {
   });
 }
 
-// ── Status helpers ────────────────────────────
-function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
-function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
-function tempStatus(f,h){ if(f===null) return 'unknown'; if(f<THRESH.tempMin||f>THRESH.tempMax) return 'nogo'; if(f<THRESH.tempIdealMin||f>THRESH.tempIdealMax||(h!==null&&h<THRESH.humidMin)) return 'caution'; return 'go' }
-function precipStatus(p){ if(p===null) return 'unknown'; if(p>=THRESH.precipStop) return 'nogo'; if(p>=THRESH.precipWarn) return 'caution'; return 'go' }
-function overallStatus(ws,ts,ps){ if([ws,ts,ps].includes('nogo')) return 'nogo'; if([ws,ts,ps].includes('caution')) return 'caution'; if([ws,ts,ps].includes('unknown')) return 'unknown'; return 'go' }
-function dirToDeg(dir){ const m={N:0,NNE:22,NE:45,ENE:67,E:90,ESE:112,SE:135,SSE:157,S:180,SSW:202,SW:225,WSW:247,W:270,WNW:292,NW:315,NNW:337}; return m[dir]??null }
 
 function setWxLoading(fieldName) {
   document.getElementById('rec-card').className = 'rec-card loading';
