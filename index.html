@@ -416,6 +416,40 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .empty-state .e-title{font-size:16px;font-weight:500;color:var(--g600);margin-bottom:6px}
 .empty-state .e-sub{font-size:13px;line-height:1.5}
 
+/* ── SUNRISE / SUNSET ── */
+.sun-bar{
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#fef3c7,#fff7ed);
+  border:1.5px solid #fcd34d;border-radius:8px;
+  padding:10px 14px;margin-bottom:10px;
+}
+.sun-bar-icon{font-size:20px;flex-shrink:0}
+.sun-bar-text{flex:1;font-size:12px;color:var(--g700);line-height:1.6}
+.sun-bar-text strong{color:var(--g900);font-weight:600}
+.sun-window{
+  display:flex;align-items:center;gap:6px;
+  margin-top:6px;font-size:11px;color:var(--g500);
+}
+.sun-window-bar{
+  flex:1;height:6px;border-radius:3px;
+  background:var(--g200);position:relative;overflow:hidden;
+}
+.sun-window-fill{
+  position:absolute;top:0;bottom:0;border-radius:3px;
+  background:linear-gradient(90deg,#fbbf24,#f59e0b);
+}
+.sun-window-now{
+  position:absolute;top:-2px;bottom:-2px;width:3px;
+  background:#ef4444;border-radius:2px;
+}
+.spray-remaining{
+  font-size:12px;font-weight:600;padding:3px 9px;
+  border-radius:10px;flex-shrink:0;
+}
+.spray-remaining.good{background:#dcfce7;color:#15803d}
+.spray-remaining.warn{background:#fef3c7;color:#92400e}
+.spray-remaining.over{background:var(--g100);color:var(--g400)}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g900);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);z-index:400;transition:transform .3s ease;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
@@ -453,7 +487,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
       <div class="login-error" id="login-error"></div>
     </div>
-    <div class="login-version">Baron Fork Ag Solutions · v1.0</div>
+    <div class="login-version">Baron Fork Ag Solutions · v1.4</div>
   </div>
 </div>
 
@@ -499,7 +533,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="home-btn-icon">📋</div>
         <div><div class="home-btn-title">Records</div><div class="home-btn-sub">View all spray events, coverage grids, and export to Excel</div></div>
       </button>
-      <div class="home-version">v1.1</div>
+      <div class="home-version">v1.4</div>
     </div>
   </div>
 
@@ -537,6 +571,23 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="rec-reason" id="rec-reason">Choose the field you plan to spray, then tap Check Weather</div>
       </div>
 
+      <!-- Sunrise / sunset / spray window bar -->
+      <div class="sun-bar" id="sun-bar" style="display:none">
+        <div class="sun-bar-icon">🌅</div>
+        <div class="sun-bar-text">
+          <div><strong>Spray window today:</strong> <span id="sun-window-text">—</span></div>
+          <div class="sun-window" style="margin-top:4px">
+            <span style="font-size:10px">🌅</span>
+            <div class="sun-window-bar">
+              <div class="sun-window-fill" id="sun-fill"></div>
+              <div class="sun-window-now" id="sun-now"></div>
+            </div>
+            <span style="font-size:10px">🌇</span>
+          </div>
+        </div>
+        <div class="spray-remaining good" id="spray-remaining">—</div>
+      </div>
+
       <!-- 2. Wind Conditions -->
       <div class="wx-card">
         <div class="wx-card-header">
@@ -565,7 +616,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
             </div>
           </div>
           <div style="margin-top:10px">
-            <div class="wx-detail-label" style="margin-bottom:6px;font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px">Next 8 hours</div>
+            <div class="wx-detail-label" style="margin-bottom:6px;font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px">Today's spray window — daylight hours only</div>
             <div class="hourly-strip" id="wind-hourly"></div>
           </div>
         </div>
@@ -1786,16 +1837,16 @@ window.onWxFieldChange = function() {
 };
 
 // ── localStorage cache ────────────────────────
-function saveWxCache(fieldId, fieldName, centroid, periods) {
+function saveWxCache(fieldId, fieldName, centroid, periods, sunTimes) {
   const cache = {
-    fieldId, fieldName, centroid,
-    periods,
+    fieldId, fieldName, centroid, periods,
     fetchedAt: Date.now(),
     fetchedAtStr: new Date().toLocaleString([], {
       weekday:'short', month:'short', day:'numeric',
       hour:'numeric', minute:'2-digit'
     }),
-    // Cache NWS grid URLs per location to avoid re-fetching
+    sunriseISO: sunTimes?.sunrise?.toISOString() || null,
+    sunsetISO:  sunTimes?.sunset?.toISOString()  || null,
     gridUrls: loadGridUrls()
   };
   try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify(cache)); } catch(e) {}
@@ -1807,8 +1858,10 @@ function loadCachedWeather(fieldId) {
     if (!raw) { setWxIdle(); return; }
     const cache = JSON.parse(raw);
     if (cache.fieldId !== fieldId) { setWxIdle(); return; }
-    // Show cached data with age indicator
-    renderWeather(cache.periods, cache.fieldName, cache.fetchedAtStr);
+    const sunTimes = (cache.sunriseISO && cache.sunsetISO)
+      ? { sunrise: new Date(cache.sunriseISO), sunset: new Date(cache.sunsetISO) }
+      : null;
+    renderWeather(cache.periods, cache.fieldName, cache.fetchedAtStr, sunTimes);
   } catch(e) { setWxIdle(); }
 }
 
@@ -1859,15 +1912,24 @@ window.fetchWeather = async function() {
     const fcData = await fcRes.json();
     const periods = fcData.properties.periods;
 
+    // Step 3: Sunrise / sunset for field location (free, no key needed)
+    const todayStr = new Date().toISOString().split('T')[0];
+    let sunTimes = null;
+    try {
+      sunTimes = await fetchSunTimes(lat, lng, todayStr);
+    } catch(e) {
+      console.warn('Sun times unavailable:', e.message);
+    }
+
     // Save to localStorage
-    saveWxCache(field.id, field.name, centroid, periods);
+    saveWxCache(field.id, field.name, centroid, periods, sunTimes);
 
     // Render
     const fetchedAtStr = new Date().toLocaleString([], {
       weekday:'short', month:'short', day:'numeric',
       hour:'numeric', minute:'2-digit'
     });
-    renderWeather(periods, field.name, fetchedAtStr);
+    renderWeather(periods, field.name, fetchedAtStr, sunTimes);
 
   } catch(e) {
     setWxError(e.message || 'Could not load weather data');
@@ -1875,7 +1937,7 @@ window.fetchWeather = async function() {
 };
 
 // ── Render weather ────────────────────────────
-function renderWeather(periods, fieldName, fetchedAtStr) {
+function renderWeather(periods, fieldName, fetchedAtStr, sunTimes) {
   if (!periods || !periods.length) { setWxError('No forecast data available'); return; }
 
   const now = periods[0];
@@ -1895,6 +1957,11 @@ function renderWeather(periods, fieldName, fetchedAtStr) {
   const ts = tempStatus(tempF, humid);
   const ps = precipStatus(maxPrecip);
   const overall = overallStatus(ws, ts, ps);
+
+  // ── Sunrise / sunset bar ──────────────────
+  if (sunTimes?.sunrise && sunTimes?.sunset) {
+    renderSunBar(sunTimes.sunrise, sunTimes.sunset);
+  }
 
   // ── Timestamp ─────────────────────────────
   const tsEl = document.getElementById('wx-timestamp');
@@ -1926,7 +1993,14 @@ function renderWeather(periods, fieldName, fetchedAtStr) {
   const arrowEl = document.getElementById('wind-arrow');
   arrowEl.textContent = '↑';
   arrowEl.style.transform = windDeg !== null ? `rotate(${windDeg}deg)` : 'none';
-  document.getElementById('wind-hourly').innerHTML = periods.slice(0, 8).map(p => {
+
+  // Hourly strip — daylight hours only if sun times available, else next 8 hours
+  const daylightPeriods = (sunTimes?.sunrise && sunTimes?.sunset)
+    ? getDaylightPeriods(periods, sunTimes.sunrise, sunTimes.sunset)
+    : periods.slice(0, 8);
+  const stripPeriods = daylightPeriods.length > 0 ? daylightPeriods : periods.slice(0, 8);
+
+  document.getElementById('wind-hourly').innerHTML = stripPeriods.map(p => {
     const spd = p.windSpeed ? parseInt(p.windSpeed) : 0;
     const dir = p.windDirection || '';
     const st  = windStatus(spd);
@@ -1978,12 +2052,12 @@ function renderWeather(periods, fieldName, fetchedAtStr) {
     : maxPrecip < THRESH.precipStop ? `Rain possible within 6 hours (up to ${maxPrecip}%). Most labels require ${THRESH.rainFreeHours} hrs rain-free. Proceed with caution.`
     : `Rain likely within 6 hours (up to ${maxPrecip}%). Wait for a better window — herbicides need ${THRESH.rainFreeHours} hrs to absorb.`;
 
-  // Render 7-day spray window forecast
-  renderForecast(periods);
+  // Render 7-day spray window forecast (pass sun times for accurate daily windows)
+  renderForecast(periods, sunTimes);
 }
 
 // ── Spray Window Forecast ─────────────────────
-function renderForecast(periods) {
+function renderForecast(periods, sunTimes) {
   const section = document.getElementById('forecast-section');
   if (!section || !periods || !periods.length) return;
   section.style.display = 'block';
@@ -2002,13 +2076,25 @@ function renderForecast(periods) {
   const tomorrow = new Date(Date.now() + 86400000).toDateString();
 
   // Assess a single day from its hourly periods
-  function assessDay(periods) {
-    // Only look at daytime hours 7am–6pm
-    const daytime = periods.filter(p => {
-      const h = new Date(p.startTime).getHours();
-      return h >= 7 && h <= 18;
-    });
-    const src = daytime.length ? daytime : periods;
+  function assessDay(dayPeriods, dayDate) {
+    // Use actual sunrise/sunset if available, else fixed 7am-6pm
+    let daytime;
+    if (sunTimes?.sunrise && sunTimes?.sunset && dayDate) {
+      // Offset sunrise/sunset to match this day's date
+      const dayOffset = Math.round((dayDate - new Date(new Date().toDateString())) / 86400000);
+      const daySunrise = new Date(sunTimes.sunrise.getTime() + dayOffset * 86400000);
+      const daySunset  = new Date(sunTimes.sunset.getTime()  + dayOffset * 86400000);
+      daytime = dayPeriods.filter(p => {
+        const t = new Date(p.startTime).getTime();
+        return t >= daySunrise.getTime() && t < daySunset.getTime();
+      });
+    } else {
+      daytime = dayPeriods.filter(p => {
+        const h = new Date(p.startTime).getHours();
+        return h >= 7 && h <= 18;
+      });
+    }
+    const src = daytime.length ? daytime : dayPeriods;
     const winds = src.map(p => p.windSpeed ? parseInt(p.windSpeed) : 0);
     const temps = src.map(p => p.temperature).filter(t => t !== undefined);
     const humids = src.map(p => p.relativeHumidity?.value ?? null).filter(h => h !== null);
@@ -2048,7 +2134,7 @@ function renderForecast(periods) {
   let bestDay = null;
   let bestKey = null;
   dayKeys.slice(1).forEach(key => {
-    const a = assessDay(days[key]);
+    const a = assessDay(days[key], new Date(key));
     if (a.overall === 'go' && !bestKey) {
       bestKey = key;
       bestDay = new Date(key);
@@ -2077,7 +2163,7 @@ function renderForecast(periods) {
   ['today', 'tomorrow'].forEach((which, idx) => {
     const key = dayKeys[idx];
     if (!key) return;
-    const a = assessDay(days[key]);
+    const a = assessDay(days[key], new Date(key));
     const card    = document.getElementById(`fc-${which}`);
     const iconEl  = document.getElementById(`fc-${which}-icon`);
     const verdEl  = document.getElementById(`fc-${which}-verdict`);
@@ -2098,7 +2184,7 @@ function renderForecast(periods) {
   const restKeys = dayKeys.slice(2);
   if (!restKeys.length) { listEl.innerHTML = ''; return; }
   listEl.innerHTML = restKeys.map(key => {
-    const a = assessDay(days[key]);
+    const a = assessDay(days[key], new Date(key));
     const d = new Date(key);
     const dayName  = d.toLocaleDateString([], { weekday:'short' });
     const dateStr  = d.toLocaleDateString([], { month:'short', day:'numeric' });
@@ -2115,7 +2201,59 @@ function renderForecast(periods) {
 }
 
 
-function statusClass(l){ return l==='go'?'green':l==='caution'?'amber':l==='nogo'?'red':'gray' }
+// ── Sunrise / Sunset ──────────────────────────
+async function fetchSunTimes(lat, lng, dateStr) {
+  const cacheKey = `bfas_sun_${lat.toFixed(4)}_${lng.toFixed(4)}_${dateStr}`;
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) { const r = JSON.parse(cached); return { sunrise: new Date(r.sunrise), sunset: new Date(r.sunset) }; }
+  } catch(e) {}
+  const res = await fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lng}&date=${dateStr}&formatted=0`);
+  if (!res.ok) throw new Error('Sun times unavailable');
+  const data = await res.json();
+  if (data.status !== 'OK') throw new Error('Sun times unavailable');
+  const result = { sunrise: new Date(data.results.sunrise), sunset: new Date(data.results.sunset) };
+  try { localStorage.setItem(cacheKey, JSON.stringify({ sunrise: result.sunrise.toISOString(), sunset: result.sunset.toISOString() })); } catch(e) {}
+  return result;
+}
+
+function formatTime12(date) {
+  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+
+function renderSunBar(sunrise, sunset) {
+  const sunBar = document.getElementById('sun-bar');
+  if (!sunBar) return;
+  const now = new Date();
+  const sunriseMs = sunrise.getTime(), sunsetMs = sunset.getTime(), nowMs = now.getTime();
+  const totalMs = sunsetMs - sunriseMs;
+  document.getElementById('sun-window-text').textContent = `${formatTime12(sunrise)} – ${formatTime12(sunset)}`;
+  const remEl = document.getElementById('spray-remaining');
+  if (nowMs < sunriseMs) {
+    const m = Math.round((sunriseMs - nowMs) / 60000);
+    remEl.textContent = `Opens in ${Math.floor(m/60)>0?Math.floor(m/60)+'h ':''}${m%60}m`;
+    remEl.className = 'spray-remaining warn';
+  } else if (nowMs > sunsetMs) {
+    remEl.textContent = 'Closed today'; remEl.className = 'spray-remaining over';
+  } else {
+    const m = Math.round((sunsetMs - nowMs) / 60000);
+    remEl.textContent = `${Math.floor(m/60)>0?Math.floor(m/60)+'h ':''}${m%60}m left`;
+    remEl.className = m < 120 ? 'spray-remaining warn' : 'spray-remaining good';
+  }
+  const clamp = Math.max(0, Math.min(1, (nowMs - sunriseMs) / totalMs));
+  document.getElementById('sun-fill').style.width = `${clamp * 100}%`;
+  document.getElementById('sun-now').style.left   = `${clamp * 100}%`;
+  sunBar.style.display = 'flex';
+}
+
+function getDaylightPeriods(periods, sunrise, sunset) {
+  return periods.filter(p => {
+    const t = new Date(p.startTime).getTime();
+    return t >= sunrise.getTime() && t < sunset.getTime();
+  });
+}
+
+// ── Status helpers ────────────────────────────
 function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
 function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
 function tempStatus(f,h){ if(f===null) return 'unknown'; if(f<THRESH.tempMin||f>THRESH.tempMax) return 'nogo'; if(f<THRESH.tempIdealMin||f>THRESH.tempIdealMax||(h!==null&&h<THRESH.humidMin)) return 'caution'; return 'go' }
