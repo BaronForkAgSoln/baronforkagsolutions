@@ -285,6 +285,89 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .forecast-row-verdict.gray {background:var(--g100);color:var(--g400)}
 .forecast-disclaimer{font-size:10px;color:var(--g300);text-align:center;padding:6px 0 2px}
 
+/* ── HAY INVENTORY ── */
+.hay-summary-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;
+}
+.hay-sum-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;text-align:center}
+.hay-sum-val{font-size:22px;font-weight:700;color:var(--g900);line-height:1}
+.hay-sum-lbl{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.hay-sum-card.green{border-top:3px solid var(--green)}
+.hay-sum-card.amber{border-top:3px solid var(--amber)}
+.hay-sum-card.blue{border-top:3px solid var(--blue)}
+
+/* Market price card */
+.market-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.market-card-header{background:var(--amber);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.market-card-title{font-size:13px;font-weight:700}
+.market-card-date{font-size:11px;opacity:.8}
+.market-edit-btn{background:rgba(255,255,255,.25);border:none;color:#fff;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer}
+.market-prices{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--g100)}
+.market-price-row{padding:10px 14px;border-bottom:1px solid var(--g100)}
+.market-price-row:last-child{border-bottom:none}
+.market-price-label{font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.market-price-vals{display:flex;gap:8px}
+.market-pv{flex:1;text-align:center;background:var(--g50);border-radius:6px;padding:6px 4px}
+.market-pv-val{font-size:15px;font-weight:700;color:var(--g900)}
+.market-pv-lbl{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px}
+.market-pv.low .market-pv-val{color:var(--red)}
+.market-pv.mid .market-pv-val{color:var(--amber)}
+.market-pv.high .market-pv-val{color:var(--green)}
+.market-history-btn{padding:8px 14px;border-top:1px solid var(--g100);font-size:11px;color:var(--blue);background:none;border-left:none;border-right:none;border-bottom:none;cursor:pointer;width:100%;text-align:left}
+.market-history{padding:0 14px 10px;display:none}
+.market-history.open{display:block}
+.market-history-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--g100);color:var(--g500)}
+.market-history-row:last-child{border-bottom:none}
+
+/* Lot cards */
+.lot-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.lot-card-top{display:flex;gap:12px;padding:12px 14px;align-items:flex-start;cursor:pointer}
+.lot-thumb{width:56px;height:48px;border-radius:7px;flex-shrink:0;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;font-size:24px}
+.lot-info{flex:1;min-width:0}
+.lot-name{font-size:14px;font-weight:600;color:var(--g900);margin-bottom:2px}
+.lot-meta{font-size:12px;color:var(--g500);line-height:1.6}
+.lot-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.lot-badge.storage{background:var(--green-bg);color:var(--green)}
+.lot-badge.partial{background:var(--amber-bg);color:var(--amber)}
+.lot-badge.soldout{background:var(--g100);color:var(--g400)}
+.lot-bales{text-align:right;flex-shrink:0}
+.lot-bales-num{font-size:22px;font-weight:700;color:var(--g900);line-height:1}
+.lot-bales-lbl{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px}
+.lot-detail{background:var(--g50);border-top:1px solid var(--g100);padding:12px 14px;display:none}
+.lot-detail.open{display:block}
+.lot-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.lot-detail-item{background:#fff;border-radius:7px;padding:8px 10px;border:1px solid var(--g200)}
+.lot-detail-label{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.lot-detail-val{font-size:13px;font-weight:600;color:var(--g800)}
+.lot-test-bar{background:#fff;border:1px solid var(--g200);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.lot-test-title{font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.lot-test-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.lot-test-item{text-align:center;background:var(--g50);border-radius:6px;padding:6px 4px}
+.lot-test-val{font-size:14px;font-weight:700;color:var(--g900)}
+.lot-test-lbl{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.3px}
+.lot-actions{display:flex;gap:8px}
+.lot-actions .btn{flex:1;padding:9px;font-size:12px}
+
+/* Sales section */
+.sales-summary{background:var(--green);color:#fff;border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.sales-summary-title{font-size:11px;opacity:.75;font-weight:500;margin-bottom:6px}
+.sales-summary-vals{display:flex;gap:20px}
+.sales-sv{text-align:center}
+.sales-sv-val{font-size:20px;font-weight:700}
+.sales-sv-lbl{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.4px}
+.sale-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:8px;padding:12px 14px}
+.sale-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.sale-buyer{font-size:14px;font-weight:600;color:var(--g900)}
+.sale-total{font-size:16px;font-weight:700;color:var(--green)}
+.sale-detail{font-size:12px;color:var(--g500);line-height:1.6}
+.sale-delete{background:none;border:none;color:var(--g300);cursor:pointer;font-size:14px;padding:0}
+.sale-delete:hover{color:var(--red)}
+
+/* Hay tabs inside Hay screen */
+.hay-tabs{display:flex;background:var(--g100);border-radius:var(--radius);padding:3px;margin-bottom:14px}
+.hay-tab{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:500;color:var(--g500);border:none;background:none;cursor:pointer;border-radius:8px;transition:all .15s}
+.hay-tab.active{background:#fff;color:var(--g900);box-shadow:var(--shadow)}
+
 /* ── HOME SCREEN ── */
 .home-screen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:calc(100vh - 56px);padding:20px 20px 24px;gap:14px}
 .home-greeting{text-align:center;margin-bottom:4px}
@@ -487,7 +570,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
       <div class="login-error" id="login-error"></div>
     </div>
-    <div class="login-version">Baron Fork Ag Solutions · v1.4</div>
+    <div class="login-version">Baron Fork Ag Solutions · v1.5</div>
   </div>
 </div>
 
@@ -521,19 +604,23 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="home-btn-icon">🌾</div>
         <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Manage field boundaries, spray fields, and view coverage history</div></div>
       </button>
-      <button class="home-btn" style="border-left:5px solid #0369a1" onclick="switchTab('planning')">
+      <button class="home-btn" style="border-left:5px solid #0369a1" onclick="switchTab('weather')">
         <div class="home-btn-icon">🌤️</div>
-        <div><div class="home-btn-title">Planning</div><div class="home-btn-sub">Spray day checklist — wind, temperature, humidity, and precipitation</div></div>
+        <div><div class="home-btn-title">Weather</div><div class="home-btn-sub">Spray day conditions — wind, temperature, humidity, and 7-day forecast</div></div>
       </button>
       <button class="home-btn amber" onclick="switchTab('tank')">
         <div class="home-btn-icon">🛢️</div>
         <div><div class="home-btn-title">Tank</div><div class="home-btn-sub">Set up your tank mix, herbicide, surfactant, and tractor speed</div></div>
       </button>
+      <button class="home-btn" style="border-left:5px solid #854d0e" onclick="switchTab('hay')">
+        <div class="home-btn-icon">🌿</div>
+        <div><div class="home-btn-title">Hay</div><div class="home-btn-sub">Inventory, cuttings, market pricing, and sales tracking</div></div>
+      </button>
       <button class="home-btn blue" onclick="switchTab('records')">
         <div class="home-btn-icon">📋</div>
         <div><div class="home-btn-title">Records</div><div class="home-btn-sub">View all spray events, coverage grids, and export to Excel</div></div>
       </button>
-      <div class="home-version">v1.4</div>
+      <div class="home-version">v1.5</div>
     </div>
   </div>
 
@@ -542,8 +629,8 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
     <div class="screen-body" id="field-list-body"></div>
   </div>
 
-  <!-- PLANNING -->
-  <div id="screen-planning" class="screen plan-screen">
+  <!-- WEATHER -->
+  <div id="screen-weather" class="screen plan-screen">
     <div class="screen-body">
 
       <!-- Field selector + Check Weather -->
@@ -756,6 +843,87 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
     </div>
   </div>
 
+  <!-- HAY INVENTORY -->
+  <div id="screen-hay" class="screen">
+    <div class="screen-body">
+
+      <!-- Hay sub-tabs: Inventory | Sales -->
+      <div class="hay-tabs">
+        <button class="hay-tab active" id="hay-tab-inv" onclick="switchHayTab('inventory')">🌿 Inventory</button>
+        <button class="hay-tab" id="hay-tab-sales" onclick="switchHayTab('sales')">💰 Sales</button>
+      </div>
+
+      <!-- INVENTORY VIEW -->
+      <div id="hay-view-inventory">
+
+        <!-- Summary bar -->
+        <div class="hay-summary-bar" id="hay-summary-bar">
+          <div class="hay-sum-card green">
+            <div class="hay-sum-val" id="hay-total-bales">0</div>
+            <div class="hay-sum-lbl">Bales on hand</div>
+          </div>
+          <div class="hay-sum-card amber">
+            <div class="hay-sum-val" id="hay-total-tons">0</div>
+            <div class="hay-sum-lbl">Est. tons</div>
+          </div>
+          <div class="hay-sum-card blue">
+            <div class="hay-sum-val" id="hay-total-value">$0</div>
+            <div class="hay-sum-lbl">Est. value</div>
+          </div>
+        </div>
+
+        <!-- Market price card -->
+        <div class="market-card" id="market-card">
+          <div class="market-card-header">
+            <div>
+              <div class="market-card-title">📈 Local Market Prices</div>
+              <div class="market-card-date" id="market-date">No price data yet</div>
+            </div>
+            <button class="market-edit-btn" onclick="openMarketModal()">+ Update</button>
+          </div>
+          <div class="market-prices">
+            <div class="market-price-row">
+              <div class="market-price-label">4×5 Round Bale</div>
+              <div class="market-price-vals">
+                <div class="market-pv low"><div class="market-pv-val" id="mp-45-low">—</div><div class="market-pv-lbl">Low</div></div>
+                <div class="market-pv mid"><div class="market-pv-val" id="mp-45-mid">—</div><div class="market-pv-lbl">Mid</div></div>
+                <div class="market-pv high"><div class="market-pv-val" id="mp-45-high">—</div><div class="market-pv-lbl">High</div></div>
+              </div>
+            </div>
+            <div class="market-price-row">
+              <div class="market-price-label">5×5 Round Bale</div>
+              <div class="market-price-vals">
+                <div class="market-pv low"><div class="market-pv-val" id="mp-55-low">—</div><div class="market-pv-lbl">Low</div></div>
+                <div class="market-pv mid"><div class="market-pv-val" id="mp-55-mid">—</div><div class="market-pv-lbl">Mid</div></div>
+                <div class="market-pv high"><div class="market-pv-val" id="mp-55-high">—</div><div class="market-pv-lbl">High</div></div>
+              </div>
+            </div>
+          </div>
+          <button class="market-history-btn" onclick="toggleMarketHistory()">▸ Price history</button>
+          <div class="market-history" id="market-history"></div>
+        </div>
+
+        <!-- Lot list -->
+        <div class="section-label">Cutting lots</div>
+        <div id="lot-list"></div>
+      </div>
+
+      <!-- SALES VIEW -->
+      <div id="hay-view-sales" style="display:none">
+        <div class="sales-summary" id="sales-summary">
+          <div class="sales-summary-title">Season sales summary</div>
+          <div class="sales-summary-vals">
+            <div class="sales-sv"><div class="sales-sv-val" id="sales-total-bales">0</div><div class="sales-sv-lbl">Bales sold</div></div>
+            <div class="sales-sv"><div class="sales-sv-val" id="sales-total-rev">$0</div><div class="sales-sv-lbl">Revenue</div></div>
+            <div class="sales-sv"><div class="sales-sv-val" id="sales-avg-price">$0</div><div class="sales-sv-lbl">Avg / bale</div></div>
+          </div>
+        </div>
+        <div id="sales-list"></div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- RECORDS -->
   <div id="screen-records" class="screen">
     <div class="screen-body">
@@ -859,6 +1027,157 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   </div>
 
 </div><!-- end #app -->
+
+<!-- ADD LOT MODAL -->
+<div class="modal-overlay" id="lot-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLotModal()">✕</button>
+    <div class="modal-title" id="lot-modal-title">New cutting lot</div>
+    <div class="form-group">
+      <label class="form-label">Field <span>required</span></label>
+      <select class="form-select" id="lot-field"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Cutting #</label>
+        <select class="form-select" id="lot-cutting">
+          <option value="1">1st cutting</option>
+          <option value="2">2nd cutting</option>
+          <option value="3">3rd cutting</option>
+          <option value="4">4th cutting</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cut date</label>
+        <input class="form-input" id="lot-date" type="date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Bale type</label>
+        <select class="form-select" id="lot-bale-type">
+          <option value="4x5">4×5 Round</option>
+          <option value="5x5">5×5 Round</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bales cut</label>
+        <input class="form-input" id="lot-bale-count" type="number" min="1" placeholder="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Storage</label>
+        <select class="form-select" id="lot-storage">
+          <option value="Barn">Barn</option>
+          <option value="Outside">Outside</option>
+          <option value="Both">Both</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Desired price / bale</label>
+        <input class="form-input" id="lot-price" type="number" min="0" placeholder="$0" step="0.50">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Quality notes <span>optional</span></label>
+      <input class="form-input" id="lot-notes" type="text" placeholder="Color, smell, leaf retention…">
+    </div>
+    <div class="section-label" style="margin-top:12px">Hay test results <span style="font-weight:400;color:var(--g400);text-transform:none;letter-spacing:0;font-size:11px">— optional, enter if tested</span></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Crude Protein <span>%</span></label>
+        <input class="form-input" id="lot-cp" type="number" step="0.1" placeholder="—">
+      </div>
+      <div class="form-group">
+        <label class="form-label">TDN <span>%</span></label>
+        <input class="form-input" id="lot-tdn" type="number" step="0.1" placeholder="—">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">ADF <span>%</span></label>
+        <input class="form-input" id="lot-adf" type="number" step="0.1" placeholder="—">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Moisture <span>%</span></label>
+        <input class="form-input" id="lot-moisture" type="number" step="0.1" placeholder="—">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-secondary" onclick="closeLotModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLot()">💾 Save lot</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SALE MODAL -->
+<div class="modal-overlay" id="sale-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSaleModal()">✕</button>
+    <div class="modal-title">Log sale</div>
+    <div class="form-group">
+      <label class="form-label">Lot</label>
+      <select class="form-select" id="sale-lot"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Buyer name</label>
+      <input class="form-input" id="sale-buyer" type="text" placeholder="Name or description">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Sale date</label>
+        <input class="form-input" id="sale-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bales sold</label>
+        <input class="form-input" id="sale-bales" type="number" min="1" placeholder="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Price per bale</label>
+      <input class="form-input" id="sale-price" type="number" min="0" placeholder="$0" step="0.50">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes <span>optional</span></label>
+      <input class="form-input" id="sale-notes" type="text" placeholder="Payment method, delivery, etc.">
+    </div>
+    <div id="sale-total-preview" style="background:var(--green-bg);border-radius:8px;padding:10px;margin-bottom:8px;font-size:13px;color:var(--green);font-weight:600;display:none"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeSaleModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSale()">💾 Save sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET PRICE MODAL -->
+<div class="modal-overlay" id="market-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMarketModal()">✕</button>
+    <div class="modal-title">Update market prices</div>
+    <div class="form-group">
+      <label class="form-label">Date observed</label>
+      <input class="form-input" id="mp-date" type="date">
+    </div>
+    <div class="section-label" style="margin-top:8px">4×5 Round Bale</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Low $</label><input class="form-input" id="mp-45-low-in" type="number" min="0" placeholder="0" step="1"></div>
+      <div class="form-group"><label class="form-label">Mid $</label><input class="form-input" id="mp-45-mid-in" type="number" min="0" placeholder="0" step="1"></div>
+      <div class="form-group"><label class="form-label">High $</label><input class="form-input" id="mp-45-high-in" type="number" min="0" placeholder="0" step="1"></div>
+    </div>
+    <div class="section-label" style="margin-top:8px">5×5 Round Bale</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Low $</label><input class="form-input" id="mp-55-low-in" type="number" min="0" placeholder="0" step="1"></div>
+      <div class="form-group"><label class="form-label">Mid $</label><input class="form-input" id="mp-55-mid-in" type="number" min="0" placeholder="0" step="1"></div>
+      <div class="form-group"><label class="form-label">High $</label><input class="form-input" id="mp-55-high-in" type="number" min="0" placeholder="0" step="1"></div>
+    </div>
+    <div class="form-hint">Check Facebook Marketplace or local listings for current prices in your area.</div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-secondary" onclick="closeMarketModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMarketPrice()">💾 Save prices</button>
+    </div>
+  </div>
+</div>
 
 <!-- LOG MODAL -->
 <div class="modal-overlay" id="log-modal">
@@ -997,7 +1316,8 @@ function subscribeToData(){
   unsubFields = onSnapshot(query(userCol('fields')), snap=>{
     localFields=snap.docs.map(d=>({id:d.id,...d.data()}));
     if(currentTab==='fields') renderFieldList();
-    if(currentTab==='planning') populateWxFieldSel();
+    if(currentTab==='weather') populateWxFieldSel();
+    if(currentTab==='hay') renderHay();
   });
   // Records
   if(unsubRecords) unsubRecords();
@@ -1012,6 +1332,8 @@ function subscribeToData(){
     localTank = snap.exists()?snap.data():{};
     if(currentTab==='tank') renderTankSummary();
   });
+  // Hay data
+  subscribeHayData();
 }
 
 // ── CRUD: Fields ──────────────────────────────
@@ -1043,9 +1365,9 @@ window.switchTab = function(tab){
   if(tab==='home'){
     hdrBtn.style.display='none';
     appSub.textContent='Field Spray Manager';
-  } else if(tab==='planning'){
+  } else if(tab==='weather'){
     hdrBtn.style.display='none';
-    appSub.textContent='Spray Day Planning';
+    appSub.textContent='Spray Day Weather';
     populateWxFieldSel();
     loadCachedWeather(document.getElementById('wx-field-sel')?.value || '');
   } else if(tab==='fields'){
@@ -1056,6 +1378,10 @@ window.switchTab = function(tab){
     hdrBtn.style.display='none';
     appSub.textContent='Tank & Mix';
     renderTankSummary();
+  } else if(tab==='hay'){
+    hdrBtn.textContent='+ New lot'; hdrBtn.style.display='block';
+    appSub.textContent='Hay Inventory';
+    renderHay();
   } else if(tab==='records'){
     hdrBtn.style.display='none';
     appSub.textContent='Spray Records';
@@ -1063,7 +1389,10 @@ window.switchTab = function(tab){
   }
   window.scrollTo(0,0);
 };
-window.hdrAction=function(){if(currentTab==='fields') showAddField()};
+window.hdrAction=function(){
+  if(currentTab==='fields') showAddField();
+  else if(currentTab==='hay') openLotModal();
+};
 
 function showEditScreen(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -2296,8 +2625,373 @@ function setWxError(msg) {
 }
 
 
-let _tt;
-window.showToast=function(msg){
+// ══════════════════════════════════════════════
+// HAY INVENTORY
+// ══════════════════════════════════════════════
+let localLots=[], localSales=[], localMarketPrices=[];
+let editingLotId=null, currentHayTab='inventory';
+let unsubLots=null, unsubSales=null, unsubMarket=null;
+
+// Bale weight estimates in lbs
+const BALE_WEIGHTS={'4x5':900,'5x5':1300};
+
+function subscribeHayData(){
+  if(unsubLots) unsubLots();
+  unsubLots=onSnapshot(query(userCol('lots')),snap=>{
+    localLots=snap.docs.map(d=>({id:d.id,...d.data()}));
+    localLots.sort((a,b)=>new Date(b.cutDate||0)-new Date(a.cutDate||0));
+    if(currentTab==='hay') renderHay();
+  });
+  if(unsubSales) unsubSales();
+  unsubSales=onSnapshot(query(userCol('sales')),snap=>{
+    localSales=snap.docs.map(d=>({id:d.id,...d.data()}));
+    localSales.sort((a,b)=>new Date(b.saleDate||0)-new Date(a.saleDate||0));
+    if(currentTab==='hay') renderHay();
+  });
+  if(unsubMarket) unsubMarket();
+  unsubMarket=onSnapshot(query(userCol('marketprices')),snap=>{
+    localMarketPrices=snap.docs.map(d=>({id:d.id,...d.data()}));
+    localMarketPrices.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    if(currentTab==='hay') renderHay();
+  });
+}
+
+// ── Hay sub-tab ────────────────────────────────
+window.switchHayTab=function(tab){
+  currentHayTab=tab;
+  document.getElementById('hay-view-inventory').style.display=tab==='inventory'?'block':'none';
+  document.getElementById('hay-view-sales').style.display=tab==='sales'?'block':'none';
+  document.getElementById('hay-tab-inv').classList.toggle('active',tab==='inventory');
+  document.getElementById('hay-tab-sales').classList.toggle('active',tab==='sales');
+  const hdrBtn=document.getElementById('hdr-action-btn');
+  hdrBtn.textContent=tab==='inventory'?'+ New lot':'+ Log sale';
+};
+
+// ── Helpers ────────────────────────────────────
+function balesForLot(lotId){ return localSales.filter(s=>s.lotId===lotId).reduce((t,s)=>t+(+s.bales||0),0); }
+function remainingForLot(lot){ return (+lot.baleCount||0)-balesForLot(lot.id); }
+function estTons(bales,type){ return ((bales*(BALE_WEIGHTS[type]||900))/2000).toFixed(1); }
+function fmtPrice(n){ return n!=null&&n!==''?'$'+Number(n).toFixed(0):'—'; }
+function lotStatus(lot){
+  const rem=remainingForLot(lot);
+  if(rem<=0) return 'soldout';
+  if(balesForLot(lot.id)>0) return 'partial';
+  return 'storage';
+}
+function statusBadge(lot){
+  const s=lotStatus(lot);
+  const labels={storage:'In Storage',partial:'Partially Sold',soldout:'Sold Out'};
+  return`<span class="lot-badge ${s}">${labels[s]}</span>`;
+}
+function lotDisplayName(lot){
+  const f=localFields.find(x=>x.id===lot.fieldId);
+  return`${f?f.name:'Unknown field'} — ${lot.cuttingNum}${['st','nd','rd'][lot.cuttingNum-1]||'th'} cut`;
+}
+
+// ── Render Hay ─────────────────────────────────
+function renderHay(){
+  renderMarketCard();
+  renderLotList();
+  renderSalesList();
+  renderHaySummary();
+}
+
+function renderHaySummary(){
+  // Total remaining bales and value
+  const activeLots=localLots.filter(l=>remainingForLot(l)>0);
+  const totalBales=activeLots.reduce((t,l)=>t+remainingForLot(l),0);
+  const totalTons=activeLots.reduce((t,l)=>t+parseFloat(estTons(remainingForLot(l),l.baleType||'4x5')),0);
+  const totalValue=activeLots.reduce((t,l)=>t+remainingForLot(l)*(+l.desiredPrice||0),0);
+  document.getElementById('hay-total-bales').textContent=totalBales;
+  document.getElementById('hay-total-tons').textContent=totalTons.toFixed(1);
+  document.getElementById('hay-total-value').textContent='$'+Math.round(totalValue).toLocaleString();
+  // Sales summary
+  const totalSoldBales=localSales.reduce((t,s)=>t+(+s.bales||0),0);
+  const totalRevenue=localSales.reduce((t,s)=>t+(+s.bales||0)*(+s.pricePerBale||0),0);
+  const avgPrice=totalSoldBales>0?totalRevenue/totalSoldBales:0;
+  document.getElementById('sales-total-bales').textContent=totalSoldBales;
+  document.getElementById('sales-total-rev').textContent='$'+Math.round(totalRevenue).toLocaleString();
+  document.getElementById('sales-avg-price').textContent='$'+avgPrice.toFixed(0);
+}
+
+function renderMarketCard(){
+  const latest=localMarketPrices[0];
+  if(!latest){
+    document.getElementById('market-date').textContent='No price data yet — tap Update to add';
+    ['mp-45-low','mp-45-mid','mp-45-high','mp-55-low','mp-55-mid','mp-55-high'].forEach(id=>{
+      document.getElementById(id).textContent='—';
+    });
+    return;
+  }
+  document.getElementById('market-date').textContent=`Updated ${latest.date}`;
+  document.getElementById('mp-45-low').textContent=fmtPrice(latest.low45);
+  document.getElementById('mp-45-mid').textContent=fmtPrice(latest.mid45);
+  document.getElementById('mp-45-high').textContent=fmtPrice(latest.high45);
+  document.getElementById('mp-55-low').textContent=fmtPrice(latest.low55);
+  document.getElementById('mp-55-mid').textContent=fmtPrice(latest.mid55);
+  document.getElementById('mp-55-high').textContent=fmtPrice(latest.high55);
+  // History
+  const histEl=document.getElementById('market-history');
+  histEl.innerHTML=localMarketPrices.slice(0,8).map(p=>`
+    <div class="market-history-row">
+      <span>${p.date}</span>
+      <span>4×5: ${fmtPrice(p.low45)}–${fmtPrice(p.high45)}</span>
+      <span>5×5: ${fmtPrice(p.low55)}–${fmtPrice(p.high55)}</span>
+    </div>`).join('');
+}
+
+window.toggleMarketHistory=function(){
+  const h=document.getElementById('market-history');
+  const btn=document.querySelector('.market-history-btn');
+  const open=h.classList.toggle('open');
+  btn.textContent=(open?'▾':'▸')+' Price history';
+};
+
+function renderLotList(){
+  const el=document.getElementById('lot-list');
+  if(!localLots.length){
+    el.innerHTML=`<div class="empty-state"><div class="e-icon">🌿</div><div class="e-title">No lots yet</div><div class="e-sub">Tap "+ New lot" to record your first cutting.</div></div>`;
+    return;
+  }
+  el.innerHTML=localLots.map(lot=>{
+    const rem=remainingForLot(lot);
+    const sold=balesForLot(lot.id);
+    const hasTest=lot.cp||lot.tdn;
+    const testHTML=hasTest?`<div class="lot-test-bar">
+      <div class="lot-test-title">Hay test results</div>
+      <div class="lot-test-grid">
+        ${lot.cp?`<div class="lot-test-item"><div class="lot-test-val">${lot.cp}%</div><div class="lot-test-lbl">Crude Protein</div></div>`:''}
+        ${lot.tdn?`<div class="lot-test-item"><div class="lot-test-val">${lot.tdn}%</div><div class="lot-test-lbl">TDN</div></div>`:''}
+        ${lot.adf?`<div class="lot-test-item"><div class="lot-test-val">${lot.adf}%</div><div class="lot-test-lbl">ADF</div></div>`:''}
+        ${lot.moisture?`<div class="lot-test-item"><div class="lot-test-val">${lot.moisture}%</div><div class="lot-test-lbl">Moisture</div></div>`:''}
+      </div></div>`:'';
+    return`<div class="lot-card">
+      <div class="lot-card-top" onclick="toggleLot('${lot.id}')">
+        <div class="lot-thumb">🌿</div>
+        <div class="lot-info">
+          <div class="lot-name">${lotDisplayName(lot)}</div>
+          <div class="lot-meta">${lot.cutDate||'—'} · ${lot.baleType||'4x5'} · ${lot.storage||'—'}</div>
+          <div class="lot-meta">${fmtPrice(lot.desiredPrice)}/bale · Est. ${estTons(rem,lot.baleType||'4x5')} tons</div>
+          ${statusBadge(lot)}
+        </div>
+        <div class="lot-bales">
+          <div class="lot-bales-num">${rem}</div>
+          <div class="lot-bales-lbl">remaining</div>
+          ${sold>0?`<div style="font-size:10px;color:var(--g400);margin-top:2px">${sold} sold</div>`:''}
+        </div>
+      </div>
+      <div class="lot-detail" id="lot-detail-${lot.id}">
+        <div class="lot-detail-grid">
+          <div class="lot-detail-item"><div class="lot-detail-label">Total cut</div><div class="lot-detail-val">${lot.baleCount} bales</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Sold</div><div class="lot-detail-val">${sold} bales</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Remaining</div><div class="lot-detail-val">${rem} bales</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Est. tonnage</div><div class="lot-detail-val">${estTons(rem,lot.baleType||'4x5')} tons</div></div>
+          ${lot.notes?`<div class="lot-detail-item" style="grid-column:span 2"><div class="lot-detail-label">Notes</div><div class="lot-detail-val">${lot.notes}</div></div>`:''}
+        </div>
+        ${testHTML}
+        <div class="lot-actions">
+          <button class="btn btn-primary" onclick="openSaleModalForLot('${lot.id}')">💰 Log sale</button>
+          <button class="btn btn-secondary" onclick="openLotModal('${lot.id}')">✏ Edit</button>
+          <button class="btn btn-danger" onclick="deleteLot('${lot.id}')">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleLot=function(id){
+  const el=document.getElementById(`lot-detail-${id}`);
+  if(el) el.classList.toggle('open');
+};
+
+function renderSalesList(){
+  const el=document.getElementById('sales-list');
+  if(!localSales.length){
+    el.innerHTML=`<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No sales yet</div><div class="e-sub">Tap "+ Log sale" to record a sale.</div></div>`;
+    return;
+  }
+  el.innerHTML=localSales.map(s=>{
+    const lot=localLots.find(l=>l.id===s.lotId);
+    const total=(+s.bales||0)*(+s.pricePerBale||0);
+    return`<div class="sale-card">
+      <div class="sale-card-top">
+        <div>
+          <div class="sale-buyer">${s.buyer||'Unknown buyer'}</div>
+          <div class="sale-detail">${s.saleDate||'—'} · ${lot?lotDisplayName(lot):'Unknown lot'}</div>
+          <div class="sale-detail">${s.bales} bales · ${fmtPrice(s.pricePerBale)}/bale${s.notes?' · '+s.notes:''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="sale-total">${fmtPrice(total)}</div>
+          <button class="sale-delete" onclick="deleteSale('${s.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Lot modal ──────────────────────────────────
+window.openLotModal=function(id){
+  editingLotId=id||null;
+  const lot=id?localLots.find(l=>l.id===id):null;
+  document.getElementById('lot-modal-title').textContent=lot?'Edit lot':'New cutting lot';
+  // Populate field selector
+  const sel=document.getElementById('lot-field');
+  sel.innerHTML=localFields.filter(f=>(f.corners||[]).filter(c=>c.lat&&c.lng).length>=4)
+    .sort((a,b)=>a.name.localeCompare(b.name))
+    .map(f=>`<option value="${f.id}" ${lot&&lot.fieldId===f.id?'selected':''}>${f.name}</option>`).join('');
+  // Fill form
+  document.getElementById('lot-cutting').value=lot?lot.cuttingNum||1:1;
+  document.getElementById('lot-date').value=lot?lot.cutDate||'':new Date().toISOString().split('T')[0];
+  document.getElementById('lot-bale-type').value=lot?lot.baleType||'4x5':'4x5';
+  document.getElementById('lot-bale-count').value=lot?lot.baleCount||'':'';
+  document.getElementById('lot-storage').value=lot?lot.storage||'Barn':'Barn';
+  document.getElementById('lot-price').value=lot?lot.desiredPrice||'':'';
+  document.getElementById('lot-notes').value=lot?lot.notes||'':'';
+  document.getElementById('lot-cp').value=lot?lot.cp||'':'';
+  document.getElementById('lot-tdn').value=lot?lot.tdn||'':'';
+  document.getElementById('lot-adf').value=lot?lot.adf||'':'';
+  document.getElementById('lot-moisture').value=lot?lot.moisture||'':'';
+  document.getElementById('lot-modal').classList.add('open');
+};
+window.closeLotModal=function(){ document.getElementById('lot-modal').classList.remove('open') };
+
+window.saveLot=async function(){
+  const fieldId=document.getElementById('lot-field').value;
+  const baleCount=document.getElementById('lot-bale-count').value;
+  if(!fieldId){showToast('Select a field');return}
+  if(!baleCount||+baleCount<1){showToast('Enter bale count');return}
+  const id=editingLotId||genId();
+  const data={
+    fieldId,
+    cuttingNum:+document.getElementById('lot-cutting').value,
+    cutDate:document.getElementById('lot-date').value,
+    baleType:document.getElementById('lot-bale-type').value,
+    baleCount:+baleCount,
+    storage:document.getElementById('lot-storage').value,
+    desiredPrice:document.getElementById('lot-price').value||null,
+    notes:document.getElementById('lot-notes').value.trim(),
+    cp:document.getElementById('lot-cp').value||null,
+    tdn:document.getElementById('lot-tdn').value||null,
+    adf:document.getElementById('lot-adf').value||null,
+    moisture:document.getElementById('lot-moisture').value||null,
+  };
+  try{
+    await setDoc(doc(db,`users/${currentUser.uid}/lots/${id}`),data);
+    closeLotModal(); showToast('Lot saved');
+  }catch(e){showToast('Save failed')}
+};
+
+window.deleteLot=async function(id){
+  if(!confirm('Delete this lot? Associated sales will remain in the sales record.')) return;
+  try{
+    await deleteDoc(doc(db,`users/${currentUser.uid}/lots/${id}`));
+    showToast('Lot deleted');
+  }catch(e){showToast('Delete failed')}
+};
+
+// ── Sale modal ─────────────────────────────────
+window.openSaleModalForLot=function(lotId){
+  openSaleModal(lotId);
+};
+window.openSaleModal=function(prefillLotId){
+  document.getElementById('sale-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('sale-buyer').value='';
+  document.getElementById('sale-bales').value='';
+  document.getElementById('sale-price').value='';
+  document.getElementById('sale-notes').value='';
+  document.getElementById('sale-total-preview').style.display='none';
+  // Populate lot selector
+  const sel=document.getElementById('sale-lot');
+  const activeLots=localLots.filter(l=>remainingForLot(l)>0);
+  sel.innerHTML=activeLots.map(l=>`<option value="${l.id}" ${l.id===prefillLotId?'selected':''}>${lotDisplayName(l)} (${remainingForLot(l)} remaining)</option>`).join('');
+  // Pre-fill price from lot
+  if(prefillLotId){
+    const lot=localLots.find(l=>l.id===prefillLotId);
+    if(lot?.desiredPrice) document.getElementById('sale-price').value=lot.desiredPrice;
+  }
+  document.getElementById('sale-modal').classList.add('open');
+  // Live total preview
+  ['sale-bales','sale-price'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',updateSaleTotal);
+  });
+};
+function updateSaleTotal(){
+  const bales=+document.getElementById('sale-bales').value||0;
+  const price=+document.getElementById('sale-price').value||0;
+  const total=bales*price;
+  const prev=document.getElementById('sale-total-preview');
+  if(bales>0&&price>0){
+    prev.style.display='block';
+    prev.textContent=`Total: ${bales} bales × $${price} = $${total.toFixed(0)}`;
+  } else prev.style.display='none';
+}
+window.closeSaleModal=function(){ document.getElementById('sale-modal').classList.remove('open') };
+
+window.saveSale=async function(){
+  const lotId=document.getElementById('sale-lot').value;
+  const buyer=document.getElementById('sale-buyer').value.trim();
+  const bales=+document.getElementById('sale-bales').value;
+  const price=+document.getElementById('sale-price').value;
+  if(!lotId){showToast('Select a lot');return}
+  if(!buyer){showToast('Enter buyer name');return}
+  if(!bales||bales<1){showToast('Enter bale count');return}
+  // Check against remaining
+  const lot=localLots.find(l=>l.id===lotId);
+  const rem=remainingForLot(lot);
+  if(bales>rem){showToast(`Only ${rem} bales remaining in this lot`);return}
+  const data={
+    lotId, buyer,
+    saleDate:document.getElementById('sale-date').value,
+    bales, pricePerBale:price,
+    notes:document.getElementById('sale-notes').value.trim(),
+  };
+  try{
+    await setDoc(doc(db,`users/${currentUser.uid}/sales/${genId()}`),data);
+    closeSaleModal(); showToast('Sale recorded');
+  }catch(e){showToast('Save failed')}
+};
+
+window.deleteSale=async function(id){
+  if(!confirm('Delete this sale record?')) return;
+  try{
+    await deleteDoc(doc(db,`users/${currentUser.uid}/sales/${id}`));
+    showToast('Sale deleted');
+  }catch(e){showToast('Delete failed')}
+};
+
+// ── Market price modal ─────────────────────────
+window.openMarketModal=function(){
+  document.getElementById('mp-date').value=new Date().toISOString().split('T')[0];
+  const latest=localMarketPrices[0]||{};
+  document.getElementById('mp-45-low-in').value=latest.low45||'';
+  document.getElementById('mp-45-mid-in').value=latest.mid45||'';
+  document.getElementById('mp-45-high-in').value=latest.high45||'';
+  document.getElementById('mp-55-low-in').value=latest.low55||'';
+  document.getElementById('mp-55-mid-in').value=latest.mid55||'';
+  document.getElementById('mp-55-high-in').value=latest.high55||'';
+  document.getElementById('market-modal').classList.add('open');
+};
+window.closeMarketModal=function(){ document.getElementById('market-modal').classList.remove('open') };
+
+window.saveMarketPrice=async function(){
+  const dateVal=document.getElementById('mp-date').value;
+  const displayDate=new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const data={
+    date:displayDate, dateRaw:dateVal,
+    low45:+document.getElementById('mp-45-low-in').value||null,
+    mid45:+document.getElementById('mp-45-mid-in').value||null,
+    high45:+document.getElementById('mp-45-high-in').value||null,
+    low55:+document.getElementById('mp-55-low-in').value||null,
+    mid55:+document.getElementById('mp-55-mid-in').value||null,
+    high55:+document.getElementById('mp-55-high-in').value||null,
+  };
+  try{
+    await setDoc(doc(db,`users/${currentUser.uid}/marketprices/${genId()}`),data);
+    closeMarketModal(); showToast('Market prices saved');
+  }catch(e){showToast('Save failed')}
+};
+
+// ── TOAST ──────────────────────────────────────
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600);
