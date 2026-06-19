@@ -557,7 +557,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div class="login-wrap">
     <div class="login-logo">🌾</div>
     <div class="login-title">Baron Fork Ag Solutions</div>
-    <div class="login-sub">Field Spray Manager</div>
+    <div class="login-sub">Field &amp; Hay Manager</div>
     <div class="login-card">
       <div class="form-group">
         <label class="form-label">Email</label>
@@ -581,12 +581,12 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div class="app-header">
     <div class="app-header-left">
       <div class="app-title">Baron Fork Ag Solutions</div>
-      <div class="app-sub" id="app-sub">Field Spray Manager</div>
+      <div class="app-sub" id="app-sub">Field &amp; Hay Manager</div>
     </div>
     <div class="app-header-right">
-      <button class="hdr-btn" id="hdr-action-btn" onclick="hdrAction()" style="display:none">+ New field</button>
+      <button class="hdr-btn" id="hdr-action-btn" onclick="hdrAction()" style="display:none">+ Add Field</button>
       <button class="hdr-icon-btn" id="hdr-home-btn" onclick="switchTab('home')" title="Home">🏠</button>
-      <button class="hdr-icon-btn visible" id="hdr-logout-btn" onclick="doLogout()" title="Log out" style="font-size:14px;padding:6px 9px">⬡ Out</button>
+      <button class="hdr-icon-btn visible" id="hdr-logout-btn" onclick="doLogout()" title="Log out" style="font-size:14px;padding:6px 9px">Sign Out</button>
     </div>
   </div>
 
@@ -602,23 +602,23 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       </div>
       <button class="home-btn green" onclick="switchTab('fields')">
         <div class="home-btn-icon">🌾</div>
-        <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Manage field boundaries, spray fields, and view coverage history</div></div>
+        <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Set up your fields, track your spraying, and see what's been done</div></div>
       </button>
       <button class="home-btn" style="border-left:5px solid #0369a1" onclick="switchTab('weather')">
         <div class="home-btn-icon">🌤️</div>
-        <div><div class="home-btn-title">Weather</div><div class="home-btn-sub">Spray day conditions — wind, temperature, humidity, and 7-day forecast</div></div>
+        <div><div class="home-btn-title">Weather</div><div class="home-btn-sub">Check the weather before you head out to spray</div></div>
       </button>
       <button class="home-btn amber" onclick="switchTab('tank')">
         <div class="home-btn-icon">🛢️</div>
-        <div><div class="home-btn-title">Tank</div><div class="home-btn-sub">Set up your tank mix, herbicide, surfactant, and tractor speed</div></div>
+        <div><div class="home-btn-title">Tank</div><div class="home-btn-sub">Mix your tank before you go</div></div>
       </button>
       <button class="home-btn" style="border-left:5px solid #854d0e" onclick="switchTab('hay')">
         <div class="home-btn-icon">🌿</div>
-        <div><div class="home-btn-title">Hay</div><div class="home-btn-sub">Inventory, cuttings, market pricing, and sales tracking</div></div>
+        <div><div class="home-btn-title">Hay</div><div class="home-btn-sub">Track your hay — what you cut, what you've got, and what you've sold</div></div>
       </button>
       <button class="home-btn blue" onclick="switchTab('records')">
         <div class="home-btn-icon">📋</div>
-        <div><div class="home-btn-title">Records</div><div class="home-btn-sub">View all spray events, coverage grids, and export to Excel</div></div>
+        <div><div class="home-btn-title">Records</div><div class="home-btn-sub">Look back at every spray run and pull a report</div></div>
       </button>
       <div class="home-version">v1.5</div>
     </div>
@@ -636,18 +636,18 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <!-- Field selector + Check Weather -->
       <div class="card" style="padding:14px;margin-bottom:12px">
         <div class="form-group" style="margin-bottom:10px">
-          <label class="form-label">Field to spray</label>
+          <label class="form-label">Which field are you spraying?</label>
           <select class="form-select" id="wx-field-sel" onchange="onWxFieldChange()">
-            <option value="">— Select a field —</option>
+            <option value="">— Pick a field —</option>
           </select>
           <div class="form-hint" id="wx-field-centroid" style="margin-top:4px"></div>
         </div>
         <button class="btn btn-primary" id="wx-check-btn" onclick="fetchWeather()" disabled
           style="padding:11px;font-size:14px">
-          🌤️ Check Weather for this Field
+          🌤️ Check the Weather
         </button>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-          <div class="plan-timestamp" id="wx-timestamp">No weather data yet — select a field and tap Check Weather</div>
+          <div class="plan-timestamp" id="wx-timestamp">Pick a field and tap Check Weather to see if it is a good day to spray</div>
         </div>
       </div>
 
@@ -678,14 +678,14 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <!-- 2. Wind Conditions -->
       <div class="wx-card">
         <div class="wx-card-header">
-          <div class="wx-card-title">🌬️ Wind Conditions</div>
+          <div class="wx-card-title">🌬️ Wind</div>
           <span class="wx-status-label gray" id="wind-status-label">—</span>
         </div>
         <div class="wx-body">
           <div class="wx-main">
             <div>
               <div class="wx-big"><span id="wind-speed">—</span><span class="wx-big-unit"> mph</span></div>
-              <div class="wx-big-label">Current wind speed</div>
+              <div class="wx-big-label">Right now</div>
             </div>
             <div class="wind-arrow-wrap">
               <span class="wind-arrow" id="wind-arrow">↑</span>
@@ -703,7 +703,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
             </div>
           </div>
           <div style="margin-top:10px">
-            <div class="wx-detail-label" style="margin-bottom:6px;font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px">Today's spray window — daylight hours only</div>
+            <div class="wx-detail-label" style="margin-bottom:6px;font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px">Today's spraying hours</div>
             <div class="hourly-strip" id="wind-hourly"></div>
           </div>
         </div>
@@ -712,7 +712,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <!-- 3. Temperature & Humidity -->
       <div class="wx-card">
         <div class="wx-card-header">
-          <div class="wx-card-title">🌡️ Temperature &amp; Humidity</div>
+          <div class="wx-card-title">🌡️ Temp &amp; Humidity</div>
           <span class="wx-status-label gray" id="temp-status-label">—</span>
         </div>
         <div class="wx-body">
@@ -732,8 +732,8 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
               <div class="wx-detail-val" id="sky-val">—</div>
             </div>
             <div class="wx-detail-item">
-              <div class="wx-detail-label">Spray window</div>
-              <div class="wx-detail-val" id="temp-window">60–90°F ideal</div>
+              <div class="wx-detail-label">Sweet spot</div>
+              <div class="wx-detail-val" id="temp-window">Best between 60–90°F</div>
             </div>
           </div>
           <div class="precip-summary" id="temp-advice" style="margin-top:8px"></div>
@@ -743,12 +743,12 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <!-- 4. Precipitation Forecast -->
       <div class="wx-card">
         <div class="wx-card-header">
-          <div class="wx-card-title">🌧️ Precipitation Forecast</div>
+          <div class="wx-card-title">🌧️ Rain Coming?</div>
           <span class="wx-status-label gray" id="precip-status-label">—</span>
         </div>
         <div class="wx-body">
           <div style="margin-bottom:6px">
-            <div class="wx-detail-label" style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Rain probability — next 6 hours</div>
+            <div class="wx-detail-label" style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Chance of rain in the next 6 hours</div>
             <div class="precip-hours" id="precip-bars"></div>
           </div>
           <div class="precip-summary" id="precip-summary">—</div>
@@ -764,7 +764,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="best-window none" id="best-window">
           <div class="best-window-icon" id="best-window-icon">📅</div>
           <div class="best-window-text">
-            <div class="best-window-label">Best upcoming spray window</div>
+            <div class="best-window-label">Best day to spray this week</div>
             <div class="best-window-day none" id="best-window-day">—</div>
           </div>
         </div>
@@ -787,10 +787,10 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
         <!-- Days 3–7 compact list -->
         <div class="forecast-list" id="forecast-list"></div>
-        <div class="forecast-disclaimer">Forecast confidence decreases beyond 48 hours</div>
+        <div class="forecast-disclaimer">The further out you look, the less certain the forecast</div>
       </div>
 
-      <div class="wx-attribution">Weather data from NOAA National Weather Service · api.weather.gov · Fetched on demand only</div>
+      <div class="wx-attribution">Weather from NOAA National Weather Service · Checked when you ask for it</div>
     </div>
   </div>
 
@@ -798,21 +798,21 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div id="screen-tank" class="screen">
     <div class="screen-body">
       <div class="tank-icon">🛢️</div>
-      <div class="section-label">Current tank session</div>
+      <div class="section-label">What's in the tank</div>
       <div id="tank-summary-wrap"></div>
-      <div class="section-label">Tank setup</div>
+      <div class="section-label">Mix your tank</div>
       <div class="card" style="padding:14px">
         <div class="form-group">
           <label class="form-label">Tank size <span>(gallons)</span></label>
           <input class="form-input" id="tk-size" type="number" value="500" min="1" max="5000">
         </div>
         <div class="form-group">
-          <label class="form-label">Herbicide name</label>
+          <label class="form-label">Herbicide</label>
           <input class="form-input" id="tk-herb" type="text" placeholder="e.g. Roundup, Crossbow…">
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Herbicide added <span>(oz)</span></label>
+            <label class="form-label">How much herbicide <span>(oz)</span></label>
             <input class="form-input" id="tk-herb-amt" type="number" placeholder="0" min="0">
           </div>
           <div class="form-group">
@@ -822,24 +822,20 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Tank start <span>(gal)</span></label>
+            <label class="form-label">Starting gallons</label>
             <input class="form-input" id="tk-start" type="number" placeholder="500" min="0">
           </div>
           <div class="form-group">
-            <label class="form-label">Tank end <span>(gal)</span></label>
+            <label class="form-label">Gallons left when done</label>
             <input class="form-input" id="tk-end" type="number" placeholder="0" min="0">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Tractor speed <span>(MPH)</span></label>
-          <input class="form-input" id="tk-speed" type="number" placeholder="4" min="1" max="20" step="0.5">
-        </div>
         <div class="btn-row" style="margin-top:12px">
-          <button class="btn btn-secondary" onclick="clearTank()">Clear</button>
-          <button class="btn btn-primary" onclick="saveTank()">💾 Save tank session</button>
+          <button class="btn btn-secondary" onclick="clearTank()">Start Over</button>
+          <button class="btn btn-primary" onclick="saveTank()">💾 Save Your Mix</button>
         </div>
       </div>
-      <div class="form-hint" style="padding:0 4px">Fill this out before heading to the field. Details attach to each spray event logged today.</div>
+      <div class="form-hint" style="padding:0 4px">Fill this out at the barn before you go. It'll carry over to whatever you spray today.</div>
     </div>
   </div>
 
@@ -849,7 +845,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
       <!-- Hay sub-tabs: Inventory | Sales -->
       <div class="hay-tabs">
-        <button class="hay-tab active" id="hay-tab-inv" onclick="switchHayTab('inventory')">🌿 Inventory</button>
+        <button class="hay-tab active" id="hay-tab-inv" onclick="switchHayTab('inventory')">🌿 What I've Got</button>
         <button class="hay-tab" id="hay-tab-sales" onclick="switchHayTab('sales')">💰 Sales</button>
       </div>
 
@@ -876,10 +872,10 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="market-card" id="market-card">
           <div class="market-card-header">
             <div>
-              <div class="market-card-title">📈 Local Market Prices</div>
+              <div class="market-card-title">📈 What Hay's Selling For</div>
               <div class="market-card-date" id="market-date">No price data yet</div>
             </div>
-            <button class="market-edit-btn" onclick="openMarketModal()">+ Update</button>
+            <button class="market-edit-btn" onclick="openMarketModal()">+ Update Prices</button>
           </div>
           <div class="market-prices">
             <div class="market-price-row">
@@ -899,19 +895,19 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
               </div>
             </div>
           </div>
-          <button class="market-history-btn" onclick="toggleMarketHistory()">▸ Price history</button>
+          <button class="market-history-btn" onclick="toggleMarketHistory()">▸ Past prices</button>
           <div class="market-history" id="market-history"></div>
         </div>
 
         <!-- Lot list -->
-        <div class="section-label">Cutting lots</div>
+        <div class="section-label">My Cuttings</div>
         <div id="lot-list"></div>
       </div>
 
       <!-- SALES VIEW -->
       <div id="hay-view-sales" style="display:none">
         <div class="sales-summary" id="sales-summary">
-          <div class="sales-summary-title">Season sales summary</div>
+          <div class="sales-summary-title">Sales This Season</div>
           <div class="sales-summary-vals">
             <div class="sales-sv"><div class="sales-sv-val" id="sales-total-bales">0</div><div class="sales-sv-lbl">Bales sold</div></div>
             <div class="sales-sv"><div class="sales-sv-val" id="sales-total-rev">$0</div><div class="sales-sv-lbl">Revenue</div></div>
@@ -928,8 +924,8 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div id="screen-records" class="screen">
     <div class="screen-body">
       <div class="export-bar">
-        <div class="export-bar-text">All spray events across all fields</div>
-        <button class="export-btn" onclick="exportExcel()">⬇ Export Excel</button>
+        <div class="export-bar-text">Everything you've sprayed, all your fields</div>
+        <button class="export-btn" onclick="exportExcel()">⬇ Save to Excel</button>
       </div>
       <div id="records-body"></div>
     </div>
@@ -946,7 +942,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
           <input class="form-input" id="f-name" type="text" placeholder="e.g. North pasture, Back 40…">
         </div>
         <div class="form-group">
-          <label class="form-label">Swath width <span>(ft)</span></label>
+          <label class="form-label">Spray width <span>(ft)</span></label>
           <div class="swath-radios">
             <label class="swath-radio"><input type="radio" name="swath" value="15" onchange="updatePreview()"><span>15</span></label>
             <label class="swath-radio"><input type="radio" name="swath" value="20" onchange="updatePreview()"><span>20</span></label>
@@ -956,12 +952,12 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Sprayer / vehicle</label>
+            <label class="form-label">What you spray with</label>
             <input class="form-input" id="f-sprayer" type="text" placeholder="ATV, tractor…">
           </div>
           <div class="form-group">
             <label class="form-label">Notes <span>optional</span></label>
-            <input class="form-input" id="f-notes" type="text" placeholder="Wet corner, gate…">
+            <input class="form-input" id="f-notes" type="text" placeholder="Wet spots, gates, anything worth knowing">
           </div>
         </div>
       </div>
@@ -973,14 +969,14 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </div>
         <div class="gps-row">
           <div class="gps-dot" id="gps-cap-dot"></div>
-          <div class="gps-status" id="gps-cap-status">GPS not connected</div>
+          <div class="gps-status" id="gps-cap-status">No GPS signal yet</div>
           <select id="gps-corner-sel" style="font-size:12px;padding:5px 7px;border-radius:6px;border:1px solid var(--g200);background:#fff;margin-right:4px"></select>
           <button class="gps-cap-btn" id="gps-cap-btn" onclick="captureGPSCorner()" disabled>📍 Capture</button>
         </div>
-        <div class="form-hint" style="margin-bottom:10px">Decimal degrees — e.g. 36.1234, -94.5678. Negative longitude for all of North America.</div>
+        <div class="form-hint" style="margin-bottom:10px">Enter coordinates in decimal degrees — like 36.1234, -94.5678. Longitude will be a negative number.</div>
         <div class="corners-list" id="corners-list"></div>
         <button class="add-corner-btn" id="add-corner-btn" onclick="addCorner()">+ Add corner</button>
-        <div class="preview-map"><div class="preview-empty" id="preview-empty">Enter at least 4 corners to preview field and passes</div><svg id="preview-svg" style="display:none"></svg></div>
+        <div class="preview-map"><div class="preview-empty" id="preview-empty">Mark at least 4 corners to see your field and spray passes</div><svg id="preview-svg" style="display:none"></svg></div>
         <div class="preview-stats" id="preview-stats" style="display:none"></div>
       </div>
       <div class="btn-row">
@@ -1005,15 +1001,15 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
     </div>
     <div class="spray-map-wrap"><canvas id="sprayCanvas"></canvas></div>
     <div class="deviation-bar">
-      <div class="dev-label" id="dev-left">◀ Left</div>
+      <div class="dev-label" id="dev-left">◀ Drift left</div>
       <div class="dev-track"><div class="dev-fill" id="dev-fill" style="left:45%;width:10%"></div><div class="dev-center"></div></div>
-      <div class="dev-label" id="dev-right">Right ▶</div>
+      <div class="dev-label" id="dev-right">Drift right ▶</div>
     </div>
     <div class="guidance-bar">
       <div class="guidance-arrow" id="guidance-arrow">📍</div>
       <div class="guidance-text">
         <div class="guidance-main" id="guidance-main">Acquiring GPS…</div>
-        <div class="guidance-sub" id="guidance-sub">Start button enables when GPS locks</div>
+        <div class="guidance-sub" id="guidance-sub">Tap Start once we've got a signal</div>
       </div>
       <div class="g-dev dev-warn" id="guidance-dev">No GPS</div>
     </div>
@@ -1041,10 +1037,10 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="form-group">
         <label class="form-label">Cutting #</label>
         <select class="form-select" id="lot-cutting">
-          <option value="1">1st cutting</option>
-          <option value="2">2nd cutting</option>
-          <option value="3">3rd cutting</option>
-          <option value="4">4th cutting</option>
+          <option value="1">1st cut</option>
+          <option value="2">2nd cut</option>
+          <option value="3">3rd cut</option>
+          <option value="4">4th cut</option>
         </select>
       </div>
       <div class="form-group">
@@ -1061,7 +1057,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Bales cut</label>
+        <label class="form-label">How many bales?</label>
         <input class="form-input" id="lot-bale-count" type="number" min="1" placeholder="0">
       </div>
     </div>
@@ -1075,7 +1071,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Desired price / bale</label>
+        <label class="form-label">Target price / bale</label>
         <input class="form-input" id="lot-price" type="number" min="0" placeholder="$0" step="0.50">
       </div>
     </div>
@@ -1083,7 +1079,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <label class="form-label">Quality notes <span>optional</span></label>
       <input class="form-input" id="lot-notes" type="text" placeholder="Color, smell, leaf retention…">
     </div>
-    <div class="section-label" style="margin-top:12px">Hay test results <span style="font-weight:400;color:var(--g400);text-transform:none;letter-spacing:0;font-size:11px">— optional, enter if tested</span></div>
+    <div class="section-label" style="margin-top:12px">Hay test results — if you had it tested <span style="font-weight:400;color:var(--g400);text-transform:none;letter-spacing:0;font-size:11px">— optional, enter if tested</span></div>
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Crude Protein <span>%</span></label>
@@ -1115,7 +1111,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 <div class="modal-overlay" id="sale-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeSaleModal()">✕</button>
-    <div class="modal-title">Log sale</div>
+    <div class="modal-title">Record a Sale</div>
     <div class="form-group">
       <label class="form-label">Lot</label>
       <select class="form-select" id="sale-lot"></select>
@@ -1154,9 +1150,9 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 <div class="modal-overlay" id="market-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeMarketModal()">✕</button>
-    <div class="modal-title">Update market prices</div>
+    <div class="modal-title">Update Hay Prices</div>
     <div class="form-group">
-      <label class="form-label">Date observed</label>
+      <label class="form-label">When did you check?</label>
       <input class="form-input" id="mp-date" type="date">
     </div>
     <div class="section-label" style="margin-top:8px">4×5 Round Bale</div>
@@ -1171,7 +1167,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="form-group"><label class="form-label">Mid $</label><input class="form-input" id="mp-55-mid-in" type="number" min="0" placeholder="0" step="1"></div>
       <div class="form-group"><label class="form-label">High $</label><input class="form-input" id="mp-55-high-in" type="number" min="0" placeholder="0" step="1"></div>
     </div>
-    <div class="form-hint">Check Facebook Marketplace or local listings for current prices in your area.</div>
+    <div class="form-hint">Check Facebook Marketplace or ask around to see what hay's going for nearby.</div>
     <div class="btn-row" style="margin-top:12px">
       <button class="btn btn-secondary" onclick="closeMarketModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveMarketPrice()">💾 Save prices</button>
@@ -1183,7 +1179,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 <div class="modal-overlay" id="log-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeLogModal()">✕</button>
-    <div class="modal-title">Log spray event</div>
+    <div class="modal-title">Record This Spray Run</div>
     <div class="form-group">
       <label class="form-label">Field</label>
       <div id="log-field-name" style="font-size:14px;font-weight:600;color:var(--g700);padding:4px 0"></div>
@@ -1193,7 +1189,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <input class="form-input" id="log-date" type="date">
     </div>
     <div class="form-group">
-      <label class="form-label">Herbicide <span>from tank session if set</span></label>
+      <label class="form-label">Herbicide <span>carried over from your tank mix</span></label>
       <input class="form-input" id="log-product" type="text" placeholder="e.g. Roundup, Crossbow…">
     </div>
     <div class="form-row">
@@ -1202,18 +1198,18 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <input class="form-input" id="log-speed" type="number" placeholder="4" step="0.5">
       </div>
       <div class="form-group">
-        <label class="form-label">Passes done / total</label>
+        <label class="form-label">Passes finished</label>
         <input class="form-input" id="log-passes" type="text" readonly style="color:var(--g500)">
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Notes <span>optional</span></label>
-      <input class="form-input" id="log-notes" type="text" placeholder="Weather, observations…">
+      <input class="form-input" id="log-notes" type="text" placeholder="Anything worth writing down?">
     </div>
     <div id="log-tank-preview" style="display:none;background:var(--g50);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--g600)"></div>
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="closeLogModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveLog()">💾 Save record</button>
+      <button class="btn btn-primary" onclick="saveLog()">💾 Save It</button>
     </div>
   </div>
 </div>
@@ -1364,14 +1360,14 @@ window.switchTab = function(tab){
   homeBtn.classList.toggle('visible', tab!=='home');
   if(tab==='home'){
     hdrBtn.style.display='none';
-    appSub.textContent='Field Spray Manager';
+    appSub.textContent='Field &amp; Hay Manager';
   } else if(tab==='weather'){
     hdrBtn.style.display='none';
     appSub.textContent='Spray Day Weather';
     populateWxFieldSel();
     loadCachedWeather(document.getElementById('wx-field-sel')?.value || '');
   } else if(tab==='fields'){
-    hdrBtn.textContent='+ New field'; hdrBtn.style.display='block';
+    hdrBtn.textContent='+ Add Field'; hdrBtn.style.display='block';
     appSub.textContent='Fields';
     renderFieldList();
   } else if(tab==='tank'){
@@ -1379,8 +1375,8 @@ window.switchTab = function(tab){
     appSub.textContent='Tank & Mix';
     renderTankSummary();
   } else if(tab==='hay'){
-    hdrBtn.textContent='+ New lot'; hdrBtn.style.display='block';
-    appSub.textContent='Hay Inventory';
+    hdrBtn.textContent='+ Add a Cutting'; hdrBtn.style.display='block';
+    appSub.textContent='My Hay';
     renderHay();
   } else if(tab==='records'){
     hdrBtn.style.display='none';
@@ -1586,7 +1582,7 @@ function getCornersFromList() {
 window.showAddField=function(id){
   editingId=id||null;
   const f=id?localFields.find(x=>x.id===id):null;
-  document.getElementById('edit-section-label').textContent=f?'Edit field':'New field';
+  document.getElementById('edit-section-label').textContent=f?'Edit Field':'Add a Field';
   document.getElementById('f-name').value=f?f.name:'';
   document.getElementById('f-sprayer').value=f?f.sprayer||'':'';
   document.getElementById('f-notes').value=f?f.notes||'':'';
@@ -1614,7 +1610,7 @@ window.captureGPSCorner=function(){
   const sel=document.getElementById('gps-corner-sel');
   if(i<cornerCount-1) sel.value=i+1;
   updatePreviewFromList();
-  showToast(`Corner ${i+1} captured`);
+  showToast(`Corner ${i+1} marked`);
 };
 
 window.updatePreview = function() { updatePreviewFromList(); };
@@ -1679,10 +1675,10 @@ function updatePreviewFromList() {
 
 window.saveField=async function(){
   const name=document.getElementById('f-name').value.trim();
-  if(!name){showToast('Please enter a field name');return}
+  if(!name){showToast('Give this field a name first');return}
   const corners=getCornersFromList();
   const filled=corners.filter(c=>c.lat&&c.lng);
-  if(filled.length<MIN_CORNERS){showToast(`Enter at least ${MIN_CORNERS} corners`);return}
+  if(filled.length<MIN_CORNERS){showToast('You need at least 4 corners marked');return}
   const id=editingId||genId();
   const obj={name,swath:getSwath(),
     sprayer:document.getElementById('f-sprayer').value.trim(),
@@ -1692,7 +1688,7 @@ window.saveField=async function(){
     await fbSaveField(id,obj);
     showToast(`"${name}" saved`);
     stopGPS();switchTab('fields');
-  }catch(e){showToast('Save failed — check connection')}
+  }catch(e){showToast('Couldn t save — check your signal and try again')}
 };
 function renderFieldList(){
   const body=document.getElementById('field-list-body');
@@ -1706,9 +1702,9 @@ function renderFieldList(){
     const allSet=(f.corners||[]).filter(c=>c.lat&&c.lng).length===4;
     const passes=allSet?computePasses(f):null;
     const recs=localRecords.filter(r=>r.fieldId===f.id).sort((a,b)=>new Date(b.dateRaw||0)-new Date(a.dateRaw||0));
-    const badge=!allSet?`<span class="badge badge-setup">⚠ Needs corners</span>`
-      :(recs.length&&isSameSeason(recs[0].dateRaw))?`<span class="badge badge-sprayed">✓ Sprayed this season</span>`
-      :`<span class="badge badge-ready">Ready to spray</span>`;
+    const badge=!allSet?`<span class="badge badge-setup">⚠ Needs corners set</span>`
+      :(recs.length&&isSameSeason(recs[0].dateRaw))?`<span class="badge badge-sprayed">✓ Already sprayed</span>`
+      :`<span class="badge badge-ready">Ready to go</span>`;
     const meta=[passes?`${passes.num} passes`:'',f.swath?`${f.swath} ft swath`:'',passes?`~${passes.acres} ac`:'',f.sprayer||''].filter(Boolean).join(' · ');
     const histHTML=isOpen?`<div class="history-section"><div class="history-label">Spray history</div>${
       recs.length?recs.slice(0,5).map(r=>`<div class="history-entry">
@@ -1743,15 +1739,15 @@ window.toggleCard=function(id){expandedIds.has(id)?expandedIds.delete(id):expand
 function renderTankSummary(){
   const wrap=document.getElementById('tank-summary-wrap');
   const t=localTank;
-  if(!t||!t.herb){wrap.innerHTML=`<div class="no-session">No tank session set up yet.<br>Fill in the form below before heading to the field.</div>`;return}
+  if(!t||!t.herb){wrap.innerHTML=`<div class="no-session">Nothing mixed yet. Fill this out before you head to the field.</div>`;return}
   wrap.innerHTML=`<div class="tank-summary">
-    <div class="tank-summary-title">Active tank session</div>
+    <div class="tank-summary-title">What's in the tank</div>
     <div class="tank-summary-vals">
       <div class="tank-sv"><div class="tank-sv-val">${t.size||500}</div><div class="tank-sv-lbl">Gal tank</div></div>
       <div class="tank-sv"><div class="tank-sv-val">${t.herb||'—'}</div><div class="tank-sv-lbl">Herbicide</div></div>
       <div class="tank-sv"><div class="tank-sv-val">${t.herbAmt||0} oz</div><div class="tank-sv-lbl">Herb added</div></div>
       <div class="tank-sv"><div class="tank-sv-val">${t.surf||0} oz</div><div class="tank-sv-lbl">Surfactant</div></div>
-      <div class="tank-sv"><div class="tank-sv-val">${t.speed||'—'} MPH</div><div class="tank-sv-lbl">Speed</div></div>
+      
     </div>
   </div>`;
   document.getElementById('tk-size').value=t.size||500;
@@ -1760,7 +1756,7 @@ function renderTankSummary(){
   document.getElementById('tk-surf').value=t.surf||'';
   document.getElementById('tk-start').value=t.start||'';
   document.getElementById('tk-end').value=t.end||'';
-  document.getElementById('tk-speed').value=t.speed||'';
+  
 }
 window.saveTank=async function(){
   const data={
@@ -1770,11 +1766,11 @@ window.saveTank=async function(){
     surf:document.getElementById('tk-surf').value,
     start:document.getElementById('tk-start').value,
     end:document.getElementById('tk-end').value,
-    speed:document.getElementById('tk-speed').value,
+    
     saved:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
   };
-  try{await fbSaveTank(data);showToast('Tank session saved')}
-  catch(e){showToast('Save failed — check connection')}
+  try{await fbSaveTank(data);showToast('Tank mix saved')}
+  catch(e){showToast('Couldn t save — check your signal and try again')}
 };
 window.clearTank=async function(){
   if(!confirm('Clear the current tank session?')) return;
@@ -1820,7 +1816,7 @@ window.stopSpray=function(){
   const total=passState.length;
   const pct=total?Math.round(done/total*100):0;
   const msg=(sprayTracking||sprayPaused||done>0)
-    ?`Stop spraying?\n\n${done} of ${total} passes complete (${pct}%).\nA grid snapshot will be saved.`
+    ?`Done spraying?\n\n${done} of ${total} passes finished (${pct}%).\nWe will save a picture of what you covered.`
     :'Cancel and return to fields?';
   if(!confirm(msg)) return;
   const gridImage=done>0?captureGridSnapshot():null;
@@ -1842,14 +1838,14 @@ function setGuidance(mode,passNum){
   const dev=document.getElementById('guidance-dev');
   if(!arrow) return;
   const G={
-    waiting:    ['📍','Acquiring GPS…','Start button enables when GPS locks','No GPS','dev-warn'],
-    'gps-ready':['✅','GPS locked — tap Start when ready','Drive into field and tap Start to begin tracking','GPS ready','dev-good'],
-    tracking:   ['🚜','Tracking — drive your passes','Any order, any direction — grid fills as you go','Live','dev-good'],
-    paused:     ['⏸','Paused','Tap Resume when ready to continue','Paused','dev-warn'],
-    'in-pass':  ['🟡',`In pass ${passNum}`,'Keep driving — pass fills when complete',`Pass ${passNum}`,'dev-warn'],
-    'pass-done':['✅',`Pass ${passNum} complete`,'Move to next pass',`Pass ${passNum} ✓`,'dev-good'],
-    outside:    ['🚜','Between passes','Drive into the next pass strip','Tracking','dev-good'],
-    complete:   ['🎉','All passes complete!','Tap Stop & Save to finish','100%','dev-good'],
+    waiting:    ['📍','Acquiring GPS…','Tap Start once we've got a signal','No GPS','dev-warn'],
+    'gps-ready':['✅','Got a signal — tap Start when you are ready','Drive into field and tap Start to begin tracking','GPS ready','dev-good'],
+    tracking:   ['🚜','You are rolling — drive your passes','Go any direction you like — we will track where you have been','Live','dev-good'],
+    paused:     ['⏸','Paused','Tap Resume when you are ready to go again','Paused','dev-warn'],
+    'in-pass':  ['🟡',`In pass ${passNum}`,'Keep going — we will mark it done when you finish',`Pass ${passNum}`,'dev-warn'],
+    'pass-done':['✅',`Pass ${passNum} complete`,'Line up for the next one',`Pass ${passNum} ✓`,'dev-good'],
+    outside:    ['🚜','Between passes','Line up for your next pass','Tracking','dev-good'],
+    complete:   ['🎉','All passes complete!','Tap Stop and Save when you are ready to wrap up','100%','dev-good'],
   };
   const[a,m,s,d,cls]=G[mode]||G.waiting;
   arrow.textContent=a;main.textContent=m;sub.textContent=s;
@@ -1870,8 +1866,8 @@ function setDeviationBar(deviationFt,swathFt){
   fill.style.left=`${pct-5}%`;fill.style.width='10%';
   const absDev=Math.abs(deviationFt);
   fill.style.background=absDev<3?'#22c55e':absDev<8?'#fbbf24':'#ef4444';
-  leftLbl.textContent=deviationFt<0?`◀ ${absDev.toFixed(1)} ft`:'◀ Left';
-  rightLbl.textContent=deviationFt>0?`${absDev.toFixed(1)} ft ▶`:'Right ▶';
+  leftLbl.textContent=deviationFt<0?`◀ ${absDev.toFixed(1)} ft`:'◀ Drift left';
+  rightLbl.textContent=deviationFt>0?`${absDev.toFixed(1)} ft ▶`:'Drift right ▶';
   leftLbl.style.opacity=deviationFt<0?'1':'.3';
   rightLbl.style.opacity=deviationFt>0?'1':'.3';
 }
@@ -1992,7 +1988,7 @@ function setGPSStatus(state,coords){
   const capBtn=document.getElementById('gps-cap-btn');
   if(state==='searching'){
     dot&&(dot.className='gps-bar-dot srch');text&&(text.textContent='Searching for GPS…');
-    capDot&&(capDot.className='gps-dot srch');capStat&&(capStat.textContent='Searching…');
+    capDot&&(capDot.className='gps-dot srch');capStat&&(capStat.textContent='Looking for signal…');
     capBtn&&(capBtn.disabled=true);
   }else if(state===true&&coords){
     const acc=coords.accuracy?(coords.accuracy*3.28084).toFixed(1)+' ft':'—';
@@ -2003,7 +1999,7 @@ function setGPSStatus(state,coords){
     capBtn&&(capBtn.disabled=false);capBtn&&(capBtn.className='gps-cap-btn on');
   }else{
     dot&&(dot.className='gps-bar-dot');text&&(text.textContent='No GPS — enter coordinates manually or connect a receiver.');
-    capDot&&(capDot.className='gps-dot');capStat&&(capStat.textContent='GPS not available');
+    capDot&&(capDot.className='gps-dot');capStat&&(capStat.textContent='No GPS available');
     capStat&&(capStat.className='gps-status');capBtn&&(capBtn.disabled=true);capBtn&&(capBtn.className='gps-cap-btn');
   }
 }
@@ -2019,7 +2015,7 @@ window.captureGPSCorner=function(){
   const sel=document.getElementById('gps-corner-sel');
   if(i<cornerCount-1) sel.value=i+1;
   updatePreviewFromList();
-  showToast(`Corner ${i+1} captured`);
+  showToast(`Corner ${i+1} marked`);
 };
 
 // ── LOG MODAL ─────────────────────────────────
@@ -2030,7 +2026,7 @@ window.openLogModal=function(id,gridImage,done,total){
   document.getElementById('log-field-name').textContent=field?field.name:'—';
   document.getElementById('log-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('log-product').value=t.herb||'';
-  document.getElementById('log-speed').value=t.speed||'';
+  document.getElementById('log-speed').value='';
   document.getElementById('log-passes').value=done!==undefined?`${done} / ${total}`:'';
   document.getElementById('log-notes').value='';
   const tp=document.getElementById('log-tank-preview');
@@ -2043,7 +2039,7 @@ window.openLogModal=function(id,gridImage,done,total){
 window.closeLogModal=function(){document.getElementById('log-modal').classList.remove('open');_logGrid=null};
 window.saveLog=async function(){
   const product=document.getElementById('log-product').value.trim();
-  if(!product){showToast('Enter a product name');return}
+  if(!product){showToast('What did you spray?');return}
   const t=localTank||{};
   const dateVal=document.getElementById('log-date').value;
   const displayDate=new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
@@ -2060,8 +2056,8 @@ window.saveLog=async function(){
   };
   try{
     await fbSaveRecord(genId(),record);
-    window.closeLogModal();showToast('Spray record saved');
-  }catch(e){showToast('Save failed — check connection')}
+    window.closeLogModal();showToast('Spray run recorded');
+  }catch(e){showToast('Couldn t save — check your signal and try again')}
 };
 
 // ── RECORDS ───────────────────────────────────
@@ -2097,7 +2093,7 @@ window.exportExcel=function(){
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download=`BaronFork_SprayRecords_${new Date().toISOString().slice(0,10)}.csv`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  showToast('Exported — open in Excel');
+  showToast('Saved — open it in Excel');
 };
 
 // ══════════════════════════════════════════════
@@ -2129,7 +2125,7 @@ function populateWxFieldSel() {
   const sel = document.getElementById('wx-field-sel');
   if (!sel) return;
   const prev = sel.value;
-  sel.innerHTML = '<option value="">— Select a field —</option>';
+  sel.innerHTML = '<option value="">— Pick a field —</option>';
   const readyFields = localFields.filter(f =>
     (f.corners || []).filter(c => c.lat && c.lng).length >= 4
   ).sort((a, b) => a.name.localeCompare(b.name));
@@ -2153,13 +2149,13 @@ window.onWxFieldChange = function() {
   const field = localFields.find(f => f.id === fieldId);
   const centroid = field ? fieldCentroid(field) : null;
   if (centroid) {
-    hint.textContent = `Field location: ${centroid.lat}, ${centroid.lng}`;
+    hint.textContent = `Field is at ${centroid.lat}, ${centroid.lng}`;
     btn.disabled = false;
-    btn.textContent = `🌤️ Check Weather for ${field.name}`;
+    btn.textContent = `🌤️ Check the Weather — ${field.name}`;
   } else {
     hint.textContent = fieldId ? 'This field needs corner coordinates set before weather can be checked.' : '';
     btn.disabled = true;
-    btn.textContent = '🌤️ Check Weather for this Field';
+    btn.textContent = '🌤️ Check the Weather';
   }
   // Load cached data for this field if available
   loadCachedWeather(fieldId);
@@ -2300,7 +2296,7 @@ function renderWeather(periods, fieldName, fetchedAtStr, sunTimes) {
   const recCard = document.getElementById('rec-card');
   recCard.className = `rec-card ${overall === 'go' ? 'go' : overall === 'caution' ? 'caution' : overall === 'nogo' ? 'nogo' : 'loading'}`;
   document.getElementById('rec-icon').textContent = overall === 'go' ? '✅' : overall === 'caution' ? '⚠️' : overall === 'nogo' ? '🚫' : '⏳';
-  document.getElementById('rec-status').textContent = overall === 'go' ? 'Good to Spray' : overall === 'caution' ? 'Caution' : overall === 'nogo' ? 'Do Not Spray' : 'Checking…';
+  document.getElementById('rec-status').textContent = overall === 'go' ? 'Good Day to Spray' : overall === 'caution' ? 'Be Careful' : overall === 'nogo' ? 'Stay Home Today' : 'Checking…';
   const reasons = [];
   if (ws === 'nogo') reasons.push(`Wind ${windMph} MPH — too high`);
   else if (ws === 'caution') reasons.push(`Wind ${windMph} MPH — marginal`);
@@ -2376,10 +2372,10 @@ function renderWeather(periods, fieldName, fetchedAtStr, sunTimes) {
     </div>`;
   }).join('');
   document.getElementById('precip-summary').textContent =
-    maxPrecip === 0 ? `No rain expected in the next ${THRESH.rainFreeHours} hours — good spray window.`
+    maxPrecip === 0 ? `No rain expected for ${THRESH.rainFreeHours} hours — good time to spray.`
     : maxPrecip < THRESH.precipWarn ? `Low rain chance (max ${maxPrecip}%). Conditions look favorable.`
     : maxPrecip < THRESH.precipStop ? `Rain possible within 6 hours (up to ${maxPrecip}%). Most labels require ${THRESH.rainFreeHours} hrs rain-free. Proceed with caution.`
-    : `Rain likely within 6 hours (up to ${maxPrecip}%). Wait for a better window — herbicides need ${THRESH.rainFreeHours} hrs to absorb.`;
+    : `Rain likely within 6 hours (up to ${maxPrecip}%). Wait for a better window — most sprays need ${THRESH.rainFreeHours} hours to soak in before it rains.`;
 
   // Render 7-day spray window forecast (pass sun times for accurate daily windows)
   renderForecast(periods, sunTimes);
@@ -2446,7 +2442,7 @@ function renderForecast(periods, sunTimes) {
     return s==='go'?'✅':s==='caution'?'⚠️':s==='nogo'?'🚫':'—';
   }
   function statusVerdict(s) {
-    return s==='go'?'Good to Spray':s==='caution'?'Caution':s==='nogo'?'Do Not Spray':'Unknown';
+    return s==='go'?'Good Day to Spray':s==='caution'?'Be Careful':s==='nogo'?'Stay Home Today':'Unknown';
   }
   function dayReason(a) {
     const parts = [];
@@ -2484,7 +2480,7 @@ function renderForecast(periods, sunTimes) {
   } else {
     bwEl.className = 'best-window none';
     bwDay.className = 'best-window-day none';
-    bwDay.textContent = 'No clear spray window in the next 7 days';
+    bwDay.textContent = 'Nothing looks great this week';
     document.getElementById('best-window-icon').textContent = '📅';
   }
 
@@ -2524,7 +2520,7 @@ function renderForecast(periods, sunTimes) {
       <div class="forecast-row-day">${dayName}</div>
       <div class="forecast-row-date">${dateStr}</div>
       <div class="forecast-row-reason">${dayReason(a)}${isBest ? ' ⭐' : ''}</div>
-      <div class="forecast-row-verdict ${cls}">${statusVerdict(a.overall).replace(' to Spray','')}</div>
+      <div class="forecast-row-verdict ${cls}">${statusVerdict(a.overall).replace(' Day','')}</div>
     </div>`;
   }).join('');
 }
@@ -2532,7 +2528,7 @@ function renderForecast(periods, sunTimes) {
 
 // ── Status helpers ────────────────────────────
 function statusClass(l){ return l==='go'?'green':l==='caution'?'amber':l==='nogo'?'red':'gray' }
-function statusLabel(l){ return l==='go'?'✓ Good':l==='caution'?'⚠ Caution':l==='nogo'?'✗ No-Go':'—' }
+function statusLabel(l){ return l==='go'?'✓ Looks Good':l==='caution'?'⚠ Be Careful':l==='nogo'?'✗ Stay Home':'—' }
 function windStatus(mph){ if(mph===null||mph===undefined) return 'unknown'; if(mph<THRESH.windGo) return 'go'; if(mph<THRESH.windCaution) return 'caution'; return 'nogo' }
 function tempStatus(f,h){ if(f===null) return 'unknown'; if(f<THRESH.tempMin||f>THRESH.tempMax) return 'nogo'; if(f<THRESH.tempIdealMin||f>THRESH.tempIdealMax||(h!==null&&h<THRESH.humidMin)) return 'caution'; return 'go' }
 function precipStatus(p){ if(p===null) return 'unknown'; if(p>=THRESH.precipStop) return 'nogo'; if(p>=THRESH.precipWarn) return 'caution'; return 'go' }
@@ -2569,10 +2565,10 @@ function renderSunBar(sunrise, sunset) {
   const remEl = document.getElementById('spray-remaining');
   if (nowMs < sunriseMs) {
     const m = Math.round((sunriseMs - nowMs) / 60000);
-    remEl.textContent = `Opens in ${Math.floor(m/60)>0?Math.floor(m/60)+'h ':''}${m%60}m`;
+    remEl.textContent = `Starts in ${Math.floor(m/60)>0?Math.floor(m/60)+'h ':''}${m%60}m`;
     remEl.className = 'spray-remaining warn';
   } else if (nowMs > sunsetMs) {
-    remEl.textContent = 'Closed today'; remEl.className = 'spray-remaining over';
+    remEl.textContent = 'Too late today'; remEl.className = 'spray-remaining over';
   } else {
     const m = Math.round((sunsetMs - nowMs) / 60000);
     remEl.textContent = `${Math.floor(m/60)>0?Math.floor(m/60)+'h ':''}${m%60}m left`;
@@ -2595,7 +2591,7 @@ function getDaylightPeriods(periods, sunrise, sunset) {
 function setWxLoading(fieldName) {
   document.getElementById('rec-card').className = 'rec-card loading';
   document.getElementById('rec-icon').textContent = '⏳';
-  document.getElementById('rec-status').textContent = 'Fetching weather…';
+  document.getElementById('rec-status').textContent = 'Checking the weather…';
   document.getElementById('rec-reason').textContent = `Getting NWS forecast for ${fieldName || 'this field'}`;
   ['wind-status-label','temp-status-label','precip-status-label'].forEach(id => {
     document.getElementById(id).textContent = '—';
@@ -2613,14 +2609,14 @@ function setWxIdle() {
     document.getElementById(id).textContent = '—';
     document.getElementById(id).className = 'wx-status-label gray';
   });
-  document.getElementById('wx-timestamp').textContent = 'No weather data yet — select a field and tap Check Weather';
+  document.getElementById('wx-timestamp').textContent = 'Pick a field and tap Check Weather to see if it is a good day to spray';
 }
 
 function setWxError(msg) {
   document.getElementById('rec-card').className = 'rec-card loading';
   document.getElementById('rec-icon').textContent = '⚠️';
-  document.getElementById('rec-status').textContent = 'Weather Unavailable';
-  document.getElementById('rec-reason').textContent = msg + ' — check your connection and try again';
+  document.getElementById('rec-status').textContent = 'Couldn t get the weather';
+  document.getElementById('rec-reason').textContent = msg + ' — check your signal and try again';
   document.getElementById('wx-timestamp').textContent = 'Fetch failed';
 }
 
@@ -2717,7 +2713,7 @@ function renderHaySummary(){
 function renderMarketCard(){
   const latest=localMarketPrices[0];
   if(!latest){
-    document.getElementById('market-date').textContent='No price data yet — tap Update to add';
+    document.getElementById('market-date').textContent='No prices yet — tap Update to add what you're seeing';
     ['mp-45-low','mp-45-mid','mp-45-high','mp-55-low','mp-55-mid','mp-55-high'].forEach(id=>{
       document.getElementById(id).textContent='—';
     });
@@ -2776,13 +2772,13 @@ function renderLotList(){
         </div>
         <div class="lot-bales">
           <div class="lot-bales-num">${rem}</div>
-          <div class="lot-bales-lbl">remaining</div>
+          <div class="lot-bales-lbl">left</div>
           ${sold>0?`<div style="font-size:10px;color:var(--g400);margin-top:2px">${sold} sold</div>`:''}
         </div>
       </div>
       <div class="lot-detail" id="lot-detail-${lot.id}">
         <div class="lot-detail-grid">
-          <div class="lot-detail-item"><div class="lot-detail-label">Total cut</div><div class="lot-detail-val">${lot.baleCount} bales</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Total put up</div><div class="lot-detail-val">${lot.baleCount} bales</div></div>
           <div class="lot-detail-item"><div class="lot-detail-label">Sold</div><div class="lot-detail-val">${sold} bales</div></div>
           <div class="lot-detail-item"><div class="lot-detail-label">Remaining</div><div class="lot-detail-val">${rem} bales</div></div>
           <div class="lot-detail-item"><div class="lot-detail-label">Est. tonnage</div><div class="lot-detail-val">${estTons(rem,lot.baleType||'4x5')} tons</div></div>
@@ -2833,7 +2829,7 @@ function renderSalesList(){
 window.openLotModal=function(id){
   editingLotId=id||null;
   const lot=id?localLots.find(l=>l.id===id):null;
-  document.getElementById('lot-modal-title').textContent=lot?'Edit lot':'New cutting lot';
+  document.getElementById('lot-modal-title').textContent=lot?'Edit This Cutting':'Add a Cutting';
   // Populate field selector
   const sel=document.getElementById('lot-field');
   sel.innerHTML=localFields.filter(f=>(f.corners||[]).filter(c=>c.lat&&c.lng).length>=4)
@@ -2858,8 +2854,8 @@ window.closeLotModal=function(){ document.getElementById('lot-modal').classList.
 window.saveLot=async function(){
   const fieldId=document.getElementById('lot-field').value;
   const baleCount=document.getElementById('lot-bale-count').value;
-  if(!fieldId){showToast('Select a field');return}
-  if(!baleCount||+baleCount<1){showToast('Enter bale count');return}
+  if(!fieldId){showToast('Pick a field first');return}
+  if(!baleCount||+baleCount<1){showToast('How many bales did you put up?');return}
   const id=editingLotId||genId();
   const data={
     fieldId,
@@ -2877,7 +2873,7 @@ window.saveLot=async function(){
   };
   try{
     await setDoc(doc(db,`users/${currentUser.uid}/lots/${id}`),data);
-    closeLotModal(); showToast('Lot saved');
+    closeLotModal(); showToast('Cutting saved');
   }catch(e){showToast('Save failed')}
 };
 
@@ -2885,7 +2881,7 @@ window.deleteLot=async function(id){
   if(!confirm('Delete this lot? Associated sales will remain in the sales record.')) return;
   try{
     await deleteDoc(doc(db,`users/${currentUser.uid}/lots/${id}`));
-    showToast('Lot deleted');
+    showToast('Cutting deleted');
   }catch(e){showToast('Delete failed')}
 };
 
@@ -2934,7 +2930,7 @@ window.saveSale=async function(){
   const price=+document.getElementById('sale-price').value;
   if(!lotId){showToast('Select a lot');return}
   if(!buyer){showToast('Enter buyer name');return}
-  if(!bales||bales<1){showToast('Enter bale count');return}
+  if(!bales||bales<1){showToast('How many bales did you put up?');return}
   // Check against remaining
   const lot=localLots.find(l=>l.id===lotId);
   const rem=remainingForLot(lot);
@@ -2987,7 +2983,7 @@ window.saveMarketPrice=async function(){
   };
   try{
     await setDoc(doc(db,`users/${currentUser.uid}/marketprices/${genId()}`),data);
-    closeMarketModal(); showToast('Market prices saved');
+    closeMarketModal(); showToast('Prices saved');
   }catch(e){showToast('Save failed')}
 };
 
