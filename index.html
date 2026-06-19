@@ -602,7 +602,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       </div>
       <button class="home-btn green" onclick="switchTab('fields')">
         <div class="home-btn-icon">🌾</div>
-        <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Set up your fields, track your spraying, and see what's been done</div></div>
+        <div><div class="home-btn-title">Fields</div><div class="home-btn-sub">Set up your fields, track your spraying, and see what has been done</div></div>
       </button>
       <button class="home-btn" style="border-left:5px solid #0369a1" onclick="switchTab('weather')">
         <div class="home-btn-icon">🌤️</div>
@@ -614,7 +614,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       </button>
       <button class="home-btn" style="border-left:5px solid #854d0e" onclick="switchTab('hay')">
         <div class="home-btn-icon">🌿</div>
-        <div><div class="home-btn-title">Hay</div><div class="home-btn-sub">Track your hay — what you cut, what you've got, and what you've sold</div></div>
+        <div><div class="home-btn-title">Hay</div><div class="home-btn-sub">Track your hay — what you cut, what you have got, and what you've sold</div></div>
       </button>
       <button class="home-btn blue" onclick="switchTab('records')">
         <div class="home-btn-icon">📋</div>
@@ -798,7 +798,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div id="screen-tank" class="screen">
     <div class="screen-body">
       <div class="tank-icon">🛢️</div>
-      <div class="section-label">What's in the tank</div>
+      <div class="section-label">What is in the tank</div>
       <div id="tank-summary-wrap"></div>
       <div class="section-label">Mix your tank</div>
       <div class="card" style="padding:14px">
@@ -845,7 +845,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
       <!-- Hay sub-tabs: Inventory | Sales -->
       <div class="hay-tabs">
-        <button class="hay-tab active" id="hay-tab-inv" onclick="switchHayTab('inventory')">🌿 What I've Got</button>
+        <button class="hay-tab active" id="hay-tab-inv" onclick="switchHayTab('inventory')">🌿 What I Have Got</button>
         <button class="hay-tab" id="hay-tab-sales" onclick="switchHayTab('sales')">💰 Sales</button>
       </div>
 
@@ -872,7 +872,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="market-card" id="market-card">
           <div class="market-card-header">
             <div>
-              <div class="market-card-title">📈 What Hay's Selling For</div>
+              <div class="market-card-title">📈 What Hay Is Selling For</div>
               <div class="market-card-date" id="market-date">No price data yet</div>
             </div>
             <button class="market-edit-btn" onclick="openMarketModal()">+ Update Prices</button>
@@ -924,7 +924,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   <div id="screen-records" class="screen">
     <div class="screen-body">
       <div class="export-bar">
-        <div class="export-bar-text">Everything you've sprayed, all your fields</div>
+        <div class="export-bar-text">Everything you have sprayed, all your fields</div>
         <button class="export-btn" onclick="exportExcel()">⬇ Save to Excel</button>
       </div>
       <div id="records-body"></div>
@@ -1009,7 +1009,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="guidance-arrow" id="guidance-arrow">📍</div>
       <div class="guidance-text">
         <div class="guidance-main" id="guidance-main">Acquiring GPS…</div>
-        <div class="guidance-sub" id="guidance-sub">Tap Start once we've got a signal</div>
+        <div class="guidance-sub" id="guidance-sub">Tap Start once we have got a signal</div>
       </div>
       <div class="g-dev dev-warn" id="guidance-dev">No GPS</div>
     </div>
@@ -1167,7 +1167,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="form-group"><label class="form-label">Mid $</label><input class="form-input" id="mp-55-mid-in" type="number" min="0" placeholder="0" step="1"></div>
       <div class="form-group"><label class="form-label">High $</label><input class="form-input" id="mp-55-high-in" type="number" min="0" placeholder="0" step="1"></div>
     </div>
-    <div class="form-hint">Check Facebook Marketplace or ask around to see what hay's going for nearby.</div>
+    <div class="form-hint">Check Facebook Marketplace or ask around to see what hay is going for nearby.</div>
     <div class="btn-row" style="margin-top:12px">
       <button class="btn btn-secondary" onclick="closeMarketModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveMarketPrice()">💾 Save prices</button>
@@ -1688,7 +1688,7 @@ window.saveField=async function(){
     await fbSaveField(id,obj);
     showToast(`"${name}" saved`);
     stopGPS();switchTab('fields');
-  }catch(e){showToast('Couldn t save — check your signal and try again')}
+  }catch(e){showToast('Could not save — check your signal and try again')}
 };
 function renderFieldList(){
   const body=document.getElementById('field-list-body');
@@ -1741,7 +1741,7 @@ function renderTankSummary(){
   const t=localTank;
   if(!t||!t.herb){wrap.innerHTML=`<div class="no-session">Nothing mixed yet. Fill this out before you head to the field.</div>`;return}
   wrap.innerHTML=`<div class="tank-summary">
-    <div class="tank-summary-title">What's in the tank</div>
+    <div class="tank-summary-title">What is in the tank</div>
     <div class="tank-summary-vals">
       <div class="tank-sv"><div class="tank-sv-val">${t.size||500}</div><div class="tank-sv-lbl">Gal tank</div></div>
       <div class="tank-sv"><div class="tank-sv-val">${t.herb||'—'}</div><div class="tank-sv-lbl">Herbicide</div></div>
@@ -1770,7 +1770,7 @@ window.saveTank=async function(){
     saved:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
   };
   try{await fbSaveTank(data);showToast('Tank mix saved')}
-  catch(e){showToast('Couldn t save — check your signal and try again')}
+  catch(e){showToast('Could not save — check your signal and try again')}
 };
 window.clearTank=async function(){
   if(!confirm('Clear the current tank session?')) return;
@@ -1838,7 +1838,7 @@ function setGuidance(mode,passNum){
   const dev=document.getElementById('guidance-dev');
   if(!arrow) return;
   const G={
-    waiting:    ['📍','Acquiring GPS…','Tap Start once we've got a signal','No GPS','dev-warn'],
+    waiting:    ['📍','Acquiring GPS…','Tap Start once we have got a signal','No GPS','dev-warn'],
     'gps-ready':['✅','Got a signal — tap Start when you are ready','Drive into field and tap Start to begin tracking','GPS ready','dev-good'],
     tracking:   ['🚜','You are rolling — drive your passes','Go any direction you like — we will track where you have been','Live','dev-good'],
     paused:     ['⏸','Paused','Tap Resume when you are ready to go again','Paused','dev-warn'],
@@ -2057,7 +2057,7 @@ window.saveLog=async function(){
   try{
     await fbSaveRecord(genId(),record);
     window.closeLogModal();showToast('Spray run recorded');
-  }catch(e){showToast('Couldn t save — check your signal and try again')}
+  }catch(e){showToast('Could not save — check your signal and try again')}
 };
 
 // ── RECORDS ───────────────────────────────────
@@ -2615,7 +2615,7 @@ function setWxIdle() {
 function setWxError(msg) {
   document.getElementById('rec-card').className = 'rec-card loading';
   document.getElementById('rec-icon').textContent = '⚠️';
-  document.getElementById('rec-status').textContent = 'Couldn t get the weather';
+  document.getElementById('rec-status').textContent = 'Could not get the weather';
   document.getElementById('rec-reason').textContent = msg + ' — check your signal and try again';
   document.getElementById('wx-timestamp').textContent = 'Fetch failed';
 }
