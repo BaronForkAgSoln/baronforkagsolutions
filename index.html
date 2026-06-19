@@ -2713,7 +2713,7 @@ function renderHaySummary(){
 function renderMarketCard(){
   const latest=localMarketPrices[0];
   if(!latest){
-    document.getElementById('market-date').textContent='No prices yet — tap Update to add what you're seeing';
+    document.getElementById('market-date').textContent='No prices yet — tap Update to add what you are seeing';
     ['mp-45-low','mp-45-mid','mp-45-high','mp-55-low','mp-55-mid','mp-55-high'].forEach(id=>{
       document.getElementById(id).textContent='—';
     });
