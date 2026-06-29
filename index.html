@@ -1699,7 +1699,8 @@ function renderFieldList(){
   const sorted=[...localFields].sort((a,b)=>a.name.localeCompare(b.name));
   body.innerHTML=sorted.map(f=>{
     const isOpen=expandedIds.has(f.id);
-    const allSet=(f.corners||[]).filter(c=>c.lat&&c.lng).length===4;
+    const filledCorners=(f.corners||[]).filter(c=>c.lat&&c.lng);
+    const allSet=filledCorners.length>=4;
     const passes=allSet?computePasses(f):null;
     const recs=localRecords.filter(r=>r.fieldId===f.id).sort((a,b)=>new Date(b.dateRaw||0)-new Date(a.dateRaw||0));
     const badge=!allSet?`<span class="badge badge-setup">⚠ Needs corners set</span>`
@@ -2668,6 +2669,17 @@ function balesForLot(lotId){ return localSales.filter(s=>s.lotId===lotId).reduce
 function remainingForLot(lot){ return (+lot.baleCount||0)-balesForLot(lot.id); }
 function estTons(bales,type){ return ((bales*(BALE_WEIGHTS[type]||900))/2000).toFixed(1); }
 function fmtPrice(n){ return n!=null&&n!==''?'$'+Number(n).toFixed(0):'—'; }
+function lotAcres(lot){
+  const f=localFields.find(x=>x.id===lot.fieldId);
+  if(!f) return '—';
+  const p=computePasses(f);
+  return p?p.acres:'—';
+}
+function balesPerAcre(lot){
+  const acres=parseFloat(lotAcres(lot));
+  if(!acres||!lot.baleCount) return '—';
+  return (lot.baleCount/acres).toFixed(1);
+}
 function lotStatus(lot){
   const rem=remainingForLot(lot);
   if(rem<=0) return 'soldout';
@@ -2767,7 +2779,7 @@ function renderLotList(){
         <div class="lot-info">
           <div class="lot-name">${lotDisplayName(lot)}</div>
           <div class="lot-meta">${lot.cutDate||'—'} · ${lot.baleType||'4x5'} · ${lot.storage||'—'}</div>
-          <div class="lot-meta">${fmtPrice(lot.desiredPrice)}/bale · Est. ${estTons(rem,lot.baleType||'4x5')} tons</div>
+          <div class="lot-meta">${fmtPrice(lot.desiredPrice)}/bale · Est. ${estTons(rem,lot.baleType||'4x5')} tons · ${balesPerAcre(lot)} bales/ac</div>
           ${statusBadge(lot)}
         </div>
         <div class="lot-bales">
@@ -2781,7 +2793,9 @@ function renderLotList(){
           <div class="lot-detail-item"><div class="lot-detail-label">Total put up</div><div class="lot-detail-val">${lot.baleCount} bales</div></div>
           <div class="lot-detail-item"><div class="lot-detail-label">Sold</div><div class="lot-detail-val">${sold} bales</div></div>
           <div class="lot-detail-item"><div class="lot-detail-label">Remaining</div><div class="lot-detail-val">${rem} bales</div></div>
-          <div class="lot-detail-item"><div class="lot-detail-label">Est. tonnage</div><div class="lot-detail-val">${estTons(rem,lot.baleType||'4x5')} tons</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Est. tonnage</div><div class="lot-detail-val">${estTons(lot.baleCount,lot.baleType||'4x5')} tons</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Bales / acre</div><div class="lot-detail-val">${balesPerAcre(lot)}</div></div>
+          <div class="lot-detail-item"><div class="lot-detail-label">Field acres</div><div class="lot-detail-val">${lotAcres(lot)}</div></div>
           ${lot.notes?`<div class="lot-detail-item" style="grid-column:span 2"><div class="lot-detail-label">Notes</div><div class="lot-detail-val">${lot.notes}</div></div>`:''}
         </div>
         ${testHTML}
