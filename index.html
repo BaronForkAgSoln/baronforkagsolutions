@@ -2093,6 +2093,8 @@ function processGPSForTracking(coords){
   drawSprayCanvas();
   updateSprayLeafletView();
 }
+
+function drawSprayCanvas(){
   const canvas=document.getElementById('sprayCanvas');
   const field=localFields.find(f=>f.id===sprayFieldId);
   if(!canvas||!field) return;
