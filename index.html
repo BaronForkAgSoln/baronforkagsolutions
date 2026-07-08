@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <title>Baron Fork Ag Solutions</title>
 <style>
 :root{
@@ -368,7 +370,31 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .hay-tab{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:500;color:var(--g500);border:none;background:none;cursor:pointer;border-radius:8px;transition:all .15s}
 .hay-tab.active{background:#fff;color:var(--g900);box-shadow:var(--shadow)}
 
-/* ── CALIBRATION SCREEN ── */
+/* ── SATELLITE / MAP TOGGLE ── */
+.map-toggle-row{display:flex;gap:6px;margin-bottom:8px}
+.map-toggle-btn{flex:1;padding:7px 0;border-radius:7px;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.map-toggle-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.preview-map-wrap{position:relative;width:100%;height:200px;border-radius:8px;overflow:hidden;margin-top:4px}
+.preview-map-wrap .leaflet-container{border-radius:8px}
+#preview-leaflet{width:100%;height:200px;border-radius:8px;display:none;background:#1e3212}
+.sat-download-bar{display:flex;align-items:center;gap:8px;background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:7px;padding:8px 12px;margin-top:6px;font-size:12px;color:var(--blue);display:none}
+.sat-dl-icon{font-size:16px;flex-shrink:0}
+.sat-dl-text{flex:1}
+.sat-dl-prog{font-size:11px;color:var(--g400);margin-top:2px}
+
+/* Spray canvas satellite layer */
+#spray-sat-layer{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  border-radius:0;display:none;
+}
+#spray-sat-layer .leaflet-container{width:100%;height:100%}
+#sprayCanvas{position:relative;z-index:10}
+.spray-map-wrap{position:relative}
+
+/* Leaflet overrides for dark spray screen */
+.spray-map-wrap .leaflet-control-zoom{display:none}
+.spray-map-wrap .leaflet-control-attribution{font-size:8px;opacity:.5;background:rgba(0,0,0,.3);color:#fff}
+.spray-map-wrap .leaflet-control-attribution a{color:#aaa}
 .calib-screen{background:var(--g900);color:#fff;display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
 .calib-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center}
 .calib-icon{font-size:64px;line-height:1}
@@ -1025,8 +1051,22 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </div>
         <div class="form-hint" style="margin-bottom:10px">Enter coordinates in decimal degrees — like 36.1234, -94.5678. Longitude will be a negative number.</div>
         <div class="corners-list" id="corners-list"></div>
-        <button class="add-corner-btn" id="add-corner-btn" onclick="addCorner()">+ Add corner</button>
-        <div class="preview-map"><div class="preview-empty" id="preview-empty">Mark at least 4 corners to see your field and spray passes</div><svg id="preview-svg" style="display:none"></svg></div>
+        <div class="add-corner-btn" id="add-corner-btn" onclick="addCorner()">+ Add corner</div>
+        <div class="map-toggle-row" id="preview-toggle-row" style="display:none">
+          <button class="map-toggle-btn active" id="prev-btn-poly" onclick="setPreviewMode('poly')">📐 Field Map</button>
+          <button class="map-toggle-btn" id="prev-btn-sat" onclick="setPreviewMode('sat')">🛰 Satellite</button>
+        </div>
+        <div class="preview-map-wrap">
+          <div class="preview-map" id="preview-poly-wrap"><div class="preview-empty" id="preview-empty">Mark at least 4 corners to see your field and spray passes</div><svg id="preview-svg" style="display:none"></svg></div>
+          <div id="preview-leaflet"></div>
+        </div>
+        <div class="sat-download-bar" id="sat-download-bar">
+          <div class="sat-dl-icon">🛰</div>
+          <div class="sat-dl-text">
+            <div>Satellite imagery will be saved when you save this field</div>
+            <div class="sat-dl-prog" id="sat-dl-prog"></div>
+          </div>
+        </div>
         <div class="preview-stats" id="preview-stats" style="display:none"></div>
       </div>
       <div class="btn-row">
@@ -1090,8 +1130,12 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="spray-stat"><div class="spray-stat-val" id="ss-pct">0%</div><div class="spray-stat-lbl">Complete</div></div>
     </div>
     <div class="spray-map-wrap">
-      <canvas id="sprayCanvas"></canvas>
-      <button class="spray-zoom-btn" id="spray-zoom-btn" onclick="toggleSprayZoom()">🔍 Overview</button>
+      <div id="spray-sat-layer" style="position:absolute;top:0;left:0;right:0;bottom:0;display:none;z-index:1"></div>
+      <canvas id="sprayCanvas" style="position:relative;z-index:2;background:transparent"></canvas>
+      <div style="position:absolute;top:8px;right:8px;z-index:10;display:flex;gap:6px">
+        <button class="spray-zoom-btn" id="spray-sat-btn" onclick="toggleSpraySat()" style="background:rgba(0,0,0,.5)">🛰 Satellite</button>
+        <button class="spray-zoom-btn" id="spray-zoom-btn" onclick="toggleSprayZoom()">🔍 Close-up</button>
+      </div>
     </div>
     <div class="deviation-bar">
       <div class="dev-label" id="dev-left">◀ Drift left</div>
@@ -1688,6 +1732,19 @@ window.showAddField=function(id){
   } else {
     bearingDisplay.style.display = 'none';
   }
+  // Reset satellite preview
+  previewMode='poly';
+  const toggleRow=document.getElementById('preview-toggle-row');
+  if(toggleRow) toggleRow.style.display='none';
+  const satBar=document.getElementById('sat-download-bar');
+  if(satBar) satBar.style.display='none';
+  if(previewLeaflet){previewLeaflet.remove();previewLeaflet=null;}
+  const satDiv=document.getElementById('preview-leaflet');
+  if(satDiv) satDiv.style.display='none';
+  const polyWrap=document.getElementById('preview-poly-wrap');
+  if(polyWrap) polyWrap.style.display='block';
+  document.getElementById('prev-btn-poly')?.classList.add('active');
+  document.getElementById('prev-btn-sat')?.classList.remove('active');
   startGPS(); showEditScreen();
 };
 window.cancelEdit=function(){stopGPS();switchTab('fields')};
@@ -1766,6 +1823,12 @@ function updatePreviewFromList() {
   svg.style.display='block';empty.style.display='none';
   stats.style.display='flex';
   stats.innerHTML=`<span>📐 ${passes.width}×${passes.length} ft</span><span>🌾 ${passes.num} passes</span><span>📏 ${passes.acres} ac</span><span>↔ ${passes.overlapPct}% overlap</span><span>📍 ${filled.length} corners</span>`;
+  // Show satellite toggle
+  const toggleRow=document.getElementById('preview-toggle-row');
+  if(toggleRow) toggleRow.style.display='flex';
+  const satBar=document.getElementById('sat-download-bar');
+  if(satBar) satBar.style.display='flex';
+  document.getElementById('sat-dl-prog').textContent='Will save satellite imagery when you save this field';
 }
 
 window.saveField=async function(){
@@ -1782,6 +1845,8 @@ window.saveField=async function(){
   try{
     await fbSaveField(id,obj);
     showToast(`"${name}" saved`);
+    // Cache satellite tiles for offline field use
+    cacheFieldTiles(obj).catch(e=>console.warn('Tile cache failed:',e));
     stopGPS();switchTab('fields');
   }catch(e){showToast('Could not save — check your signal and try again')}
 };
@@ -1909,6 +1974,11 @@ function launchSpraySession(field,passes){
   passState=Array(passes.num).fill('untouched');
   passProgress=Array(passes.num).fill(0);
   sprayZoomMode='overview';
+  spraySatVisible=false;
+  if(sprayLeaflet){sprayLeaflet.remove();sprayLeaflet=null;}
+  document.getElementById('spray-sat-layer').style.display='none';
+  const satBtn=document.getElementById('spray-sat-btn');
+  if(satBtn) satBtn.textContent='🛰 Satellite';
   document.getElementById('spray-field-name').textContent=field.name;
   document.getElementById('spray-field-sub').textContent=`${passes.acres} ac · ${passes.num} passes · ${field.swath} ft swath · ${field.sprayBearing}°`;
   document.getElementById('ss-total').textContent=passes.num;
@@ -2021,9 +2091,8 @@ function processGPSForTracking(coords){
   }else setGuidance('pass-done',passIdx+1);
   document.getElementById('ss-curr').textContent=passState[passIdx]==='done'?`${passIdx+1} ✓`:passIdx+1;
   drawSprayCanvas();
+  updateSprayLeafletView();
 }
-
-function drawSprayCanvas(){
   const canvas=document.getElementById('sprayCanvas');
   const field=localFields.find(f=>f.id===sprayFieldId);
   if(!canvas||!field) return;
@@ -2034,7 +2103,8 @@ function drawSprayCanvas(){
   canvas.width=W*(window.devicePixelRatio||1);
   canvas.height=H*(window.devicePixelRatio||1);
   ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
-  ctx.fillStyle='#0f1f0a';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle= spraySatVisible ? 'rgba(0,0,0,0)' : '#0f1f0a';
+  ctx.fillRect(0,0,W,H);
   const n=passes.num;
   const pad=24;
 
@@ -3335,6 +3405,257 @@ window.saveMarketPrice=async function(){
     closeMarketModal(); showToast('Prices saved');
   }catch(e){showToast('Save failed')}
 };
+
+// ══════════════════════════════════════════════
+// SATELLITE IMAGERY — Leaflet + ESRI World Imagery
+// ══════════════════════════════════════════════
+
+const ESRI_SAT = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+const ESRI_ATTR = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, GeoEye, Earthstar Geographics';
+const SAT_ZOOM_LEVELS = [14, 16, 18];
+const DB_NAME = 'bfas_tiles';
+const DB_VER = 1;
+
+let previewLeaflet = null;   // Leaflet map in field edit preview
+let sprayLeaflet = null;     // Leaflet map in spray screen
+let sprayLeafletLayer = null;
+let previewMode = 'poly';    // 'poly' or 'sat'
+let spraySatVisible = false;
+
+// ── IndexedDB tile cache ──────────────────────
+function openTileDB(){
+  return new Promise((res,rej)=>{
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('tiles');
+    req.onsuccess = e => res(e.target.result);
+    req.onerror   = e => rej(e);
+  });
+}
+
+async function saveTile(key, blob){
+  const db = await openTileDB();
+  return new Promise((res,rej)=>{
+    const tx = db.transaction('tiles','readwrite');
+    tx.objectStore('tiles').put(blob, key);
+    tx.oncomplete = () => res();
+    tx.onerror    = e => rej(e);
+  });
+}
+
+async function getTile(key){
+  const db = await openTileDB();
+  return new Promise((res,rej)=>{
+    const tx = db.transaction('tiles','readonly');
+    const req = tx.objectStore('tiles').get(key);
+    req.onsuccess = e => res(e.target.result||null);
+    req.onerror   = e => rej(e);
+  });
+}
+
+// ── Tile coordinate math ──────────────────────
+function lngToTileX(lng, zoom){ return Math.floor((lng+180)/360*Math.pow(2,zoom)); }
+function latToTileY(lat, zoom){
+  const r = lat*Math.PI/180;
+  return Math.floor((1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*Math.pow(2,zoom));
+}
+
+function getTilesForBbox(minLat,maxLat,minLng,maxLng,zoom){
+  const xMin=lngToTileX(minLng,zoom), xMax=lngToTileX(maxLng,zoom);
+  const yMin=latToTileY(maxLat,zoom), yMax=latToTileY(minLat,zoom);
+  const tiles=[];
+  for(let x=xMin;x<=xMax;x++) for(let y=yMin;y<=yMax;y++) tiles.push({x,y,z:zoom});
+  return tiles;
+}
+
+function tileKey(z,x,y){ return `${z}/${x}/${y}`; }
+function tileUrl(z,x,y){ return ESRI_SAT.replace('{z}',z).replace('{x}',x).replace('{y}',y); }
+
+// ── Pre-fetch and cache tiles for a field ────
+async function cacheFieldTiles(field){
+  const corners=field.corners.filter(c=>c.lat&&c.lng);
+  if(corners.length<4) return;
+  const lats=corners.map(c=>+c.lat), lngs=corners.map(c=>+c.lng);
+  const minLat=Math.min(...lats)-0.002, maxLat=Math.max(...lats)+0.002;
+  const minLng=Math.min(...lngs)-0.003, maxLng=Math.max(...lngs)+0.003;
+
+  // Collect all tiles needed
+  let allTiles=[];
+  SAT_ZOOM_LEVELS.forEach(z=>{ allTiles=allTiles.concat(getTilesForBbox(minLat,maxLat,minLng,maxLng,z)); });
+
+  const progEl=document.getElementById('sat-dl-prog');
+  const barEl=document.getElementById('sat-download-bar');
+  if(barEl) barEl.style.display='flex';
+
+  let done=0;
+  for(const t of allTiles){
+    const key=tileKey(t.z,t.x,t.y);
+    try{
+      const existing=await getTile(key);
+      if(!existing){
+        const resp=await fetch(tileUrl(t.z,t.x,t.y));
+        if(resp.ok){
+          const blob=await resp.blob();
+          await saveTile(key,blob);
+        }
+      }
+    }catch(e){}
+    done++;
+    if(progEl) progEl.textContent=`Saving imagery… ${done} of ${allTiles.length} tiles`;
+  }
+  if(progEl) progEl.textContent=`Satellite imagery saved — works offline in the field`;
+  setTimeout(()=>{ if(barEl) barEl.style.display='none'; },3000);
+}
+
+// ── Custom Leaflet tile layer from IndexedDB ──
+function createCachedTileLayer(){
+  return L.TileLayer.extend({
+    createTile(coords, done){
+      const img = document.createElement('img');
+      img.alt = '';
+      const key = tileKey(coords.z, coords.x, coords.y);
+      getTile(key).then(blob=>{
+        if(blob){
+          img.src = URL.createObjectURL(blob);
+        } else {
+          // Fall back to live tile
+          img.src = tileUrl(coords.z, coords.x, coords.y);
+        }
+        img.onload  = () => done(null, img);
+        img.onerror = () => done(new Error('tile load failed'), img);
+      }).catch(()=>{
+        img.src = tileUrl(coords.z, coords.x, coords.y);
+        img.onload  = () => done(null, img);
+        img.onerror = () => done(new Error('tile load failed'), img);
+      });
+      return img;
+    }
+  });
+}
+
+// ── Field edit preview satellite view ─────────
+window.setPreviewMode=function(mode){
+  previewMode=mode;
+  const polyWrap=document.getElementById('preview-poly-wrap');
+  const satDiv=document.getElementById('preview-leaflet');
+  document.getElementById('prev-btn-poly').classList.toggle('active',mode==='poly');
+  document.getElementById('prev-btn-sat').classList.toggle('active',mode==='sat');
+  if(mode==='poly'){
+    polyWrap.style.display='block'; satDiv.style.display='none';
+    if(previewLeaflet){ previewLeaflet.remove(); previewLeaflet=null; }
+  } else {
+    polyWrap.style.display='none'; satDiv.style.display='block';
+    initPreviewLeaflet();
+  }
+};
+
+function initPreviewLeaflet(){
+  const corners=getCornersFromList().filter(c=>c.lat&&c.lng);
+  if(corners.length<4){ showToast('Mark at least 4 corners first'); setPreviewMode('poly'); return; }
+  if(previewLeaflet){ previewLeaflet.remove(); previewLeaflet=null; }
+  const lats=corners.map(c=>+c.lat), lngs=corners.map(c=>+c.lng);
+  const centerLat=(Math.min(...lats)+Math.max(...lats))/2;
+  const centerLng=(Math.min(...lngs)+Math.max(...lngs))/2;
+  const satDiv=document.getElementById('preview-leaflet');
+  satDiv.style.height='200px';
+  previewLeaflet=L.map(satDiv,{zoomControl:false,attributionControl:true}).setView([centerLat,centerLng],16);
+  const CachedLayer=createCachedTileLayer();
+  new CachedLayer(ESRI_SAT,{attribution:ESRI_ATTR,maxZoom:19,tileSize:256}).addTo(previewLeaflet);
+  // Draw polygon
+  const latLngs=corners.map(c=>[+c.lat,+c.lng]);
+  L.polygon(latLngs,{color:'#22c55e',weight:2.5,fillColor:'#22c55e',fillOpacity:0.15}).addTo(previewLeaflet);
+  // Fit to polygon bounds
+  const bounds=L.latLngBounds(latLngs).pad(0.1);
+  previewLeaflet.fitBounds(bounds);
+  // Draw pass strips if bearing set
+  drawPassStripsOnLeaflet(previewLeaflet,corners,getSwath());
+}
+
+function drawPassStripsOnLeaflet(map,corners,swath){
+  const field={corners,swath,sprayBearing:null};
+  // Try to get bearing from edit form if stored
+  const bearingEl=document.getElementById('bearing-display-val');
+  if(bearingEl&&bearingEl.textContent&&bearingEl.textContent!=='—°'){
+    field.sprayBearing=parseInt(bearingEl.textContent);
+  }
+  const geo=getRotatedGeometry(field);if(!geo) return;
+  const n=Math.ceil((geo.maxRx-geo.minRx)/(swath||30));
+  const passW=(geo.maxRx-geo.minRx)/n;
+  const steps=20;
+  for(let i=0;i<n;i++){
+    const sMidRx=geo.minRx+(i+0.5)*passW;
+    // Collect polygon points along this strip
+    const pts=[];
+    for(let s=0;s<=steps;s++){
+      const sRy=geo.minRy+(geo.maxRy-geo.minRy)*s/steps;
+      if(isInsideRotatedPoly(sMidRx,sRy,geo.rotated)){
+        // Unrotate back to lat/lng
+        const angle=-geo.angle;
+        const urx=sMidRx*Math.cos(angle)-sRy*Math.sin(angle);
+        const ury=sMidRx*Math.sin(angle)+sRy*Math.cos(angle);
+        const lat=geo.centerLat+ury/364000;
+        const lng=geo.centerLng+urx/(Math.cos(geo.centerLat*Math.PI/180)*364000);
+        pts.push([lat,lng]);
+      }
+    }
+    if(pts.length>1){
+      L.polyline(pts,{color:i%2===0?'#22c55e':'#60a5fa',weight:2,opacity:0.7}).addTo(map);
+    }
+  }
+}
+
+// ── Spray screen satellite layer ──────────────
+window.toggleSpraySat=function(){
+  spraySatVisible=!spraySatVisible;
+  const btn=document.getElementById('spray-sat-btn');
+  const satDiv=document.getElementById('spray-sat-layer');
+  const canvas=document.getElementById('sprayCanvas');
+  if(spraySatVisible){
+    satDiv.style.display='block';
+    canvas.style.background='transparent';
+    if(btn) btn.textContent='📐 Field Map';
+    if(!sprayLeaflet) initSprayLeaflet();
+  } else {
+    satDiv.style.display='none';
+    canvas.style.background='#0f1f0a';
+    if(btn) btn.textContent='🛰 Satellite';
+  }
+  drawSprayCanvas();
+};
+
+function initSprayLeaflet(){
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!field) return;
+  const corners=field.corners.filter(c=>c.lat&&c.lng);
+  if(corners.length<4) return;
+  const lats=corners.map(c=>+c.lat),lngs=corners.map(c=>+c.lng);
+  const centerLat=(Math.min(...lats)+Math.max(...lats))/2;
+  const centerLng=(Math.min(...lngs)+Math.max(...lngs))/2;
+  const satDiv=document.getElementById('spray-sat-layer');
+  satDiv.style.height='240px';
+  if(sprayLeaflet){sprayLeaflet.remove();sprayLeaflet=null;}
+  sprayLeaflet=L.map(satDiv,{zoomControl:false,attributionControl:true,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false}).setView([centerLat,centerLng],16);
+  const CachedLayer=createCachedTileLayer();
+  new CachedLayer(ESRI_SAT,{attribution:ESRI_ATTR,maxZoom:19,tileSize:256}).addTo(sprayLeaflet);
+  const latLngs=corners.map(c=>[+c.lat,+c.lng]);
+  L.polygon(latLngs,{color:'#22c55e',weight:2,fillOpacity:0}).addTo(sprayLeaflet);
+  const bounds=L.latLngBounds(latLngs).pad(0.15);
+  sprayLeaflet.fitBounds(bounds);
+}
+
+// Keep spray Leaflet map centered on GPS in close-up mode
+function updateSprayLeafletView(){
+  if(!sprayLeaflet||!spraySatVisible) return;
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!field) return;
+  if(sprayZoomMode==='closeup'&&lastGPS){
+    sprayLeaflet.setView([lastGPS.latitude,lastGPS.longitude],18,{animate:true,duration:0.5});
+  } else {
+    const corners=field.corners.filter(c=>c.lat&&c.lng);
+    if(corners.length<4) return;
+    const latLngs=corners.map(c=>[+c.lat,+c.lng]);
+    sprayLeaflet.fitBounds(L.latLngBounds(latLngs).pad(0.15),{animate:true,duration:0.5});
+  }
+}
 
 // ── TOAST ──────────────────────────────────────
 let _tt;
