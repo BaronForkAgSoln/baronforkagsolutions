@@ -368,7 +368,57 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .hay-tab{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:500;color:var(--g500);border:none;background:none;cursor:pointer;border-radius:8px;transition:all .15s}
 .hay-tab.active{background:#fff;color:var(--g900);box-shadow:var(--shadow)}
 
-/* ── HOME SCREEN ── */
+/* ── CALIBRATION SCREEN ── */
+.calib-screen{background:var(--g900);color:#fff;display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
+.calib-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center}
+.calib-icon{font-size:64px;line-height:1}
+.calib-title{font-size:20px;font-weight:700;color:#fff}
+.calib-sub{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:320px}
+.calib-status{background:rgba(255,255,255,.07);border-radius:10px;padding:14px 20px;width:100%;max-width:360px}
+.calib-bearing{font-size:48px;font-weight:800;color:#fff;line-height:1}
+.calib-bearing-lbl{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.calib-compass{width:80px;height:80px;margin:8px auto;position:relative}
+.calib-compass svg{width:100%;height:100%}
+.calib-gps-dot{width:10px;height:10px;border-radius:50%;background:var(--g500);margin:0 auto 8px;transition:background .3s}
+.calib-gps-dot.on{background:#22c55e;animation:gp 1.2s ease-in-out infinite}
+.calib-gps-lbl{font-size:11px;color:rgba(255,255,255,.4)}
+.calib-btn-panel{padding:16px 20px 32px;display:flex;flex-direction:column;gap:10px;width:100%}
+.calib-btn{padding:15px 0;border-radius:11px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);width:100%}
+.cb-start{background:#15803d;color:#fff}
+.cb-start:disabled{background:#374151;color:rgba(255,255,255,.3);cursor:default}
+.cb-done{background:#1d4ed8;color:#fff}
+.cb-done:disabled{background:#374151;color:rgba(255,255,255,.3);cursor:default}
+.cb-cancel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+.cb-tryagain{background:rgba(255,165,0,.2);color:#fbbf24;border:1px solid rgba(255,165,0,.3)}
+
+/* ── SPRAY SCREEN UPGRADES ── */
+.spray-map-wrap{position:relative}
+.spray-zoom-btn{
+  position:absolute;top:8px;right:8px;z-index:10;
+  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);
+  color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;
+  cursor:pointer;backdrop-filter:blur(4px);
+}
+.spray-cancel-btn{
+  width:100%;padding:11px;border-radius:9px;border:none;
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);
+  font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);
+  margin-top:2px;
+}
+.spray-cancel-btn:hover{background:rgba(239,68,68,.15);color:#fca5a5}
+
+/* Reset bearing button in field edit */
+.reset-bearing-btn{
+  width:100%;padding:9px;border-radius:8px;border:1.5px dashed var(--amber);
+  background:var(--amber-bg);color:var(--amber);font-size:13px;font-weight:500;
+  cursor:pointer;margin-top:8px;
+}
+.bearing-display{
+  background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+  padding:10px 12px;margin-top:8px;display:flex;align-items:center;gap:10px;
+}
+.bearing-display-val{font-size:22px;font-weight:700;color:var(--g900)}
+.bearing-display-lbl{font-size:12px;color:var(--g500);line-height:1.5}
 .home-screen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:calc(100vh - 56px);padding:20px 20px 24px;gap:14px}
 .home-greeting{text-align:center;margin-bottom:4px}
 .home-greeting-title{font-size:22px;font-weight:700;color:var(--g900);margin-bottom:4px}
@@ -812,11 +862,11 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">How much herbicide <span>(oz)</span></label>
-            <input class="form-input" id="tk-herb-amt" type="number" placeholder="0" min="0">
+            <label class="form-label">How much herbicide <span>(gal)</span></label>
+            <input class="form-input" id="tk-herb-amt" type="number" placeholder="0" min="0" step="0.1">
           </div>
           <div class="form-group">
-            <label class="form-label">Surfactant added <span>(oz)</span></label>
+            <label class="form-label">Surfactant added <span>(gal)</span></label>
             <input class="form-input" id="tk-surf" type="number" placeholder="0" min="0">
           </div>
         </div>
@@ -983,7 +1033,47 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
         <button class="btn btn-primary" onclick="saveField()">💾 Save field</button>
       </div>
+      <div id="bearing-display" style="display:none">
+        <div class="bearing-display">
+          <div>
+            <div class="bearing-display-val" id="bearing-display-val">—°</div>
+            <div class="bearing-display-lbl">Spray direction set<br><span style="font-size:11px;color:var(--g400)">Calibrated from first edge drive</span></div>
+          </div>
+          <button class="reset-bearing-btn" style="width:auto;padding:8px 14px;margin:0" onclick="resetBearing()">↺ Reset direction</button>
+        </div>
+      </div>
       <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- CALIBRATION -->
+  <div id="screen-calib" class="screen spray-screen">
+    <div class="calib-body">
+      <div class="calib-icon" id="calib-icon">🧭</div>
+      <div class="calib-title" id="calib-title">Set Your Spray Direction</div>
+      <div class="calib-sub" id="calib-sub">Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.</div>
+      <div class="calib-status">
+        <div class="calib-gps-dot" id="calib-gps-dot"></div>
+        <div class="calib-gps-lbl" id="calib-gps-lbl">Waiting for GPS signal…</div>
+        <div class="calib-bearing" id="calib-bearing">—°</div>
+        <div class="calib-bearing-lbl">Spray direction</div>
+        <div class="calib-compass" id="calib-compass">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="38" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5"/>
+            <text x="40" y="14" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="sans-serif">N</text>
+            <text x="40" y="72" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="sans-serif">S</text>
+            <text x="10" y="44" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="sans-serif">W</text>
+            <text x="70" y="44" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="sans-serif">E</text>
+            <line id="calib-needle" x1="40" y1="40" x2="40" y2="10" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="calib-btn-panel">
+      <button class="calib-btn cb-start" id="calib-start-btn" onclick="calibStart()" disabled>▶ &nbsp;Start — drive this edge</button>
+      <button class="calib-btn cb-done" id="calib-done-btn" onclick="calibDone()" disabled>✓ &nbsp;Done — save this direction</button>
+      <button class="calib-btn cb-tryagain" id="calib-retry-btn" onclick="calibRetry()" style="display:none">↺ &nbsp;Try again</button>
+      <button class="calib-btn cb-cancel" onclick="calibCancel()">Cancel — go back</button>
     </div>
   </div>
 
@@ -999,7 +1089,10 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="spray-stat"><div class="spray-stat-val" id="ss-total">—</div><div class="spray-stat-lbl">Total</div></div>
       <div class="spray-stat"><div class="spray-stat-val" id="ss-pct">0%</div><div class="spray-stat-lbl">Complete</div></div>
     </div>
-    <div class="spray-map-wrap"><canvas id="sprayCanvas"></canvas></div>
+    <div class="spray-map-wrap">
+      <canvas id="sprayCanvas"></canvas>
+      <button class="spray-zoom-btn" id="spray-zoom-btn" onclick="toggleSprayZoom()">🔍 Overview</button>
+    </div>
     <div class="deviation-bar">
       <div class="dev-label" id="dev-left">◀ Drift left</div>
       <div class="dev-track"><div class="dev-fill" id="dev-fill" style="left:45%;width:10%"></div><div class="dev-center"></div></div>
@@ -1008,7 +1101,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
     <div class="guidance-bar">
       <div class="guidance-arrow" id="guidance-arrow">📍</div>
       <div class="guidance-text">
-        <div class="guidance-main" id="guidance-main">Acquiring GPS…</div>
+        <div class="guidance-main" id="guidance-main">Looking for a signal…</div>
         <div class="guidance-sub" id="guidance-sub">Tap Start once we have got a signal</div>
       </div>
       <div class="g-dev dev-warn" id="guidance-dev">No GPS</div>
@@ -1019,6 +1112,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <button class="spray-btn sb-pause" id="btn-pause" onclick="togglePause()">⏸ &nbsp;Pause</button>
         <button class="spray-btn sb-stop" onclick="stopSpray()">⏹ &nbsp;Stop &amp; Save</button>
       </div>
+      <button class="spray-cancel-btn" onclick="cancelSpray()">✕ &nbsp;Cancel — return to fields</button>
     </div>
   </div>
 
@@ -1397,14 +1491,6 @@ function showEditScreen(){
   document.getElementById('hdr-home-btn').classList.add('visible');
   document.getElementById('app-sub').textContent='Field Setup';
 }
-function showSprayScreen(){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-spray').classList.add('active');
-  document.getElementById('hdr-action-btn').style.display='none';
-  document.getElementById('hdr-home-btn').classList.remove('visible');
-  document.getElementById('app-sub').textContent='Spraying';
-}
-
 // ── FIELD MATH — polygon-capable ─────────────
 function haversineDist(lat1,lng1,lat2,lng2){
   const R=20925524.9;
@@ -1593,6 +1679,15 @@ window.showAddField=function(id){
   const corners = f?.corners?.length >= MIN_CORNERS ? f.corners
     : [{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''}];
   renderCornerList(corners);
+  // Show bearing if set
+  const bearingDisplay = document.getElementById('bearing-display');
+  const bearingVal = document.getElementById('bearing-display-val');
+  if(f?.sprayBearing != null){
+    bearingDisplay.style.display = 'block';
+    bearingVal.textContent = `${f.sprayBearing}°`;
+  } else {
+    bearingDisplay.style.display = 'none';
+  }
   startGPS(); showEditScreen();
 };
 window.cancelEdit=function(){stopGPS();switchTab('fields')};
@@ -1706,7 +1801,7 @@ function renderFieldList(){
     const badge=!allSet?`<span class="badge badge-setup">⚠ Needs corners set</span>`
       :(recs.length&&isSameSeason(recs[0].dateRaw))?`<span class="badge badge-sprayed">✓ Already sprayed</span>`
       :`<span class="badge badge-ready">Ready to go</span>`;
-    const meta=[passes?`${passes.num} passes`:'',f.swath?`${f.swath} ft swath`:'',passes?`~${passes.acres} ac`:'',f.sprayer||''].filter(Boolean).join(' · ');
+    const meta=[passes?`${passes.num} passes`:'',f.swath?`${f.swath} ft swath`:'',passes?`~${passes.acres} ac`:'',f.sprayer||'',f.sprayBearing!=null?`${f.sprayBearing}° bearing`:''].filter(Boolean).join(' · ');
     const histHTML=isOpen?`<div class="history-section"><div class="history-label">Spray history</div>${
       recs.length?recs.slice(0,5).map(r=>`<div class="history-entry">
         <div class="history-row"><span class="history-date">${r.date}</span><span class="history-detail">${r.product}${r.speed?' · '+r.speed+' MPH':''}${r.passes?' · '+r.passes:''}</span></div>
@@ -1746,8 +1841,8 @@ function renderTankSummary(){
     <div class="tank-summary-vals">
       <div class="tank-sv"><div class="tank-sv-val">${t.size||500}</div><div class="tank-sv-lbl">Gal tank</div></div>
       <div class="tank-sv"><div class="tank-sv-val">${t.herb||'—'}</div><div class="tank-sv-lbl">Herbicide</div></div>
-      <div class="tank-sv"><div class="tank-sv-val">${t.herbAmt||0} oz</div><div class="tank-sv-lbl">Herb added</div></div>
-      <div class="tank-sv"><div class="tank-sv-val">${t.surf||0} oz</div><div class="tank-sv-lbl">Surfactant</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.herbAmt||0} gal</div><div class="tank-sv-lbl">Herb added</div></div>
+      <div class="tank-sv"><div class="tank-sv-val">${t.surf||0} gal</div><div class="tank-sv-lbl">Surfactant</div></div>
       
     </div>
   </div>`;
@@ -1780,22 +1875,417 @@ window.clearTank=async function(){
 };
 
 // ── SPRAY ─────────────────────────────────────
+let sprayZoomMode='overview';
+
+window.toggleSprayZoom=function(){
+  sprayZoomMode=sprayZoomMode==='overview'?'closeup':'overview';
+  const btn=document.getElementById('spray-zoom-btn');
+  if(btn) btn.textContent=sprayZoomMode==='overview'?'🔍 Close-up':'🔍 Overview';
+  drawSprayCanvas();
+};
+
+window.cancelSpray=function(){
+  if(sprayTracking||sprayPaused){
+    if(!confirm('Cancel this spray run? Your progress will not be saved.')) return;
+  }
+  stopGPS();sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
+  switchTab('fields');
+};
+
 window.startSpray=function(id){
   const field=localFields.find(f=>f.id===id);
   if(!field) return;
   const passes=computePasses(field);
-  if(!passes){showToast('Set all 4 corners first');return}
-  sprayFieldId=id;sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
+  if(!passes){showToast('Mark at least 4 corners first');return}
+  sprayFieldId=id;
+  if(field.sprayBearing==null){
+    startCalibration(id); return;
+  }
+  launchSpraySession(field,passes);
+};
+
+function launchSpraySession(field,passes){
+  sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
   passState=Array(passes.num).fill('untouched');
   passProgress=Array(passes.num).fill(0);
+  sprayZoomMode='overview';
   document.getElementById('spray-field-name').textContent=field.name;
-  document.getElementById('spray-field-sub').textContent=`${passes.acres} ac · ${passes.num} passes · ${field.swath} ft swath`;
+  document.getElementById('spray-field-sub').textContent=`${passes.acres} ac · ${passes.num} passes · ${field.swath} ft swath · ${field.sprayBearing}°`;
   document.getElementById('ss-total').textContent=passes.num;
   document.getElementById('ss-done').textContent='0';
   document.getElementById('ss-curr').textContent='—';
   document.getElementById('ss-pct').textContent='0%';
+  const zb=document.getElementById('spray-zoom-btn');
+  if(zb) zb.textContent='🔍 Close-up';
   setSprayButtons('idle');setGuidance('waiting');setDeviationBar(null);
-  showSprayScreen();setTimeout(drawSprayCanvas,80);startGPS();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-spray').classList.add('active');
+  document.getElementById('app-sub').textContent='Spraying';
+  document.getElementById('hdr-action-btn').style.display='none';
+  document.getElementById('hdr-home-btn').classList.remove('visible');
+  setTimeout(drawSprayCanvas,80);
+  startGPS();
+}
+
+function setSprayButtons(state){
+  const btnStart=document.getElementById('btn-start');
+  const psRow=document.getElementById('pause-stop-row');
+  const btnPause=document.getElementById('btn-pause');
+  if(state==='idle'){btnStart.disabled=true;btnStart.style.display='block';psRow.style.display='none'}
+  else if(state==='gps-ready'){btnStart.disabled=false;btnStart.style.display='block';psRow.style.display='none'}
+  else if(state==='tracking'){btnStart.style.display='none';psRow.style.display='flex';btnPause.textContent='⏸ \u00a0Pause';btnPause.style.background='#b45309'}
+  else if(state==='paused'){btnStart.style.display='none';psRow.style.display='flex';btnPause.textContent='▶ \u00a0Resume';btnPause.style.background='#15803d'}
+}
+window.beginTracking=function(){sprayTracking=true;sprayPaused=false;setSprayButtons('tracking');setGuidance('tracking');showToast('Tracking started — drive your passes')};
+window.togglePause=function(){
+  if(!sprayPaused){sprayPaused=true;sprayTracking=false;currentPassIdx=-1;setSprayButtons('paused');setGuidance('paused');setDeviationBar(null);showToast('Paused')}
+  else{sprayPaused=false;sprayTracking=true;setSprayButtons('tracking');setGuidance('tracking');showToast('Resumed')}
+};
+window.stopSpray=function(){
+  const done=passState.filter(s=>s==='done').length;
+  const total=passState.length;
+  const pct=total?Math.round(done/total*100):0;
+  const msg=(sprayTracking||sprayPaused||done>0)
+    ?`Done spraying?\n\n${done} of ${total} passes finished (${pct}%).\nWe will save a picture of what you covered.`
+    :'Cancel and return to fields?';
+  if(!confirm(msg)) return;
+  const gridImage=done>0?captureGridSnapshot():null;
+  stopGPS();sprayTracking=false;sprayPaused=false;currentPassIdx=-1;
+  if(done>0||sprayFieldId) openLogModal(sprayFieldId,gridImage,done,total);
+  switchTab('fields');
+};
+
+function captureGridSnapshot(){
+  const canvas=document.getElementById('sprayCanvas');
+  if(!canvas) return null;
+  try{drawSprayCanvas();const off=document.createElement('canvas');off.width=320;off.height=100;off.getContext('2d').drawImage(canvas,0,0,320,100);return off.toDataURL('image/png')}catch{return null}
+}
+
+function setGuidance(mode,passNum){
+  const arrow=document.getElementById('guidance-arrow');
+  const main=document.getElementById('guidance-main');
+  const sub=document.getElementById('guidance-sub');
+  const dev=document.getElementById('guidance-dev');
+  if(!arrow) return;
+  const G={
+    waiting:    ['📍','Looking for a signal…','Tap Start once we have got a signal','No GPS','dev-warn'],
+    'gps-ready':['✅','Got a signal — tap Start when you are ready','Drive into field and tap Start to begin tracking','GPS ready','dev-good'],
+    tracking:   ['🚜','You are rolling — drive your passes','Go any direction you like — we will track where you have been','Live','dev-good'],
+    paused:     ['⏸','Paused','Tap Resume when you are ready to go again','Paused','dev-warn'],
+    'in-pass':  ['🟡',`In pass ${passNum}`,'Keep going — we will mark it done when you finish',`Pass ${passNum}`,'dev-warn'],
+    'pass-done':['✅',`Pass ${passNum} done`,'Line up for the next one',`Pass ${passNum} ✓`,'dev-good'],
+    outside:    ['🚜','Between passes','Line up for your next pass','Tracking','dev-good'],
+    complete:   ['🎉','All done!','Tap Stop and Save when you are ready to wrap up','100%','dev-good'],
+  };
+  const[a,m,s,d,cls]=G[mode]||G.waiting;
+  arrow.textContent=a;main.textContent=m;sub.textContent=s;
+  dev.textContent=d;dev.className=`g-dev ${cls}`;
+}
+
+function setDeviationBar(deviationFt,swathFt){
+  const fill=document.getElementById('dev-fill');
+  const leftLbl=document.getElementById('dev-left');
+  const rightLbl=document.getElementById('dev-right');
+  if(!fill) return;
+  if(deviationFt===null||deviationFt===undefined||!swathFt){
+    fill.style.left='45%';fill.style.width='10%';fill.style.background='rgba(255,255,255,.2)';
+    leftLbl.style.opacity='.3';rightLbl.style.opacity='.3';return;
+  }
+  const maxDev=swathFt/2,clamp=Math.max(-maxDev,Math.min(maxDev,deviationFt));
+  const pct=50+clamp/maxDev*45;
+  fill.style.left=`${pct-5}%`;fill.style.width='10%';
+  const absDev=Math.abs(deviationFt);
+  fill.style.background=absDev<3?'#22c55e':absDev<8?'#fbbf24':'#ef4444';
+  leftLbl.textContent=deviationFt<0?`◀ ${absDev.toFixed(1)} ft`:'◀ Drift left';
+  rightLbl.textContent=deviationFt>0?`${absDev.toFixed(1)} ft ▶`:'Drift right ▶';
+  leftLbl.style.opacity=deviationFt<0?'1':'.3';
+  rightLbl.style.opacity=deviationFt>0?'1':'.3';
+}
+
+// ── DIRECTION-AWARE GEOMETRY ──────────────────
+function bearingToRad(bearing){ return (90-bearing)*Math.PI/180; }
+
+function rotatePoint(dx,dy,angleRad){
+  return{
+    rx: dx*Math.cos(angleRad)-dy*Math.sin(angleRad),
+    ry: dx*Math.sin(angleRad)+dy*Math.cos(angleRad)
+  };
+}
+
+function latlngToFeet(lat,lng,centerLat,centerLng){
+  const dx=(lng-centerLng)*Math.cos(centerLat*Math.PI/180)*364000;
+  const dy=(lat-centerLat)*364000;
+  return{dx,dy};
+}
+
+function getRotatedGeometry(field){
+  const corners=field.corners.filter(c=>c.lat&&c.lng);
+  if(corners.length<4) return null;
+  const centerLat=corners.reduce((s,c)=>s+ +c.lat,0)/corners.length;
+  const centerLng=corners.reduce((s,c)=>s+ +c.lng,0)/corners.length;
+  const bearing=field.sprayBearing!=null?field.sprayBearing:0;
+  const angle=bearingToRad(bearing);
+  const rotated=corners.map(c=>{
+    const{dx,dy}=latlngToFeet(+c.lat,+c.lng,centerLat,centerLng);
+    return rotatePoint(dx,dy,angle);
+  });
+  const rxVals=rotated.map(r=>r.rx);
+  const ryVals=rotated.map(r=>r.ry);
+  return{
+    centerLat,centerLng,angle,rotated,corners,
+    minRx:Math.min(...rxVals),maxRx:Math.max(...rxVals),
+    minRy:Math.min(...ryVals),maxRy:Math.max(...ryVals)
+  };
+}
+
+function isInsideRotatedPoly(rx,ry,rotatedCorners){
+  let inside=false;
+  const n=rotatedCorners.length;
+  for(let i=0,j=n-1;i<n;j=i++){
+    const xi=rotatedCorners[i].rx,yi=rotatedCorners[i].ry;
+    const xj=rotatedCorners[j].rx,yj=rotatedCorners[j].ry;
+    if(((yi>ry)!==(yj>ry))&&(rx<(xj-xi)*(ry-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+
+function getPassIndex(lat,lng,field,passes){
+  const geo=getRotatedGeometry(field);if(!geo) return -1;
+  const{dx,dy}=latlngToFeet(lat,lng,geo.centerLat,geo.centerLng);
+  const{rx,ry}=rotatePoint(dx,dy,geo.angle);
+  if(!isInsideRotatedPoly(rx,ry,geo.rotated)) return -1;
+  const width=geo.maxRx-geo.minRx;
+  const frac=(rx-geo.minRx)/width;
+  const idx=Math.floor(frac*passes.num);
+  return(idx>=0&&idx<passes.num)?idx:-1;
+}
+
+function getDeviation(lat,lng,field,passes,passIdx){
+  const geo=getRotatedGeometry(field);if(!geo) return null;
+  const{dx,dy}=latlngToFeet(lat,lng,geo.centerLat,geo.centerLng);
+  const{rx}=rotatePoint(dx,dy,geo.angle);
+  const width=geo.maxRx-geo.minRx;
+  const centerRx=geo.minRx+(passIdx+0.5)*(width/passes.num);
+  return rx-centerRx;
+}
+
+function processGPSForTracking(coords){
+  if(!sprayTracking||sprayPaused) return;
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!field) return;
+  const passes=computePasses(field);if(!passes) return;
+  const passIdx=getPassIndex(coords.latitude,coords.longitude,field,passes);
+  if(passIdx<0){
+    if(currentPassIdx>=0){currentPassIdx=-1;setGuidance('outside')}
+    document.getElementById('ss-curr').textContent='—';
+    setDeviationBar(null);drawSprayCanvas();return;
+  }
+  currentPassIdx=passIdx;
+  setDeviationBar(getDeviation(coords.latitude,coords.longitude,field,passes,passIdx),passes.swath);
+  if(passState[passIdx]!=='done'){
+    passProgress[passIdx]++;passState[passIdx]='inprogress';
+    if(passProgress[passIdx]>=MIN_TICKS){
+      passState[passIdx]='done';
+      const doneCount=passState.filter(s=>s==='done').length;
+      const pct=Math.round(doneCount/passes.num*100);
+      document.getElementById('ss-done').textContent=doneCount;
+      document.getElementById('ss-pct').textContent=pct+'%';
+      if(doneCount===passes.num){setGuidance('complete');showToast('All done!')}
+      else{setGuidance('pass-done',passIdx+1);showToast(`Pass ${passIdx+1} done`)}
+    }else setGuidance('in-pass',passIdx+1);
+  }else setGuidance('pass-done',passIdx+1);
+  document.getElementById('ss-curr').textContent=passState[passIdx]==='done'?`${passIdx+1} ✓`:passIdx+1;
+  drawSprayCanvas();
+}
+
+function drawSprayCanvas(){
+  const canvas=document.getElementById('sprayCanvas');
+  const field=localFields.find(f=>f.id===sprayFieldId);
+  if(!canvas||!field) return;
+  const passes=computePasses(field);if(!passes) return;
+  const geo=getRotatedGeometry(field);if(!geo) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*(window.devicePixelRatio||1);
+  canvas.height=H*(window.devicePixelRatio||1);
+  ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
+  ctx.fillStyle='#0f1f0a';ctx.fillRect(0,0,W,H);
+  const n=passes.num;
+  const pad=24;
+
+  // Close-up mode: center on GPS position
+  let minRx=geo.minRx,maxRx=geo.maxRx,minRy=geo.minRy,maxRy=geo.maxRy;
+  if(sprayZoomMode==='closeup'&&lastGPS&&currentPassIdx>=0){
+    const{dx,dy}=latlngToFeet(lastGPS.latitude,lastGPS.longitude,geo.centerLat,geo.centerLng);
+    const{rx:myRx,ry:myRy}=rotatePoint(dx,dy,geo.angle);
+    const passW=(geo.maxRx-geo.minRx)/n;
+    const halfW=passW*2.5;
+    minRx=myRx-halfW;maxRx=myRx+halfW;
+    const halfL=(geo.maxRy-geo.minRy)*0.3;
+    minRy=myRy-halfL;maxRy=myRy+halfL;
+  }
+
+  const sx=(W-pad*2)/(maxRx-minRx||1);
+  const sy=(H-pad*2)/(maxRy-minRy||1);
+  const sc=Math.min(sx,sy)*0.9;
+  const offX=W/2-(minRx+maxRx)/2*sc;
+  const offY=H/2+(minRy+maxRy)/2*sc;
+  function toC(rx,ry){return{x:rx*sc+offX,y:-ry*sc+offY};}
+
+  // Draw polygon
+  const poly=geo.rotated.map(r=>toC(r.rx,r.ry));
+  ctx.beginPath();ctx.moveTo(poly[0].x,poly[0].y);
+  poly.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.closePath();
+  ctx.fillStyle='rgba(30,60,20,.85)';ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // Draw pass strips
+  const passW=(geo.maxRx-geo.minRx)/n;
+  for(let i=0;i<n;i++){
+    const sMinRx=geo.minRx+i*passW;
+    const sMaxRx=geo.minRx+(i+1)*passW;
+    const sMidRx=(sMinRx+sMaxRx)/2;
+    const st=passState[i]||'untouched';
+    const isCurr=i===currentPassIdx&&sprayTracking;
+    // Clip to polygon
+    let yTop=null,yBot=null;
+    const steps=20;
+    for(let s=0;s<=steps;s++){
+      const sRy=geo.minRy+(geo.maxRy-geo.minRy)*s/steps;
+      if(isInsideRotatedPoly(sMidRx,sRy,geo.rotated)){
+        const pt=toC(sMidRx,sRy);
+        if(yTop===null||pt.y<yTop) yTop=pt.y;
+        if(yBot===null||pt.y>yBot) yBot=pt.y;
+      }
+    }
+    if(yTop===null) continue;
+    const x1=toC(sMinRx,0).x,x2=toC(sMaxRx,0).x;
+    const sw=Math.abs(x2-x1);
+    ctx.fillStyle=st==='done'?'rgba(34,197,94,.55)':
+                  st==='inprogress'?'rgba(251,191,36,.4)':
+                  isCurr?'rgba(251,191,36,.2)':'rgba(255,255,255,.04)';
+    ctx.fillRect(Math.min(x1,x2),yTop,sw,yBot-yTop);
+    const midX=(x1+x2)/2,midY=(yTop+yBot)/2;
+    const fs=Math.max(9,Math.min(14,sw*.55));
+    ctx.font=`${fs}px sans-serif`;ctx.textAlign='center';
+    ctx.fillStyle=st==='done'?'#86efac':st==='inprogress'?'#fcd34d':'rgba(255,255,255,.3)';
+    ctx.fillText(i+1,midX,midY+4);
+    if(st==='done'&&sw>18){ctx.font=`${Math.max(8,sw*.35)}px sans-serif`;ctx.fillStyle='#86efac';ctx.fillText('✓',midX,midY-fs+2);}
+    ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(Math.min(x1,x2),yTop);ctx.lineTo(Math.min(x1,x2),yBot);ctx.stroke();
+  }
+
+  // GPS dot
+  if(lastGPS){
+    const{dx,dy}=latlngToFeet(lastGPS.latitude,lastGPS.longitude,geo.centerLat,geo.centerLng);
+    const{rx,ry}=rotatePoint(dx,dy,geo.angle);
+    const pt=toC(rx,ry);
+    ctx.beginPath();ctx.arc(pt.x,pt.y,12,0,Math.PI*2);ctx.fillStyle='rgba(59,130,246,.2)';ctx.fill();
+    ctx.beginPath();ctx.arc(pt.x,pt.y,6,0,Math.PI*2);ctx.fillStyle='#3b82f6';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+  }
+}
+
+// ── CALIBRATION ────────────────────────────────
+let calibFieldId=null,calibStartPos=null,calibTracking=false;
+
+function startCalibration(fieldId){
+  calibFieldId=fieldId;calibStartPos=null;calibTracking=false;
+  document.getElementById('calib-icon').textContent='🧭';
+  document.getElementById('calib-title').textContent='Set Your Spray Direction';
+  document.getElementById('calib-sub').textContent='Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.';
+  document.getElementById('calib-bearing').textContent='—°';
+  document.getElementById('calib-start-btn').disabled=true;
+  document.getElementById('calib-done-btn').disabled=true;
+  document.getElementById('calib-retry-btn').style.display='none';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-calib').classList.add('active');
+  document.getElementById('app-sub').textContent='Set Spray Direction';
+  document.getElementById('hdr-action-btn').style.display='none';
+  document.getElementById('hdr-home-btn').classList.remove('visible');
+  startGPS();
+}
+
+function updateCalibGPS(coords){
+  const dot=document.getElementById('calib-gps-dot');
+  const lbl=document.getElementById('calib-gps-lbl');
+  if(dot) dot.className='calib-gps-dot on';
+  if(lbl) lbl.textContent=`${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`;
+  document.getElementById('calib-start-btn').disabled=false;
+  if(calibTracking&&calibStartPos){
+    const bearing=calcBearing(calibStartPos.lat,calibStartPos.lng,coords.latitude,coords.longitude);
+    document.getElementById('calib-bearing').textContent=`${bearing}°`;
+    const needle=document.getElementById('calib-needle');
+    if(needle){
+      const rad=bearing*Math.PI/180;
+      const ex=40+28*Math.sin(rad),ey=40-28*Math.cos(rad);
+      needle.setAttribute('x2',ex.toFixed(1));needle.setAttribute('y2',ey.toFixed(1));
+    }
+    document.getElementById('calib-done-btn').disabled=false;
+  }
+}
+
+function calcBearing(lat1,lng1,lat2,lng2){
+  const dLng=(lng2-lng1)*Math.PI/180;
+  const lat1r=lat1*Math.PI/180,lat2r=lat2*Math.PI/180;
+  const y=Math.sin(dLng)*Math.cos(lat2r);
+  const x=Math.cos(lat1r)*Math.sin(lat2r)-Math.sin(lat1r)*Math.cos(lat2r)*Math.cos(dLng);
+  return Math.round((Math.atan2(y,x)*180/Math.PI+360)%360);
+}
+
+window.calibStart=function(){
+  if(!lastGPS){showToast('No GPS signal yet');return}
+  calibStartPos={lat:lastGPS.latitude,lng:lastGPS.longitude};
+  calibTracking=true;
+  document.getElementById('calib-start-btn').disabled=true;
+  document.getElementById('calib-icon').textContent='🚜';
+  document.getElementById('calib-title').textContent='Drive to the other end';
+  document.getElementById('calib-sub').textContent='Drive the full length of this edge. Tap Done when you reach the far corner.';
+  document.getElementById('calib-retry-btn').style.display='block';
+  showToast('Drive to the other end, then tap Done');
+};
+
+window.calibDone=async function(){
+  if(!lastGPS||!calibStartPos){showToast('No GPS data');return}
+  const bearing=calcBearing(calibStartPos.lat,calibStartPos.lng,lastGPS.latitude,lastGPS.longitude);
+  const field=localFields.find(f=>f.id===calibFieldId);if(!field) return;
+  try{
+    await setDoc(doc(db,`users/${currentUser.uid}/fields/${calibFieldId}`),{...field,sprayBearing:bearing});
+    showToast(`Direction set: ${bearing}°`);
+    calibTracking=false;
+    const updatedField={...field,sprayBearing:bearing};
+    const passes=computePasses(updatedField);
+    stopGPS();
+    setTimeout(()=>{startGPS();launchSpraySession(updatedField,passes);},200);
+  }catch(e){showToast('Could not save — check your signal')}
+};
+
+window.calibRetry=function(){
+  calibStartPos=null;calibTracking=false;
+  document.getElementById('calib-start-btn').disabled=!lastGPS;
+  document.getElementById('calib-done-btn').disabled=true;
+  document.getElementById('calib-bearing').textContent='—°';
+  document.getElementById('calib-icon').textContent='🧭';
+  document.getElementById('calib-title').textContent='Set Your Spray Direction';
+  document.getElementById('calib-sub').textContent='Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.';
+};
+
+window.calibCancel=function(){
+  calibTracking=false;calibStartPos=null;calibFieldId=null;
+  stopGPS();switchTab('fields');
+};
+
+window.resetBearing=async function(){
+  if(!editingId) return;
+  if(!confirm('Reset the spray direction for this field? You will need to re-calibrate next time you spray.')) return;
+  try{
+    const field=localFields.find(f=>f.id===editingId);if(!field) return;
+    const updated={...field};delete updated.sprayBearing;
+    await setDoc(doc(db,`users/${currentUser.uid}/fields/${editingId}`),updated);
+    document.getElementById('bearing-display').style.display='none';
+    showToast('Spray direction cleared');
+  }catch(e){showToast('Could not save — check your signal')}
 };
 
 function setSprayButtons(state){
@@ -1873,91 +2363,6 @@ function setDeviationBar(deviationFt,swathFt){
   rightLbl.style.opacity=deviationFt>0?'1':'.3';
 }
 
-function computeDeviation(coords,field,passes,passIdx){
-  try{
-    const {minLng,maxLng,midLat}=passes;
-    const centerLng=minLng+(passIdx+0.5)*(maxLng-minLng)/passes.num;
-    return(coords.longitude-centerLng)*Math.cos(midLat*Math.PI/180)*364000;
-  }catch{return null}
-}
-
-function processGPSForTracking(coords){
-  if(!sprayTracking||sprayPaused) return;
-  const field=localFields.find(f=>f.id===sprayFieldId);
-  if(!field) return;
-  const passes=computePasses(field);if(!passes) return;
-  const corners=field.corners.filter(c=>c.lat&&c.lng);
-  const {minLng,maxLng,minLat,maxLat}=passes;
-
-  // Check if inside bounding box first (fast)
-  const fracX=(coords.longitude-minLng)/(maxLng-minLng);
-  const fracY=(coords.latitude-minLat)/(maxLat-minLat);
-  const inBbox=fracX>=0&&fracX<=1&&fracY>=0&&fracY<=1;
-
-  // Then check polygon boundary
-  const inField=inBbox && (corners.length===4
-    ? inBbox  // rectangle — bbox check is sufficient
-    : pointInPolygon(coords.latitude, coords.longitude, corners));
-
-  const passIdx=Math.floor(fracX*passes.num);
-
-  if(!inField||passIdx<0||passIdx>=passes.num){
-    if(currentPassIdx>=0){currentPassIdx=-1;setGuidance('outside')}
-    document.getElementById('ss-curr').textContent='—';
-    setDeviationBar(null);drawSprayCanvas();return;
-  }
-  currentPassIdx=passIdx;
-  setDeviationBar(computeDeviation(coords,field,passes,passIdx),passes.swath);
-  if(passState[passIdx]!=='done'){
-    passProgress[passIdx]++;passState[passIdx]='inprogress';
-    if(passProgress[passIdx]>=MIN_TICKS){
-      passState[passIdx]='done';
-      const doneCount=passState.filter(s=>s==='done').length;
-      const pct=Math.round(doneCount/passes.num*100);
-      document.getElementById('ss-done').textContent=doneCount;
-      document.getElementById('ss-pct').textContent=pct+'%';
-      if(doneCount===passes.num){setGuidance('complete');showToast('🎉 All passes complete!')}
-      else{setGuidance('pass-done',passIdx+1);showToast(`Pass ${passIdx+1} ✓`)}
-    }else setGuidance('in-pass',passIdx+1);
-  }else setGuidance('pass-done',passIdx+1);
-  document.getElementById('ss-curr').textContent=passState[passIdx]==='done'?`${passIdx+1} ✓`:passIdx+1;
-  drawSprayCanvas();
-}
-
-function drawSprayCanvas(){
-  const canvas=document.getElementById('sprayCanvas');
-  const field=localFields.find(f=>f.id===sprayFieldId);
-  if(!canvas||!field) return;
-  const passes=computePasses(field);if(!passes) return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.offsetWidth,H=canvas.offsetHeight;
-  canvas.width=W*(window.devicePixelRatio||1);canvas.height=H*(window.devicePixelRatio||1);
-  ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
-  const pad=20,n=passes.num,fw=W-pad*2,fh=H-pad*2,sp=fw/n;
-  ctx.fillStyle='#1a2e10';ctx.fillRect(pad,pad,fw,fh);
-  for(let i=0;i<n;i++){
-    const x=pad+i*sp,st=passState[i]||'untouched',cur=i===currentPassIdx&&sprayTracking;
-    ctx.fillStyle=st==='done'?'rgba(34,197,94,.55)':st==='inprogress'?'rgba(251,191,36,.4)':cur?'rgba(251,191,36,.15)':'rgba(255,255,255,.03)';
-    ctx.fillRect(x,pad,sp,fh);
-    const fs=Math.max(9,Math.min(13,sp*.55));
-    ctx.font=`${fs}px sans-serif`;ctx.textAlign='center';
-    ctx.fillStyle=st==='done'?'#86efac':st==='inprogress'?'#fcd34d':'rgba(255,255,255,.25)';
-    ctx.fillText(i+1,x+sp/2,pad+fh/2+4);
-    if(st==='done'&&sp>14){ctx.font=`${Math.max(8,sp*.38)}px sans-serif`;ctx.fillStyle='#86efac';ctx.fillText('✓',x+sp/2,pad+fh/2-fs+2)}
-    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,pad+fh);ctx.stroke();
-  }
-  if(lastGPS&&field.corners&&field.corners.filter(c=>c.lat&&c.lng).length>=4){
-    const {minLng,maxLng,minLat,maxLat}=passes;
-    const gx=pad+(lastGPS.longitude-minLng)/(maxLng-minLng||1)*fw;
-    const gy=pad+fh-(lastGPS.latitude-minLat)/(maxLat-minLat||1)*fh;
-    ctx.beginPath();ctx.arc(gx,gy,10,0,Math.PI*2);ctx.fillStyle='rgba(59,130,246,.25)';ctx.fill();
-    ctx.beginPath();ctx.arc(gx,gy,5,0,Math.PI*2);ctx.fillStyle='#3b82f6';ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-  }
-  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.strokeRect(pad,pad,fw,fh);
-}
-
 // ── GPS ───────────────────────────────────────
 function startGPS(){
   if(!navigator.geolocation){setGPSStatus(false);return}
@@ -1965,6 +2370,11 @@ function startGPS(){
   gpsWatchId=navigator.geolocation.watchPosition(
     pos=>{
       lastGPS=pos.coords;gpsActive=true;setGPSStatus(true,pos.coords);
+      // Calibration screen
+      if(document.getElementById('screen-calib').classList.contains('active')){
+        updateCalibGPS(pos.coords);
+      }
+      // Spray screen
       if(document.getElementById('screen-spray').classList.contains('active')){
         if(!sprayTracking&&!sprayPaused){
           const btn=document.getElementById('btn-start');
@@ -2033,7 +2443,7 @@ window.openLogModal=function(id,gridImage,done,total){
   const tp=document.getElementById('log-tank-preview');
   if(t.herb||t.size){
     tp.style.display='block';
-    tp.innerHTML=`🛢 Tank: ${t.size||500} gal · ${t.herb||'—'} (${t.herbAmt||0} oz) · Surfactant ${t.surf||0} oz · Start ${t.start||'?'} gal · End ${t.end||'?'} gal`;
+    tp.innerHTML=`🛢 Tank: ${t.size||500} gal · ${t.herb||'—'} (${t.herbAmt||0} gal) · Surfactant ${t.surf||0} gal · Start ${t.start||'?'} gal · End ${t.end||'?'} gal`;
   }else tp.style.display='none';
   document.getElementById('log-modal').classList.add('open');
 };
@@ -2076,7 +2486,7 @@ function renderRecords(){
       </div>
       <div class="record-detail">
         <b>${r.product}</b>${r.speed?' · '+r.speed+' MPH':''}
-        ${r.tankSize?`<br>Tank: ${r.tankSize} gal · Herb: ${r.herbAmt||'?'} oz · Surf: ${r.surf||'?'} oz`:''}
+        ${r.tankSize?`<br>Tank: ${r.tankSize} gal · Herb: ${r.herbAmt||'?'} gal · Surf: ${r.surf||'?'} gal`:''}
         ${r.tankStart||r.tankEnd?`<br>Start: ${r.tankStart||'?'} gal · End: ${r.tankEnd||'?'} gal`:''}
         ${r.notes?`<br><span style="color:var(--g500)">${r.notes}</span>`:''}
       </div>
@@ -2087,7 +2497,7 @@ function renderRecords(){
 // ── EXCEL EXPORT ──────────────────────────────
 window.exportExcel=function(){
   if(!localRecords.length){showToast('No records to export');return}
-  const headers=['Date','Field','Product','Speed (MPH)','Passes','Tank Size (gal)','Herb Added (oz)','Surfactant (oz)','Tank Start (gal)','Tank End (gal)','Notes'];
+  const headers=['Date','Field','Product','Speed (MPH)','Passes','Tank Size (gal)','Herb Added (gal)','Surfactant (gal)','Tank Start (gal)','Tank End (gal)','Notes'];
   const rows=localRecords.map(r=>[r.date,r.fieldName,r.product,r.speed||'',r.passes||'',r.tankSize||'',r.herbAmt||'',r.surf||'',r.tankStart||'',r.tankEnd||'',r.notes||'']);
   const csv=[headers,...rows].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
