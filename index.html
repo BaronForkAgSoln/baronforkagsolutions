@@ -646,7 +646,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
       <div class="login-error" id="login-error"></div>
     </div>
-    <div class="login-version">Baron Fork Ag Solutions · v1.5</div>
+    <div class="login-version">Baron Fork Ag Solutions · v1.7</div>
   </div>
 </div>
 
@@ -696,7 +696,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="home-btn-icon">📋</div>
         <div><div class="home-btn-title">Records</div><div class="home-btn-sub">Look back at every spray run and pull a report</div></div>
       </button>
-      <div class="home-version">v1.5</div>
+      <div class="home-version">v1.7</div>
     </div>
   </div>
 
@@ -1719,46 +1719,42 @@ window.showAddField=function(id){
   const sw=f?f.swath:30;
   document.querySelectorAll('input[name="swath"]').forEach(r=>{r.checked=parseInt(r.value)===sw});
   if(![15,20,25,30].includes(sw)) document.querySelector('input[name="swath"][value="30"]').checked=true;
-  // Load corners — default 4 empty
+
+  // Reset satellite preview state first
+  previewMode='poly';
+  if(previewLeaflet){previewLeaflet.remove();previewLeaflet=null;}
+  document.getElementById('preview-leaflet').style.display='none';
+  document.getElementById('preview-poly-wrap').style.display='block';
+  document.getElementById('prev-btn-poly')?.classList.add('active');
+  document.getElementById('prev-btn-sat')?.classList.remove('active');
+  document.getElementById('preview-toggle-row').style.display='none';
+  document.getElementById('sat-download-bar').style.display='none';
+
+  // Load corners
   const corners = f?.corners?.length >= MIN_CORNERS ? f.corners
     : [{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''}];
   renderCornerList(corners);
-  // Show satellite toggle if field already has corners set
+
+  // Show satellite toggle if corners already filled
   const filledOnLoad = corners.filter(c=>c.lat&&c.lng);
   if(filledOnLoad.length >= MIN_CORNERS){
-    const toggleRow = document.getElementById('preview-toggle-row');
-    const satBar = document.getElementById('sat-download-bar');
-    if(toggleRow) toggleRow.style.display='flex';
-    if(satBar){
-      satBar.style.display='flex';
-      const prog = document.getElementById('sat-dl-prog');
-      if(prog) prog.textContent = f?.id
-        ? 'Satellite imagery saved for this field'
-        : 'Will save satellite imagery when you save this field';
-    }
+    document.getElementById('preview-toggle-row').style.display='flex';
+    document.getElementById('sat-download-bar').style.display='flex';
+    document.getElementById('sat-dl-prog').textContent = f?.id
+      ? 'Satellite imagery saved for this field'
+      : 'Will save satellite imagery when you save this field';
   }
+
   // Show bearing if set
   const bearingDisplay = document.getElementById('bearing-display');
   const bearingVal = document.getElementById('bearing-display-val');
   if(f?.sprayBearing != null){
-    bearingDisplay.style.display = 'block';
-    bearingVal.textContent = `${f.sprayBearing}°`;
+    bearingDisplay.style.display='block';
+    bearingVal.textContent=`${f.sprayBearing}°`;
   } else {
-    bearingDisplay.style.display = 'none';
+    bearingDisplay.style.display='none';
   }
-  // Reset satellite preview
-  previewMode='poly';
-  const toggleRow=document.getElementById('preview-toggle-row');
-  if(toggleRow) toggleRow.style.display='none';
-  const satBar=document.getElementById('sat-download-bar');
-  if(satBar) satBar.style.display='none';
-  if(previewLeaflet){previewLeaflet.remove();previewLeaflet=null;}
-  const satDiv=document.getElementById('preview-leaflet');
-  if(satDiv) satDiv.style.display='none';
-  const polyWrap=document.getElementById('preview-poly-wrap');
-  if(polyWrap) polyWrap.style.display='block';
-  document.getElementById('prev-btn-poly')?.classList.add('active');
-  document.getElementById('prev-btn-sat')?.classList.remove('active');
+
   startGPS(); showEditScreen();
 };
 window.cancelEdit=function(){stopGPS();switchTab('fields')};
