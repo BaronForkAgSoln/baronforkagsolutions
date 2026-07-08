@@ -1723,6 +1723,20 @@ window.showAddField=function(id){
   const corners = f?.corners?.length >= MIN_CORNERS ? f.corners
     : [{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''},{lat:'',lng:''}];
   renderCornerList(corners);
+  // Show satellite toggle if field already has corners set
+  const filledOnLoad = corners.filter(c=>c.lat&&c.lng);
+  if(filledOnLoad.length >= MIN_CORNERS){
+    const toggleRow = document.getElementById('preview-toggle-row');
+    const satBar = document.getElementById('sat-download-bar');
+    if(toggleRow) toggleRow.style.display='flex';
+    if(satBar){
+      satBar.style.display='flex';
+      const prog = document.getElementById('sat-dl-prog');
+      if(prog) prog.textContent = f?.id
+        ? 'Satellite imagery saved for this field'
+        : 'Will save satellite imagery when you save this field';
+    }
+  }
   // Show bearing if set
   const bearingDisplay = document.getElementById('bearing-display');
   const bearingVal = document.getElementById('bearing-display-val');
