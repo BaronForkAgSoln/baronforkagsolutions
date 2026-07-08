@@ -3415,8 +3415,6 @@ window.saveMarketPrice=async function(){
 const ESRI_SAT = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const ESRI_ATTR = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, GeoEye, Earthstar Geographics';
 const SAT_ZOOM_LEVELS = [14, 16, 18];
-const DB_NAME = 'bfas_tiles';
-const DB_VER = 1;
 
 let previewLeaflet = null;   // Leaflet map in field edit preview
 let sprayLeaflet = null;     // Leaflet map in spray screen
@@ -3424,34 +3422,29 @@ let sprayLeafletLayer = null;
 let previewMode = 'poly';    // 'poly' or 'sat'
 let spraySatVisible = false;
 
-// ── IndexedDB tile cache ──────────────────────
-function openTileDB(){
-  return new Promise((res,rej)=>{
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = e => e.target.result.createObjectStore('tiles');
-    req.onsuccess = e => res(e.target.result);
-    req.onerror   = e => rej(e);
-  });
-}
+// ── Tile cache — localStorage with base64 ────
+const TILE_CACHE_PREFIX = 'bfas_tile_';
+const MAX_TILE_CACHE = 200; // max tiles to store
 
 async function saveTile(key, blob){
-  const db = await openTileDB();
-  return new Promise((res,rej)=>{
-    const tx = db.transaction('tiles','readwrite');
-    tx.objectStore('tiles').put(blob, key);
-    tx.oncomplete = () => res();
-    tx.onerror    = e => rej(e);
-  });
+  try{
+    const reader = new FileReader();
+    const b64 = await new Promise((res,rej)=>{
+      reader.onload = () => res(reader.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(blob);
+    });
+    localStorage.setItem(TILE_CACHE_PREFIX+key, b64);
+  }catch(e){ /* storage full or blocked — skip silently */ }
 }
 
 async function getTile(key){
-  const db = await openTileDB();
-  return new Promise((res,rej)=>{
-    const tx = db.transaction('tiles','readonly');
-    const req = tx.objectStore('tiles').get(key);
-    req.onsuccess = e => res(e.target.result||null);
-    req.onerror   = e => rej(e);
-  });
+  try{
+    const b64 = localStorage.getItem(TILE_CACHE_PREFIX+key);
+    if(!b64) return null;
+    const res = await fetch(b64);
+    return await res.blob();
+  }catch(e){ return null; }
 }
 
 // ── Tile coordinate math ──────────────────────
@@ -3508,27 +3501,24 @@ async function cacheFieldTiles(field){
   setTimeout(()=>{ if(barEl) barEl.style.display='none'; },3000);
 }
 
-// ── Custom Leaflet tile layer from IndexedDB ──
+// ── Custom Leaflet tile layer with local cache ──
 function createCachedTileLayer(){
   return L.TileLayer.extend({
     createTile(coords, done){
       const img = document.createElement('img');
+      img.crossOrigin = 'anonymous';
       img.alt = '';
       const key = tileKey(coords.z, coords.x, coords.y);
-      getTile(key).then(blob=>{
-        if(blob){
-          img.src = URL.createObjectURL(blob);
-        } else {
-          // Fall back to live tile
-          img.src = tileUrl(coords.z, coords.x, coords.y);
-        }
+      const cached = localStorage.getItem(TILE_CACHE_PREFIX + key);
+      if(cached){
+        img.src = cached;
         img.onload  = () => done(null, img);
-        img.onerror = () => done(new Error('tile load failed'), img);
-      }).catch(()=>{
+        img.onerror = () => done(new Error('cached tile failed'), img);
+      } else {
         img.src = tileUrl(coords.z, coords.x, coords.y);
         img.onload  = () => done(null, img);
         img.onerror = () => done(new Error('tile load failed'), img);
-      });
+      }
       return img;
     }
   });
