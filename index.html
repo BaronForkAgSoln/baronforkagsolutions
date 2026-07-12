@@ -2482,14 +2482,17 @@ window.saveLog=async function(){
 function renderRecords(){
   const body=document.getElementById('records-body');
   if(!localRecords.length){
-    body.innerHTML=`<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">No records yet</div><div class="e-sub">Spray events are saved here when you tap Stop & Save.</div></div>`;
+    body.innerHTML=`<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">No records yet</div><div class="e-sub">Nothing here yet. Finish a spray run and it will show up here.</div></div>`;
     return;
   }
   body.innerHTML=localRecords.map(r=>`
     <div class="record-card">
       <div class="record-header">
         <div><div class="record-field">${r.fieldName}</div><div class="record-date">${r.date}</div></div>
-        <div style="text-align:right;font-size:11px;color:var(--g400)">${r.passes||''}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="text-align:right;font-size:11px;color:var(--g400)">${r.passes||''}</div>
+          <button onclick="deleteRecord('${r.id}')" style="background:none;border:none;color:var(--g300);cursor:pointer;font-size:16px;padding:2px 4px;line-height:1" title="Delete this record">🗑</button>
+        </div>
       </div>
       <div class="record-detail">
         <b>${r.product}</b>${r.speed?' · '+r.speed+' MPH':''}
@@ -2500,6 +2503,14 @@ function renderRecords(){
       ${r.gridImage?`<img src="${r.gridImage}" class="record-grid" alt="Coverage grid">`:''}
     </div>`).join('');
 }
+
+window.deleteRecord=async function(id){
+  if(!confirm('Delete this spray record? This cannot be undone.')) return;
+  try{
+    await deleteDoc(doc(db,`users/${currentUser.uid}/records/${id}`));
+    showToast('Record deleted');
+  }catch(e){showToast('Could not delete — check your signal')}
+};
 
 // ── EXCEL EXPORT ──────────────────────────────
 window.exportExcel=function(){
