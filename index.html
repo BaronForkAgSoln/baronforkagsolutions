@@ -1002,6 +1002,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="export-bar">
         <div class="export-bar-text">Everything you have sprayed, all your fields</div>
         <button class="export-btn" onclick="exportExcel()">⬇ Save to Excel</button>
+        <button class="export-btn" onclick="deleteAllRecords()" style="background:var(--red);margin-left:6px">🗑 Delete All</button>
       </div>
       <div id="records-body"></div>
     </div>
@@ -2491,7 +2492,7 @@ function renderRecords(){
         <div><div class="record-field">${r.fieldName}</div><div class="record-date">${r.date}</div></div>
         <div style="display:flex;align-items:center;gap:10px">
           <div style="text-align:right;font-size:11px;color:var(--g400)">${r.passes||''}</div>
-          <button onclick="deleteRecord('${r.id}')" style="background:none;border:none;color:var(--g300);cursor:pointer;font-size:16px;padding:2px 4px;line-height:1" title="Delete this record">🗑</button>
+          <button class="rec-del-btn" data-id="${r.id}" style="background:none;border:none;color:var(--g300);cursor:pointer;font-size:18px;padding:2px 6px;line-height:1" title="Delete this record">🗑</button>
         </div>
       </div>
       <div class="record-detail">
@@ -2502,14 +2503,30 @@ function renderRecords(){
       </div>
       ${r.gridImage?`<img src="${r.gridImage}" class="record-grid" alt="Coverage grid">`:''}
     </div>`).join('');
+
+  // Attach delete listeners via event delegation
+  body.querySelectorAll('.rec-del-btn').forEach(btn=>{
+    btn.addEventListener('click', async function(){
+      const id=this.getAttribute('data-id');
+      if(!confirm('Delete this spray record? This cannot be undone.')) return;
+      try{
+        await deleteDoc(doc(db,`users/${currentUser.uid}/records/${id}`));
+        showToast('Record deleted');
+      }catch(e){ showToast('Could not delete — check your signal'); }
+    });
+  });
 }
 
-window.deleteRecord=async function(id){
-  if(!confirm('Delete this spray record? This cannot be undone.')) return;
+window.deleteAllRecords=async function(){
+  if(!localRecords.length){showToast('No records to delete');return}
+  const n=localRecords.length;
+  if(!confirm(`Delete all ${n} spray records?\n\nThis cannot be undone. Export to Excel first if you want to keep a copy.`)) return;
   try{
-    await deleteDoc(doc(db,`users/${currentUser.uid}/records/${id}`));
-    showToast('Record deleted');
-  }catch(e){showToast('Could not delete — check your signal')}
+    for(const r of localRecords){
+      await deleteDoc(doc(db,`users/${currentUser.uid}/records/${r.id}`));
+    }
+    showToast('All records deleted');
+  }catch(e){ showToast('Could not delete all — check your signal'); }
 };
 
 // ── EXCEL EXPORT ──────────────────────────────
