@@ -512,7 +512,8 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .spray-stat-val{font-size:17px;font-weight:700;color:#fff;line-height:1}
 .spray-stat-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
 .spray-map-wrap{width:100%;height:240px;overflow:hidden;position:relative}
-#sprayCanvas{display:block;width:100%;height:100%}
+#sprayCanvas{display:block;width:100%;height:100%;position:absolute;top:0;left:0;z-index:2}
+#spray-sat-layer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;display:none}
 .guidance-bar{background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);padding:9px 14px;display:flex;align-items:center;gap:10px}
 .guidance-arrow{font-size:24px;width:30px;text-align:center;flex-shrink:0}
 .guidance-text{flex:1;min-width:0}
@@ -1131,7 +1132,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       <div class="spray-stat"><div class="spray-stat-val" id="ss-pct">0%</div><div class="spray-stat-lbl">Complete</div></div>
     </div>
     <div class="spray-map-wrap">
-      <div id="spray-sat-layer" style="position:absolute;top:0;left:0;right:0;bottom:0;display:none;z-index:1"></div>
+      <div id="spray-sat-layer"></div>
       <canvas id="sprayCanvas" style="position:relative;z-index:2;background:transparent"></canvas>
       <div style="position:absolute;top:8px;right:8px;z-index:10;display:flex;gap:6px">
         <button class="spray-zoom-btn" id="spray-sat-btn" onclick="toggleSpraySat()" style="background:rgba(0,0,0,.5)">🛰 Satellite</button>
@@ -1897,15 +1898,28 @@ function renderFieldList(){
       </div>
       ${histHTML}
       <div class="field-card-actions">
-        <button class="fc-btn spray" onclick="startSpray('${f.id}')" ${!allSet?'disabled':''}>▶ Spray</button>
-        <button class="fc-btn" onclick="showAddField('${f.id}')">✏ Edit</button>
-        <button class="fc-btn" onclick="openLogModal('${f.id}')">📋 Log</button>
-        <button class="fc-btn danger" onclick="deleteField('${f.id}')">🗑</button>
+        <button class="fc-btn spray" data-fid="${f.id}" data-action="spray" ${!allSet?'disabled':''}>▶ Spray</button>
+        <button class="fc-btn" data-fid="${f.id}" data-action="edit">✏ Edit</button>
+        <button class="fc-btn" data-fid="${f.id}" data-action="log">📋 Log</button>
+        <button class="fc-btn danger" data-fid="${f.id}" data-action="delete">🗑</button>
       </div>
     </div>`;
   }).join('');
 }
 window.toggleCard=function(id){expandedIds.has(id)?expandedIds.delete(id):expandedIds.add(id);renderFieldList()};
+
+// Event delegation for field card buttons
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  const action = btn.getAttribute('data-action');
+  const fid = btn.getAttribute('data-fid');
+  if(!fid) return;
+  if(action==='spray') startSpray(fid);
+  else if(action==='edit') showAddField(fid);
+  else if(action==='log') openLogModal(fid);
+  else if(action==='delete') deleteField(fid);
+});
 
 // ── TANK ──────────────────────────────────────
 function renderTankSummary(){
@@ -1974,7 +1988,7 @@ window.startSpray=function(id){
   const passes=computePasses(field);
   if(!passes){showToast('Mark at least 4 corners first');return}
   sprayFieldId=id;
-  if(field.sprayBearing==null){
+  if(field.sprayBearing==null||field.sprayBearing===undefined){
     startCalibration(id); return;
   }
   launchSpraySession(field,passes);
@@ -2388,7 +2402,9 @@ function startGPS(){
           const btn=document.getElementById('btn-start');
           if(btn&&btn.disabled){btn.disabled=false;setGuidance('gps-ready');setSprayButtons('gps-ready')}
         }
-        processGPSForTracking(pos.coords);drawSprayCanvas();
+        processGPSForTracking(pos.coords);
+        drawSprayCanvas();
+        updateSprayLeafletView();
       }
     },
     ()=>{gpsActive=false;setGPSStatus(false)},
@@ -3643,7 +3659,11 @@ window.toggleSpraySat=function(){
     satDiv.style.display='block';
     canvas.style.background='transparent';
     if(btn) btn.textContent='📐 Field Map';
-    if(!sprayLeaflet) initSprayLeaflet();
+    if(!sprayLeaflet){
+      initSprayLeaflet();
+    } else {
+      setTimeout(()=>{ if(sprayLeaflet) sprayLeaflet.invalidateSize(); },100);
+    }
   } else {
     satDiv.style.display='none';
     canvas.style.background='#0f1f0a';
@@ -3661,15 +3681,28 @@ function initSprayLeaflet(){
   const centerLat=(Math.min(...lats)+Math.max(...lats))/2;
   const centerLng=(Math.min(...lngs)+Math.max(...lngs))/2;
   const satDiv=document.getElementById('spray-sat-layer');
-  satDiv.style.height='240px';
+  // Match the spray map wrap height
+  const wrap=document.querySelector('.spray-map-wrap');
+  const h=wrap?wrap.offsetHeight:240;
+  satDiv.style.height=h+'px';
+  satDiv.style.width='100%';
   if(sprayLeaflet){sprayLeaflet.remove();sprayLeaflet=null;}
-  sprayLeaflet=L.map(satDiv,{zoomControl:false,attributionControl:true,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false}).setView([centerLat,centerLng],16);
+  sprayLeaflet=L.map(satDiv,{
+    zoomControl:false,
+    attributionControl:true,
+    dragging:true,
+    touchZoom:true,
+    doubleClickZoom:false,
+    scrollWheelZoom:false
+  }).setView([centerLat,centerLng],16);
   const CachedLayer=createCachedTileLayer();
   new CachedLayer(ESRI_SAT,{attribution:ESRI_ATTR,maxZoom:19,tileSize:256}).addTo(sprayLeaflet);
   const latLngs=corners.map(c=>[+c.lat,+c.lng]);
-  L.polygon(latLngs,{color:'#22c55e',weight:2,fillOpacity:0}).addTo(sprayLeaflet);
+  L.polygon(latLngs,{color:'#22c55e',weight:2.5,fillOpacity:0.05,fillColor:'#22c55e'}).addTo(sprayLeaflet);
   const bounds=L.latLngBounds(latLngs).pad(0.15);
   sprayLeaflet.fitBounds(bounds);
+  // Force Leaflet to recalculate size after display
+  setTimeout(()=>{ if(sprayLeaflet) sprayLeaflet.invalidateSize(); },200);
 }
 
 // Keep spray Leaflet map centered on GPS in close-up mode
