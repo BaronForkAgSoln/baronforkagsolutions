@@ -602,7 +602,17 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
   position:absolute;top:-2px;bottom:-2px;width:3px;
   background:#ef4444;border-radius:2px;
 }
-.spray-remaining{
+.ideal-window{
+  display:flex;align-items:center;gap:8px;
+  margin-top:6px;padding:7px 10px;
+  border-radius:7px;font-size:12px;
+  background:var(--green-bg);border:1px solid #86efac;
+}
+.ideal-window.warn{background:var(--amber-bg);border-color:#fcd34d}
+.ideal-window.none{background:var(--g100);border-color:var(--g200)}
+.ideal-window-icon{font-size:15px;flex-shrink:0}
+.ideal-window-text{flex:1;color:var(--g700);font-weight:500}
+.ideal-window-detail{font-size:11px;color:var(--g500);margin-top:1px;font-weight:400}
   font-size:12px;font-weight:600;padding:3px 9px;
   border-radius:10px;flex-shrink:0;
 }
@@ -747,6 +757,13 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
               <div class="sun-window-now" id="sun-now"></div>
             </div>
             <span style="font-size:10px">🌇</span>
+          </div>
+          <div class="ideal-window none" id="ideal-window" style="display:none">
+            <div class="ideal-window-icon" id="ideal-window-icon">—</div>
+            <div>
+              <div class="ideal-window-text" id="ideal-window-text">—</div>
+              <div class="ideal-window-detail" id="ideal-window-detail"></div>
+            </div>
           </div>
         </div>
         <div class="spray-remaining good" id="spray-remaining">—</div>
@@ -2748,6 +2765,7 @@ function renderWeather(periods, fieldName, fetchedAtStr, sunTimes) {
   // ── Sunrise / sunset bar ──────────────────
   if (sunTimes?.sunrise && sunTimes?.sunset) {
     renderSunBar(sunTimes.sunrise, sunTimes.sunset);
+    renderIdealWindow(periods, sunTimes.sunrise, sunTimes.sunset);
   }
 
   // ── Timestamp ─────────────────────────────
@@ -3040,6 +3058,104 @@ function renderSunBar(sunrise, sunset) {
   document.getElementById('sun-fill').style.width = `${clamp * 100}%`;
   document.getElementById('sun-now').style.left   = `${clamp * 100}%`;
   sunBar.style.display = 'flex';
+}
+
+// Ideal conditions thresholds (user-defined, tighter than overall thresholds)
+const IDEAL = {
+  tempMin: 60, tempMax: 85,
+  windMin: 3,  windMax: 10,
+  humidMin: 50,
+  precipMax: 30
+};
+
+function hourIsIdeal(p) {
+  const wind  = p.windSpeed ? parseInt(p.windSpeed) : null;
+  const temp  = p.temperature !== undefined ? p.temperature : null;
+  const humid = p.relativeHumidity?.value ?? null;
+  const precip = p.probabilityOfPrecipitation?.value ?? 0;
+  if(wind===null||temp===null) return false;
+  return temp  >= IDEAL.tempMin  && temp  <= IDEAL.tempMax  &&
+         wind  >= IDEAL.windMin  && wind  <= IDEAL.windMax  &&
+         (humid===null || humid >= IDEAL.humidMin) &&
+         precip <= IDEAL.precipMax;
+}
+
+function hourIsWorkable(p) {
+  const wind  = p.windSpeed ? parseInt(p.windSpeed) : null;
+  const temp  = p.temperature !== undefined ? p.temperature : null;
+  const precip = p.probabilityOfPrecipitation?.value ?? 0;
+  if(wind===null||temp===null) return false;
+  return temp  >= 50 && temp  <= 95 &&
+         wind  >= 0  && wind  <= 15 &&
+         precip <= 50;
+}
+
+function renderIdealWindow(periods, sunrise, sunset) {
+  const el = document.getElementById('ideal-window');
+  const iconEl = document.getElementById('ideal-window-icon');
+  const textEl = document.getElementById('ideal-window-text');
+  const detailEl = document.getElementById('ideal-window-detail');
+  if(!el||!periods||!sunrise||!sunset) return;
+
+  // Filter to daylight periods only
+  const daylight = getDaylightPeriods(periods, sunrise, sunset);
+  if(!daylight.length){ el.style.display='none'; return; }
+
+  // Find contiguous ideal blocks
+  const idealHours = daylight.filter(p => hourIsIdeal(p));
+
+  if(idealHours.length === 0) {
+    // No ideal window — find best workable block
+    const workableHours = daylight.filter(p => hourIsWorkable(p));
+    if(workableHours.length === 0){
+      el.className = 'ideal-window none';
+      iconEl.textContent = '🚫';
+      textEl.textContent = 'Ideal Conditions Window: None today';
+      detailEl.textContent = 'Conditions are outside spray range all day';
+    } else {
+      const first = new Date(workableHours[0].startTime);
+      const last  = new Date(workableHours[workableHours.length-1].startTime);
+      last.setHours(last.getHours()+1);
+      el.className = 'ideal-window warn';
+      iconEl.textContent = '⚠️';
+      textEl.textContent = `Ideal Conditions Window: None — workable ${formatTime12(first)} – ${formatTime12(last)}`;
+      detailEl.textContent = `Temp 60–85°F · Wind 3–10 MPH · Humidity >50% not fully met`;
+    }
+    el.style.display='flex'; return;
+  }
+
+  // Find largest contiguous ideal block
+  let bestStart=null, bestEnd=null, bestLen=0;
+  let curStart=null, curLen=0;
+  for(let i=0;i<daylight.length;i++){
+    const p=daylight[i];
+    if(hourIsIdeal(p)){
+      if(curStart===null) curStart=i;
+      curLen++;
+      if(curLen>bestLen){ bestLen=curLen; bestStart=curStart; bestEnd=i; }
+    } else {
+      curStart=null; curLen=0;
+    }
+  }
+
+  const startP = daylight[bestStart];
+  const endP   = daylight[bestEnd];
+  const startT = new Date(startP.startTime);
+  const endT   = new Date(endP.startTime); endT.setHours(endT.getHours()+1);
+  const durMins = bestLen * 60;
+  const durStr  = `${Math.floor(durMins/60)}h ${durMins%60 > 0 ? (durMins%60)+'m' : ''}`.trim();
+
+  // Sample conditions from middle of ideal window for the detail line
+  const midP = daylight[Math.floor((bestStart+bestEnd)/2)];
+  const midTemp  = midP.temperature;
+  const midWind  = midP.windSpeed ? parseInt(midP.windSpeed) : '—';
+  const midHumid = midP.relativeHumidity?.value ?? '—';
+
+  el.className = 'ideal-window';
+  iconEl.textContent = '✅';
+  textEl.textContent = `Ideal Conditions Window: ${formatTime12(startT)} – ${formatTime12(endT)} (${durStr})`;
+  detailEl.textContent = `🌡 ${midTemp}°F  💨 ${midWind} MPH  💧 ${midHumid}% humidity`;
+  el.style.display = 'flex';
 }
 
 function getDaylightPeriods(periods, sunrise, sunset) {
