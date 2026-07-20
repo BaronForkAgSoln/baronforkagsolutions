@@ -758,15 +758,28 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
             </div>
             <span style="font-size:10px">🌇</span>
           </div>
-          <div class="ideal-window none" id="ideal-window" style="display:none">
+        </div>
+        <div class="spray-remaining good" id="spray-remaining">—</div>
+      </div>
+
+      <!-- Ideal Conditions Window card -->
+      <div class="wx-card" id="ideal-window-card" style="display:none">
+        <div class="wx-card-header">
+          <div class="wx-card-title">🎯 Ideal Conditions Window</div>
+          <span class="wx-status-label gray" id="ideal-window-badge">—</span>
+        </div>
+        <div class="wx-body" style="padding-top:8px">
+          <div id="ideal-window" class="ideal-window none">
             <div class="ideal-window-icon" id="ideal-window-icon">—</div>
             <div>
               <div class="ideal-window-text" id="ideal-window-text">—</div>
               <div class="ideal-window-detail" id="ideal-window-detail"></div>
             </div>
           </div>
+          <div style="font-size:11px;color:var(--g400);margin-top:8px;line-height:1.5">
+            Ideal: Temp 60–85°F · Wind 3–10 MPH · Humidity above 50% · Rain below 30%
+          </div>
         </div>
-        <div class="spray-remaining good" id="spray-remaining">—</div>
       </div>
 
       <!-- 2. Wind Conditions -->
@@ -3091,45 +3104,54 @@ function hourIsWorkable(p) {
 }
 
 function renderIdealWindow(periods, sunrise, sunset) {
-  const el = document.getElementById('ideal-window');
+  const card   = document.getElementById('ideal-window-card');
+  const el     = document.getElementById('ideal-window');
   const iconEl = document.getElementById('ideal-window-icon');
   const textEl = document.getElementById('ideal-window-text');
   const detailEl = document.getElementById('ideal-window-detail');
-  if(!el||!periods||!sunrise||!sunset) return;
+  const badgeEl  = document.getElementById('ideal-window-badge');
+  if(!card||!el||!periods||!sunrise||!sunset) return;
+
+  card.style.display = 'block';
 
   // Filter to daylight periods only
   const daylight = getDaylightPeriods(periods, sunrise, sunset);
-  if(!daylight.length){ el.style.display='none'; return; }
+  if(!daylight.length){
+    card.style.display='none'; return;
+  }
 
   // Find contiguous ideal blocks
   const idealHours = daylight.filter(p => hourIsIdeal(p));
 
-  if(idealHours.length === 0) {
+  if(idealHours.length === 0){
     // No ideal window — find best workable block
     const workableHours = daylight.filter(p => hourIsWorkable(p));
     if(workableHours.length === 0){
       el.className = 'ideal-window none';
       iconEl.textContent = '🚫';
-      textEl.textContent = 'Ideal Conditions Window: None today';
-      detailEl.textContent = 'Conditions are outside spray range all day';
+      textEl.textContent = 'No spray window today';
+      detailEl.textContent = 'Conditions are outside acceptable range all day';
+      badgeEl.textContent = '✗ None';
+      badgeEl.className = 'wx-status-label red';
     } else {
       const first = new Date(workableHours[0].startTime);
       const last  = new Date(workableHours[workableHours.length-1].startTime);
       last.setHours(last.getHours()+1);
       el.className = 'ideal-window warn';
       iconEl.textContent = '⚠️';
-      textEl.textContent = `Ideal Conditions Window: None — workable ${formatTime12(first)} – ${formatTime12(last)}`;
-      detailEl.textContent = `Temp 60–85°F · Wind 3–10 MPH · Humidity >50% not fully met`;
+      textEl.textContent = `No ideal window — workable ${formatTime12(first)} – ${formatTime12(last)}`;
+      detailEl.textContent = 'One or more ideal conditions (temp, wind, humidity) not fully met';
+      badgeEl.textContent = '⚠ Workable';
+      badgeEl.className = 'wx-status-label amber';
     }
-    el.style.display='flex'; return;
+    return;
   }
 
   // Find largest contiguous ideal block
   let bestStart=null, bestEnd=null, bestLen=0;
   let curStart=null, curLen=0;
   for(let i=0;i<daylight.length;i++){
-    const p=daylight[i];
-    if(hourIsIdeal(p)){
+    if(hourIsIdeal(daylight[i])){
       if(curStart===null) curStart=i;
       curLen++;
       if(curLen>bestLen){ bestLen=curLen; bestStart=curStart; bestEnd=i; }
@@ -3143,9 +3165,11 @@ function renderIdealWindow(periods, sunrise, sunset) {
   const startT = new Date(startP.startTime);
   const endT   = new Date(endP.startTime); endT.setHours(endT.getHours()+1);
   const durMins = bestLen * 60;
-  const durStr  = `${Math.floor(durMins/60)}h ${durMins%60 > 0 ? (durMins%60)+'m' : ''}`.trim();
+  const hrs = Math.floor(durMins/60);
+  const mins = durMins % 60;
+  const durStr = hrs>0 ? `${hrs}h${mins>0?' '+mins+'m':''}` : `${mins}m`;
 
-  // Sample conditions from middle of ideal window for the detail line
+  // Sample conditions from middle of ideal window
   const midP = daylight[Math.floor((bestStart+bestEnd)/2)];
   const midTemp  = midP.temperature;
   const midWind  = midP.windSpeed ? parseInt(midP.windSpeed) : '—';
@@ -3153,9 +3177,10 @@ function renderIdealWindow(periods, sunrise, sunset) {
 
   el.className = 'ideal-window';
   iconEl.textContent = '✅';
-  textEl.textContent = `Ideal Conditions Window: ${formatTime12(startT)} – ${formatTime12(endT)} (${durStr})`;
-  detailEl.textContent = `🌡 ${midTemp}°F  💨 ${midWind} MPH  💧 ${midHumid}% humidity`;
-  el.style.display = 'flex';
+  textEl.textContent = `${formatTime12(startT)} – ${formatTime12(endT)}  (${durStr})`;
+  detailEl.textContent = `🌡 ${midTemp}°F  ·  💨 ${midWind} MPH  ·  💧 ${midHumid}% humidity`;
+  badgeEl.textContent = '✓ Ideal';
+  badgeEl.className = 'wx-status-label green';
 }
 
 function getDaylightPeriods(periods, sunrise, sunset) {
