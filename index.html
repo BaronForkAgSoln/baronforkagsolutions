@@ -1182,6 +1182,17 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       </div>
       <div class="g-dev dev-warn" id="guidance-dev">No GPS</div>
     </div>
+    <!-- Debug panel — tap to show/hide -->
+    <div id="spray-debug" style="display:none;background:#111;color:#0f0;font-family:monospace;font-size:10px;padding:6px 10px;line-height:1.8;border-top:1px solid #333">
+      <div id="dbg-gps">GPS: —</div>
+      <div id="dbg-rot">Rotated: rx=— ry=—</div>
+      <div id="dbg-pass">Pass: —</div>
+      <div id="dbg-bearing">Bearing: —</div>
+      <div id="dbg-bbox">Field rx: — to —</div>
+    </div>
+    <div style="text-align:center;padding:2px 0">
+      <button onclick="document.getElementById('spray-debug').style.display=document.getElementById('spray-debug').style.display==='none'?'block':'none'" style="background:none;border:none;color:rgba(255,255,255,.2);font-size:10px;cursor:pointer">debug</button>
+    </div>
     <div class="spray-btn-panel">
       <button class="spray-btn sb-start" id="btn-start" onclick="beginTracking()" disabled>▶ &nbsp;Start</button>
       <div class="sb-row" id="pause-stop-row" style="display:none">
@@ -2053,7 +2064,13 @@ function launchSpraySession(field,passes){
 }
 
 // ── DIRECTION-AWARE GEOMETRY ──────────────────
-function bearingToRad(bearing){ return (90-bearing)*Math.PI/180; }
+// Convert compass bearing to rotation angle for coordinate system
+// Negative because compass is clockwise, math rotation is counterclockwise
+// This aligns the perpendicular-to-spray direction with the rx axis
+// so that pass strips run along ry and are divided by rx
+function bearingToRad(bearing){
+  return -(bearing * Math.PI / 180);
+}
 
 function rotatePoint(dx,dy,angleRad){
   return{
@@ -2120,10 +2137,16 @@ function getDeviation(lat,lng,field,passes,passIdx){
 }
 
 function processGPSForTracking(coords){
-  if(!sprayTracking||sprayPaused) return;
   const field=localFields.find(f=>f.id===sprayFieldId);
   if(!field) return;
   const passes=computePasses(field);if(!passes) return;
+
+  // Always update debug panel when visible
+  updateDebugPanel(coords, field, passes);
+
+  // Only track passes when actively spraying
+  if(!sprayTracking||sprayPaused) return;
+
   const passIdx=getPassIndex(coords.latitude,coords.longitude,field,passes);
   if(passIdx<0){
     if(currentPassIdx>=0){currentPassIdx=-1;setGuidance('outside')}
@@ -2147,6 +2170,30 @@ function processGPSForTracking(coords){
   document.getElementById('ss-curr').textContent=passState[passIdx]==='done'?`${passIdx+1} ✓`:passIdx+1;
   drawSprayCanvas();
   updateSprayLeafletView();
+}
+
+function updateDebugPanel(coords, field, passes){
+  const d = document.getElementById('spray-debug');
+  if(!d||d.style.display==='none') return;
+  document.getElementById('dbg-gps').textContent =
+    `GPS: ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}  ±${coords.accuracy?coords.accuracy.toFixed(0)+'ft':'?'}`;
+  if(!field){ return; }
+  const geo = getRotatedGeometry(field);
+  if(!geo){ return; }
+  const{dx,dy} = latlngToFeet(coords.latitude,coords.longitude,geo.centerLat,geo.centerLng);
+  const{rx,ry} = rotatePoint(dx,dy,geo.angle);
+  document.getElementById('dbg-rot').textContent =
+    `Rotated: rx=${rx.toFixed(1)}ft  ry=${ry.toFixed(1)}ft`;
+  document.getElementById('dbg-bearing').textContent =
+    `Bearing: ${field.sprayBearing!=null?field.sprayBearing+'°':'not set'}  angle=${(geo.angle*180/Math.PI).toFixed(1)}°`;
+  document.getElementById('dbg-bbox').textContent =
+    `Field rx: ${geo.minRx.toFixed(0)} to ${geo.maxRx.toFixed(0)}ft  width=${(geo.maxRx-geo.minRx).toFixed(0)}ft`;
+  if(passes){
+    const idx = getPassIndex(coords.latitude,coords.longitude,field,passes);
+    const inside = isInsideRotatedPoly(rx,ry,geo.rotated);
+    document.getElementById('dbg-pass').textContent =
+      `Pass: ${idx>=0?idx+1:'outside'}  of ${passes.num}  inside=${inside}`;
+  }
 }
 
 function drawSprayCanvas(){
