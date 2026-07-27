@@ -395,7 +395,64 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .spray-map-wrap .leaflet-control-zoom{display:none}
 .spray-map-wrap .leaflet-control-attribution{font-size:8px;opacity:.5;background:rgba(0,0,0,.3);color:#fff}
 .spray-map-wrap .leaflet-control-attribution a{color:#aaa}
-.calib-screen{background:var(--g900);color:#fff;display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
+/* ── GPS HEALTH CHECK ── */
+.gps-screen{background:#0a1628;color:#fff;min-height:calc(100vh - 56px);display:flex;flex-direction:column}
+.gps-screen-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px;overflow-y:auto}
+.gps-stage-icon{font-size:56px;line-height:1;margin-top:8px}
+.gps-stage-title{font-size:20px;font-weight:700;color:#fff;text-align:center}
+.gps-stage-sub{font-size:13px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;max-width:300px}
+.gps-metric-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 16px;width:100%;max-width:360px}
+.gps-metric-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.gps-metric-row:last-child{border-bottom:none}
+.gps-metric-label{font-size:12px;color:rgba(255,255,255,.5)}
+.gps-metric-val{font-size:13px;font-weight:600;color:#fff}
+.gps-metric-val.good{color:#22c55e}
+.gps-metric-val.warn{color:#fbbf24}
+.gps-metric-val.bad{color:#ef4444}
+.gps-progress-wrap{width:100%;max-width:360px}
+.gps-progress-bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-top:6px}
+.gps-progress-fill{height:100%;border-radius:3px;background:#22c55e;transition:width .3s}
+.gps-progress-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;text-align:right}
+.gps-tip{background:rgba(255,255,255,.04);border-radius:8px;padding:10px 14px;width:100%;max-width:360px;font-size:11px;color:rgba(255,255,255,.4);line-height:1.6;text-align:center}
+.gps-pulse{width:60px;height:60px;border-radius:50%;border:3px solid rgba(34,197,94,.3);position:relative;margin:8px auto}
+.gps-pulse-inner{position:absolute;inset:8px;border-radius:50%;background:rgba(34,197,94,.2);animation:gps-ping 1.5s ease-in-out infinite}
+.gps-result-card{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;width:100%;max-width:360px}
+.gps-result-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.gps-result-row:last-child{border-bottom:none}
+.gps-result-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.gps-result-label{font-size:13px;color:rgba(255,255,255,.7);flex:1}
+.gps-result-val{font-size:12px;font-weight:600}
+.gps-result-val.good{color:#22c55e}
+.gps-result-val.warn{color:#fbbf24}
+.gps-result-val.bad{color:#ef4444}
+.gps-overall{border-radius:10px;padding:12px 16px;width:100%;max-width:360px;text-align:center}
+.gps-overall.good{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3)}
+.gps-overall.warn{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3)}
+.gps-overall.bad{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3)}
+.gps-overall-verdict{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.gps-overall-detail{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.gps-btn-panel{padding:12px 16px 32px;display:flex;flex-direction:column;gap:8px;width:100%}
+.gps-btn{padding:13px 0;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);width:100%}
+.gb-primary{background:#15803d;color:#fff}
+.gb-secondary{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+.gb-action{background:#1d4ed8;color:#fff}
+@keyframes gps-ping{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.4);opacity:0}}
+
+/* ── GPS STATUS BAR ── */
+.gps-status-bar{background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);padding:7px 12px;display:flex;align-items:center;gap:8px}
+.gsb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#6b7280}
+.gsb-dot.good{background:#22c55e;box-shadow:0 0 6px #22c55e}
+.gsb-dot.warn{background:#fbbf24;box-shadow:0 0 6px #fbbf24}
+.gsb-dot.bad{background:#ef4444;box-shadow:0 0 6px #ef4444}
+.gsb-acc{font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.gsb-acc.good{color:#22c55e}
+.gsb-acc.warn{color:#fbbf24}
+.gsb-acc.bad{color:#ef4444}
+.gsb-detail{font-size:11px;color:rgba(255,255,255,.4);flex:1}
+.gsb-fixes{font-size:11px;color:rgba(255,255,255,.3);flex-shrink:0}
+.gsb-health-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;flex-shrink:0}
+
+/* ── CALIBRATION SCREEN ── */
 .calib-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center}
 .calib-icon{font-size:64px;line-height:1}
 .calib-title{font-size:20px;font-weight:700;color:#fff}
@@ -1118,6 +1175,16 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
     </div>
   </div>
 
+  <!-- GPS HEALTH CHECK -->
+  <div id="screen-gps" class="screen gps-screen">
+    <div class="gps-screen-body" id="gps-body">
+      <!-- Content injected by JS -->
+    </div>
+    <div class="gps-btn-panel" id="gps-btn-panel">
+      <!-- Buttons injected by JS -->
+    </div>
+  </div>
+
   <!-- CALIBRATION -->
   <div id="screen-calib" class="screen spray-screen">
     <div class="calib-body">
@@ -1168,6 +1235,13 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <button class="spray-zoom-btn" id="spray-sat-btn" onclick="toggleSpraySat()" style="background:rgba(0,0,0,.5)">🛰 Satellite</button>
         <button class="spray-zoom-btn" id="spray-zoom-btn" onclick="toggleSprayZoom()">🔍 Close-up</button>
       </div>
+    </div>
+    <div class="gps-status-bar" id="gps-status-bar">
+      <div class="gsb-dot" id="gsb-dot"></div>
+      <div class="gsb-acc bad" id="gsb-acc">No GPS</div>
+      <div class="gsb-detail" id="gsb-detail">Waiting for signal…</div>
+      <div class="gsb-fixes" id="gsb-fixes">0 fixes</div>
+      <button class="gsb-health-btn" onclick="openGPSHealth()">📊 Test</button>
     </div>
     <div class="deviation-bar">
       <div class="dev-label" id="dev-left">◀ Drift left</div>
@@ -2040,6 +2114,8 @@ function launchSpraySession(field,passes){
   passState=Array(passes.num).fill('untouched');
   passProgress=Array(passes.num).fill(0);
   sprayZoomMode='overview';
+  gpsFixCount = 0;
+  gpsLastUpdateMs = 0;
   spraySatVisible=false;
   if(sprayLeaflet){sprayLeaflet.remove();sprayLeaflet=null;}
   document.getElementById('spray-sat-layer').style.display='none';
@@ -2469,9 +2545,14 @@ function startGPS(){
   gpsWatchId=navigator.geolocation.watchPosition(
     pos=>{
       lastGPS=pos.coords;gpsActive=true;setGPSStatus(true,pos.coords);
+      updateGPSStatusBar(pos.coords);
       // Calibration screen
       if(document.getElementById('screen-calib').classList.contains('active')){
         updateCalibGPS(pos.coords);
+      }
+      // GPS health screen
+      if(document.getElementById('screen-gps').classList.contains('active')){
+        // Stage updates are handled by their own timers reading lastGPS
       }
       // Spray screen
       if(document.getElementById('screen-spray').classList.contains('active')){
@@ -3908,7 +3989,388 @@ function updateSprayLeafletView(){
   }
 }
 
-// ── TOAST ──────────────────────────────────────
+// ══════════════════════════════════════════════
+// GPS HEALTH CHECK
+// ══════════════════════════════════════════════
+let gpsFixCount = 0;
+let gpsLastUpdateMs = 0;
+let gpsHealthStage = 0; // 0=idle 1=acquire 2=accuracy 3=stability 4=walk 5=result
+let gpsHealthTimer = null;
+let gpsHealthReadings = [];
+let gpsHealthPositions = [];
+let gpsHealthStartPos = null;
+let gpsHealthReturnFieldId = null;
+
+// Accuracy thresholds in feet
+const GPS_GOOD = 30;
+const GPS_WARN = 60;
+
+function accClass(ft) {
+  return ft < GPS_GOOD ? 'good' : ft < GPS_WARN ? 'warn' : 'bad';
+}
+function accLabel(ft) {
+  return ft < GPS_GOOD ? '✅ Good' : ft < GPS_WARN ? '⚠ Marginal' : '✗ Poor';
+}
+function metersToFt(m) { return Math.round(m * 3.281); }
+
+// ── GPS status bar update ─────────────────────
+function updateGPSStatusBar(coords) {
+  gpsFixCount++;
+  gpsLastUpdateMs = Date.now();
+  const ft = coords ? metersToFt(coords.accuracy || 999) : 999;
+  const cls = accClass(ft);
+  const dot = document.getElementById('gsb-dot');
+  const acc = document.getElementById('gsb-acc');
+  const detail = document.getElementById('gsb-detail');
+  const fixes = document.getElementById('gsb-fixes');
+  if(!dot) return;
+  dot.className = `gsb-dot ${cls}`;
+  acc.className = `gsb-acc ${cls}`;
+  acc.textContent = coords ? `±${ft} ft` : 'No GPS';
+  if(coords) {
+    const heading = coords.heading != null && coords.heading >= 0 ? `  ${Math.round(coords.heading)}°` : '';
+    const speed = coords.speed != null && coords.speed > 0 ? `  ${(coords.speed * 2.237).toFixed(1)} MPH` : '';
+    detail.textContent = `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}${heading}${speed}`;
+  }
+  fixes.textContent = `${gpsFixCount} fixes`;
+}
+
+// Stale GPS check — run every 5 seconds
+function checkGPSStaleness() {
+  if(!document.getElementById('screen-spray').classList.contains('active')) return;
+  const dot = document.getElementById('gsb-dot');
+  const acc = document.getElementById('gsb-acc');
+  if(!dot) return;
+  const age = Date.now() - gpsLastUpdateMs;
+  if(gpsLastUpdateMs > 0 && age > 5000) {
+    dot.className = 'gsb-dot bad';
+    acc.className = 'gsb-acc bad';
+    acc.textContent = `Stale ${Math.round(age/1000)}s`;
+  }
+}
+setInterval(checkGPSStaleness, 2000);
+
+// ── Open GPS health check ─────────────────────
+window.openGPSHealth = function(returnFieldId) {
+  gpsHealthReturnFieldId = returnFieldId || sprayFieldId || null;
+  gpsHealthStage = 0;
+  gpsHealthReadings = [];
+  gpsHealthPositions = [];
+  gpsHealthStartPos = null;
+  clearInterval(gpsHealthTimer);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-gps').classList.add('active');
+  document.getElementById('app-sub').textContent = 'GPS Health Check';
+  document.getElementById('hdr-action-btn').style.display = 'none';
+  document.getElementById('hdr-home-btn').classList.remove('visible');
+  startGPS();
+  gpsStage1();
+};
+
+// ── Stage 1 — Signal Acquisition ─────────────
+function gpsStage1() {
+  gpsHealthStage = 1;
+  const body = document.getElementById('gps-body');
+  const btns = document.getElementById('gps-btn-panel');
+  body.innerHTML = `
+    <div class="gps-stage-icon">🛰</div>
+    <div class="gps-stage-title">Finding Signal</div>
+    <div class="gps-stage-sub">Looking for GPS satellites. Step outside or move away from buildings for best results.</div>
+    <div class="gps-pulse"><div class="gps-pulse-inner"></div></div>
+    <div class="gps-metric-card">
+      <div class="gps-metric-row"><span class="gps-metric-label">Status</span><span class="gps-metric-val" id="gh-status">Searching…</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Coordinates</span><span class="gps-metric-val" id="gh-coords">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Accuracy</span><span class="gps-metric-val" id="gh-acc">—</span></div>
+    </div>
+    <div class="gps-tip">💡 This usually takes 15–30 seconds outdoors. If it takes longer than 60 seconds, try moving to a more open area.</div>`;
+  btns.innerHTML = `<button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">Cancel — go back</button>`;
+
+  let elapsed = 0;
+  gpsHealthTimer = setInterval(() => {
+    elapsed++;
+    if(lastGPS) {
+      clearInterval(gpsHealthTimer);
+      const ft = metersToFt(lastGPS.accuracy || 999);
+      document.getElementById('gh-status').textContent = 'Signal acquired ✅';
+      document.getElementById('gh-coords').textContent = `${lastGPS.latitude.toFixed(5)}, ${lastGPS.longitude.toFixed(5)}`;
+      document.getElementById('gh-acc').className = `gps-metric-val ${accClass(ft)}`;
+      document.getElementById('gh-acc').textContent = `±${ft} ft`;
+      setTimeout(gpsStage2, 1500);
+    } else if(elapsed >= 60) {
+      clearInterval(gpsHealthTimer);
+      document.getElementById('gh-status').textContent = 'No signal ✗';
+      document.getElementById('gh-status').className = 'gps-metric-val bad';
+      btns.innerHTML = `
+        <div class="gps-tip" style="color:#fca5a5">Move outside to open sky and try again. Make sure Location Services is set to "While Using" for this app in iPhone Settings.</div>
+        <button class="gps-btn gb-primary" onclick="gpsStage1()">↺ Try again</button>
+        <button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">Cancel</button>`;
+    }
+  }, 1000);
+}
+
+// ── Stage 2 — Accuracy Check ─────────────────
+function gpsStage2() {
+  gpsHealthStage = 2;
+  gpsHealthReadings = [];
+  const SAMPLES = 30;
+  const body = document.getElementById('gps-body');
+  const btns = document.getElementById('gps-btn-panel');
+  body.innerHTML = `
+    <div class="gps-stage-icon">📐</div>
+    <div class="gps-stage-title">Checking Accuracy</div>
+    <div class="gps-stage-sub">Stand still while we measure GPS accuracy. Taking ${SAMPLES} readings over ${SAMPLES} seconds.</div>
+    <div class="gps-metric-card">
+      <div class="gps-metric-row"><span class="gps-metric-label">Current accuracy</span><span class="gps-metric-val" id="gh-cur">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Best reading</span><span class="gps-metric-val good" id="gh-best">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Worst reading</span><span class="gps-metric-val" id="gh-worst">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Average</span><span class="gps-metric-val" id="gh-avg">—</span></div>
+    </div>
+    <div class="gps-progress-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4)">
+        <span>Progress</span><span id="gh-prog-lbl">0 of ${SAMPLES}</span>
+      </div>
+      <div class="gps-progress-bar"><div class="gps-progress-fill" id="gh-prog" style="width:0%"></div></div>
+    </div>
+    <div class="gps-tip">💡 For reliable pass tracking with a 30 ft swath, aim for accuracy better than ±20 ft. Stand in the open with clear sky view.</div>`;
+  btns.innerHTML = `<button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">Cancel</button>`;
+
+  gpsHealthTimer = setInterval(() => {
+    if(!lastGPS) return;
+    const ft = metersToFt(lastGPS.accuracy || 999);
+    gpsHealthReadings.push(ft);
+    const best = Math.min(...gpsHealthReadings);
+    const worst = Math.max(...gpsHealthReadings);
+    const avg = Math.round(gpsHealthReadings.reduce((a,b)=>a+b,0)/gpsHealthReadings.length);
+    const pct = (gpsHealthReadings.length / SAMPLES) * 100;
+    const curEl = document.getElementById('gh-cur');
+    if(curEl) {
+      curEl.textContent = `±${ft} ft`;
+      curEl.className = `gps-metric-val ${accClass(ft)}`;
+      document.getElementById('gh-best').textContent = `±${best} ft`;
+      document.getElementById('gh-worst').textContent = `±${worst} ft`;
+      const avgEl = document.getElementById('gh-avg');
+      avgEl.textContent = `±${avg} ft — ${accLabel(avg)}`;
+      avgEl.className = `gps-metric-val ${accClass(avg)}`;
+      document.getElementById('gh-prog').style.width = `${pct}%`;
+      document.getElementById('gh-prog-lbl').textContent = `${gpsHealthReadings.length} of ${SAMPLES}`;
+    }
+    if(gpsHealthReadings.length >= SAMPLES) {
+      clearInterval(gpsHealthTimer);
+      setTimeout(gpsStage3, 1200);
+    }
+  }, 1000);
+}
+
+// ── Stage 3 — Stability ──────────────────────
+function gpsStage3() {
+  gpsHealthStage = 3;
+  gpsHealthPositions = [];
+  const SAMPLES = 30;
+  const body = document.getElementById('gps-body');
+  const btns = document.getElementById('gps-btn-panel');
+  if(lastGPS) gpsHealthStartPos = { lat: lastGPS.latitude, lng: lastGPS.longitude };
+  body.innerHTML = `
+    <div class="gps-stage-icon">📍</div>
+    <div class="gps-stage-title">Stability Test — Stand Still</div>
+    <div class="gps-stage-sub">Stay in the same spot. We are measuring how much the GPS position wanders when you are not moving.</div>
+    <div class="gps-metric-card">
+      <div class="gps-metric-row"><span class="gps-metric-label">Position drift</span><span class="gps-metric-val" id="gh-drift">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Max drift seen</span><span class="gps-metric-val" id="gh-maxdrift">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Update rate</span><span class="gps-metric-val" id="gh-rate">—</span></div>
+    </div>
+    <div class="gps-progress-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4)">
+        <span>Progress</span><span id="gh-stab-lbl">0 of ${SAMPLES}</span>
+      </div>
+      <div class="gps-progress-bar"><div class="gps-progress-fill" id="gh-stab-prog" style="width:0%"></div></div>
+    </div>
+    <div class="gps-tip">💡 Good GPS drift while standing still is under 20 ft. High drift means the signal is noisy and pass detection will be less reliable.</div>`;
+  btns.innerHTML = `<button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">Cancel</button>`;
+
+  let updateTimes = [];
+  let lastTime = Date.now();
+  let maxDrift = 0;
+
+  gpsHealthTimer = setInterval(() => {
+    if(!lastGPS || !gpsHealthStartPos) return;
+    const now = Date.now();
+    updateTimes.push(now - lastTime);
+    lastTime = now;
+    gpsHealthPositions.push({ lat: lastGPS.latitude, lng: lastGPS.longitude });
+
+    // Calculate drift from start position
+    const dLat = (lastGPS.latitude - gpsHealthStartPos.lat) * 364000;
+    const dLng = (lastGPS.longitude - gpsHealthStartPos.lng) * Math.cos(lastGPS.latitude * Math.PI/180) * 364000;
+    const driftFt = Math.round(Math.sqrt(dLat*dLat + dLng*dLng));
+    if(driftFt > maxDrift) maxDrift = driftFt;
+
+    const avgRate = updateTimes.length > 1
+      ? (updateTimes.slice(-5).reduce((a,b)=>a+b,0) / Math.min(5,updateTimes.length) / 1000).toFixed(1)
+      : '—';
+    const pct = (gpsHealthPositions.length / SAMPLES) * 100;
+
+    const driftEl = document.getElementById('gh-drift');
+    if(driftEl) {
+      driftEl.textContent = `±${driftFt} ft`;
+      driftEl.className = `gps-metric-val ${accClass(driftFt)}`;
+      const mdEl = document.getElementById('gh-maxdrift');
+      mdEl.textContent = `±${maxDrift} ft`;
+      mdEl.className = `gps-metric-val ${accClass(maxDrift)}`;
+      document.getElementById('gh-rate').textContent = avgRate === '—' ? '—' : `${avgRate} sec avg`;
+      document.getElementById('gh-stab-prog').style.width = `${pct}%`;
+      document.getElementById('gh-stab-lbl').textContent = `${gpsHealthPositions.length} of ${SAMPLES}`;
+    }
+    if(gpsHealthPositions.length >= SAMPLES) {
+      clearInterval(gpsHealthTimer);
+      setTimeout(() => gpsStage4(maxDrift, updateTimes), 1200);
+    }
+  }, 1000);
+}
+
+// ── Stage 4 — Walk Test ──────────────────────
+function gpsStage4(stabilityDrift, updateTimes) {
+  gpsHealthStage = 4;
+  const walkStart = lastGPS ? { lat: lastGPS.latitude, lng: lastGPS.longitude } : null;
+  const avgRate = updateTimes.length > 1
+    ? (updateTimes.reduce((a,b)=>a+b,0) / updateTimes.length / 1000).toFixed(1)
+    : '1.0';
+  const body = document.getElementById('gps-body');
+  const btns = document.getElementById('gps-btn-panel');
+  body.innerHTML = `
+    <div class="gps-stage-icon">🚶</div>
+    <div class="gps-stage-title">Walk Test</div>
+    <div class="gps-stage-sub">Walk about 100 feet in any direction, then tap Done. We will confirm movement is being tracked correctly.</div>
+    <div class="gps-metric-card">
+      <div class="gps-metric-row"><span class="gps-metric-label">Distance walked</span><span class="gps-metric-val" id="gh-dist">0 ft</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">Direction</span><span class="gps-metric-val" id="gh-dir">—</span></div>
+      <div class="gps-metric-row"><span class="gps-metric-label">GPS updating</span><span class="gps-metric-val good" id="gh-upd">—</span></div>
+    </div>
+    <div class="gps-tip">💡 Walk in a straight line for best results. The direction detected should roughly match where you are actually walking.</div>`;
+  btns.innerHTML = `
+    <button class="gps-btn gb-action" onclick="gpsStage5Walk()" id="gh-walk-done">✓ Done — I walked 100 feet</button>
+    <button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">Cancel</button>`;
+
+  let walkReadings = [];
+  gpsHealthTimer = setInterval(() => {
+    if(!lastGPS || !walkStart) return;
+    const dLat = (lastGPS.latitude - walkStart.lat) * 364000;
+    const dLng = (lastGPS.longitude - walkStart.lng) * Math.cos(lastGPS.latitude * Math.PI/180) * 364000;
+    const distFt = Math.round(Math.sqrt(dLat*dLat + dLng*dLng));
+    const bearingDeg = Math.round((Math.atan2(dLng, dLat) * 180/Math.PI + 360) % 360);
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+    const dirLabel = dirs[Math.round(bearingDeg/22.5) % 16];
+    walkReadings.push({ dist: distFt, bearing: bearingDeg });
+
+    const distEl = document.getElementById('gh-dist');
+    if(distEl) {
+      distEl.textContent = `${distFt} ft`;
+      distEl.className = `gps-metric-val ${distFt > 30 ? 'good' : 'warn'}`;
+      document.getElementById('gh-dir').textContent = distFt > 20 ? `${dirLabel} (${bearingDeg}°)` : 'Walk further…';
+      document.getElementById('gh-upd').textContent = `${walkReadings.length} updates received`;
+    }
+  }, 1000);
+
+  // Store walk data for results
+  window._gpsWalkReadings = () => walkReadings;
+  window._gpsStabilityDrift = stabilityDrift;
+  window._gpsAvgRate = avgRate;
+}
+
+window.gpsStage5Walk = function() {
+  clearInterval(gpsHealthTimer);
+  const walkReadings = window._gpsWalkReadings ? window._gpsWalkReadings() : [];
+  const stabilityDrift = window._gpsStabilityDrift || 0;
+  const avgRate = window._gpsAvgRate || '1.0';
+  gpsStage5Results(walkReadings, stabilityDrift, avgRate);
+};
+
+// ── Stage 5 — Results ────────────────────────
+function gpsStage5Results(walkReadings, stabilityDrift, avgRate) {
+  gpsHealthStage = 5;
+  // Calculate results
+  const avgAcc = gpsHealthReadings.length
+    ? Math.round(gpsHealthReadings.reduce((a,b)=>a+b,0)/gpsHealthReadings.length) : 999;
+  const maxDist = walkReadings.length ? Math.max(...walkReadings.map(r=>r.dist)) : 0;
+  const rateNum = parseFloat(avgRate);
+
+  const accPass    = avgAcc    < GPS_GOOD;
+  const accWarn    = avgAcc    < GPS_WARN;
+  const driftPass  = stabilityDrift < 20;
+  const driftWarn  = stabilityDrift < 40;
+  const walkPass   = maxDist   > 30;
+  const ratePass   = rateNum   < 3.0;
+
+  const issues = [!accPass&&!accWarn, !driftPass&&!driftWarn, !walkPass, !ratePass].filter(Boolean).length;
+  const warnings = [!accPass&&accWarn, !driftPass&&driftWarn].filter(Boolean).length;
+
+  let overallClass, overallVerdict, overallDetail;
+  if(issues === 0 && warnings === 0) {
+    overallClass = 'good'; overallVerdict = '✅ Ready to Spray';
+    overallDetail = 'GPS is working well. Pass tracking should be reliable.';
+  } else if(issues === 0) {
+    overallClass = 'warn'; overallVerdict = '⚠ Proceed with Caution';
+    overallDetail = 'GPS has some marginal readings. Pass tracking may occasionally miss strips. Consider waiting for better conditions.';
+  } else {
+    overallClass = 'bad'; overallVerdict = '✗ GPS Issues Detected';
+    overallDetail = 'GPS quality is below the threshold for reliable pass tracking. Move to open sky and try again.';
+  }
+
+  function resultRow(label, value, passStr, warnStr, isPass, isWarn) {
+    const icon = isPass ? '✅' : isWarn ? '⚠️' : '✗';
+    const cls  = isPass ? 'good' : isWarn ? 'warn' : 'bad';
+    return `<div class="gps-result-row">
+      <div class="gps-result-icon">${icon}</div>
+      <div class="gps-result-label">${label}</div>
+      <div class="gps-result-val ${cls}">${value}</div>
+    </div>`;
+  }
+
+  const body = document.getElementById('gps-body');
+  const btns = document.getElementById('gps-btn-panel');
+  body.innerHTML = `
+    <div class="gps-stage-icon">${overallClass==='good'?'🎯':overallClass==='warn'?'⚠️':'🚫'}</div>
+    <div class="gps-stage-title">GPS Health Report</div>
+    <div class="gps-result-card">
+      ${resultRow('Signal acquired',  'Yes',              '—',                'Signal good',  true,      true)}
+      ${resultRow('Accuracy',         `±${avgAcc} ft`,    `±${GPS_GOOD} ft`,  `±${GPS_WARN} ft`, accPass, accWarn)}
+      ${resultRow('Signal stability', `±${stabilityDrift} ft drift`, '±20 ft', '±40 ft',     driftPass, driftWarn)}
+      ${resultRow('Movement tracking', maxDist>0?`${maxDist} ft detected`:'Not detected', '100+ ft', '30+ ft', walkPass, walkPass)}
+      ${resultRow('Update rate',      `${avgRate} sec avg`, '< 3 sec',        '< 5 sec',      ratePass,  ratePass)}
+    </div>
+    <div class="gps-overall ${overallClass}">
+      <div class="gps-overall-verdict">${overallVerdict}</div>
+      <div class="gps-overall-detail">${overallDetail}</div>
+    </div>
+    <div class="gps-tip">Swath width: 30 ft — ideal GPS accuracy for this field is under ±15 ft</div>`;
+
+  btns.innerHTML = `
+    ${gpsHealthReturnFieldId ? `<button class="gps-btn gb-primary" onclick="gpsHealthLaunchSpray()">▶ Start Spraying</button>` : ''}
+    <button class="gps-btn gb-secondary" onclick="gpsStage1()">↺ Run Test Again</button>
+    <button class="gps-btn gb-secondary" onclick="gpsHealthCancel()">← Go Back</button>`;
+}
+
+window.gpsHealthLaunchSpray = function() {
+  if(!gpsHealthReturnFieldId) { gpsHealthCancel(); return; }
+  const field = localFields.find(f => f.id === gpsHealthReturnFieldId);
+  if(!field) { gpsHealthCancel(); return; }
+  const passes = computePasses(field);
+  if(!passes) { showToast('Could not compute passes — check field corners'); gpsHealthCancel(); return; }
+  launchSpraySession(field, passes);
+};
+
+window.gpsHealthCancel = function() {
+  clearInterval(gpsHealthTimer);
+  gpsHealthStage = 0;
+  stopGPS();
+  if(gpsHealthReturnFieldId) {
+    switchTab('fields');
+  } else {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-spray').classList.add('active');
+    document.getElementById('app-sub').textContent = 'Spraying';
+    startGPS();
+  }
+};
 let _tt;
 window.showToast=function(msg){
   const t=document.getElementById('toast');
