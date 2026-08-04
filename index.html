@@ -1695,6 +1695,7 @@ window.switchTab = function(tab){
     startGPS();
     gpsInfoInterval = setInterval(renderGPSInfo, 1000);
     renderGPSInfo();
+  } else if(tab==='records'){
     hdrBtn.style.display='none';
     appSub.textContent='Spray Records';
     renderRecords();
