@@ -1557,6 +1557,7 @@ let unsubRecords = null;
 const MIN_TICKS = 6;
 let passState=[], passProgress=[], sprayTracking=false, sprayPaused=false, currentPassIdx=-1;
 let gpsWatchId=null, lastGPS=null, gpsActive=false;
+let navLeafletMap=null, navLeafletDot=null, navLeafletCircle=null;
 let _logGrid=null, _logDone=0, _logTotal=0, pendingLogFieldId=null;
 
 // ── Auth state listener ───────────────────────
@@ -4220,10 +4221,6 @@ function renderGPSInfo(){
 // ══════════════════════════════════════════════
 // NAV STATUS SCREEN
 // ══════════════════════════════════════════════
-let navLeafletMap = null;
-let navLeafletDot = null;
-let navLeafletCircle = null;
-
 
 function initNavLeafletMap(lat, lng){
   const mapEl = document.getElementById('nav-leaflet-map');
