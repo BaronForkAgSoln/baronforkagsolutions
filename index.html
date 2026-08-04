@@ -4042,7 +4042,25 @@ function updateSprayLeafletView(){
 // ══════════════════════════════════════════════
 // GPS INFO SCREEN
 // ══════════════════════════════════════════════
-function renderGPSInfo(){
+window.copyGPSCoords = function(){
+  if(!lastGPS){ showToast('No GPS signal yet'); return; }
+  const text = `${lastGPS.latitude.toFixed(6)}, ${lastGPS.longitude.toFixed(6)}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('Coordinates copied — paste into Maps, email, or text');
+  }).catch(()=>{
+    // Fallback for older browsers
+    const el = document.getElementById('gps-coord-text');
+    if(el){
+      const range = document.createRange();
+      range.selectNode(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      showToast('Coordinates copied');
+    }
+  });
+};
   if(currentTab !== 'gpsinfo') return;
   const el = document.getElementById('gps-info-body');
   if(!el) return;
@@ -4117,8 +4135,11 @@ function renderGPSInfo(){
         <span class="gps-info-val">${g.longitude.toFixed(6)}°</span>
       </div>
       <div class="gps-info-row">
-        <span class="gps-info-label">Decimal (copy-ready)</span>
-        <span class="gps-info-val" style="font-size:12px">${g.latitude.toFixed(6)}, ${g.longitude.toFixed(6)}</span>
+        <span class="gps-info-label">Decimal (tap to copy)</span>
+        <span style="display:flex;align-items:center;gap:8px">
+          <span class="gps-info-val" style="font-size:12px" id="gps-coord-text">${g.latitude.toFixed(6)}, ${g.longitude.toFixed(6)}</span>
+          <button onclick="copyGPSCoords()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">📋 Copy</button>
+        </span>
       </div>
     </div>
 
