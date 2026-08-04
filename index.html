@@ -419,6 +419,17 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .gps-info-fix-dot.bad{background:#ef4444}
 .gps-info-fix-text{font-size:12px;color:rgba(255,255,255,.5);flex:1}
 .gps-info-fix-count{font-size:11px;color:rgba(255,255,255,.25)}
+/* Nav status map */
+.nav-map-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.nav-map-card-header{background:rgba(255,255,255,.05);padding:10px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.07)}
+#nav-leaflet-map{width:100%;height:260px;background:#1a2e10}
+.nav-signal-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.07)}
+.nav-signal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.nav-signal-dot.good{background:#22c55e;box-shadow:0 0 6px #22c55e}
+.nav-signal-dot.warn{background:#fbbf24;box-shadow:0 0 6px #fbbf24}
+.nav-signal-dot.bad{background:#ef4444}
+.nav-signal-text{flex:1;font-size:12px;color:rgba(255,255,255,.5)}
+.nav-signal-fixes{font-size:11px;color:rgba(255,255,255,.25)}
 .gps-screen{background:#0a1628;color:#fff;min-height:calc(100vh - 56px);display:flex;flex-direction:column}
 .gps-screen-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px;overflow-y:auto}
 .gps-stage-icon{font-size:56px;line-height:1;margin-top:8px}
@@ -789,7 +800,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
       </button>
       <button class="home-btn" style="border-left:5px solid #0e7490" onclick="switchTab('gpsinfo')">
         <div class="home-btn-icon">📍</div>
-        <div><div class="home-btn-title">GPS Info</div><div class="home-btn-sub">Live GPS coordinates, accuracy, speed, course, and signal quality</div></div>
+        <div><div class="home-btn-title">Nav Status</div><div class="home-btn-sub">Live position, accuracy, satellite map, and signal quality</div></div>
       </button>
       <div class="home-version">v1.7</div>
     </div>
@@ -1649,6 +1660,7 @@ window.switchTab = function(tab){
   if(tab !== 'gpsinfo' && gpsInfoInterval){
     clearInterval(gpsInfoInterval);
     gpsInfoInterval = null;
+    destroyNavMap();
     if(tab !== 'spray' && tab !== 'calib' && tab !== 'gps') stopGPS();
   }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1679,7 +1691,7 @@ window.switchTab = function(tab){
     renderHay();
   } else if(tab==='gpsinfo'){
     hdrBtn.style.display='none';
-    appSub.textContent='GPS Info';
+    appSub.textContent='Nav Status';
     startGPS();
     gpsInfoInterval = setInterval(renderGPSInfo, 1000);
     renderGPSInfo();
@@ -4204,10 +4216,59 @@ function renderGPSInfo(){
 }
 
 // ══════════════════════════════════════════════
-// GPS HEALTH CHECK
+// NAV STATUS SCREEN
 // ══════════════════════════════════════════════
-let gpsFixCount = 0;
-let gpsLastUpdateMs = 0;
+let navLeafletMap = null;
+let navLeafletDot = null;
+let navLeafletCircle = null;
+
+
+function initNavLeafletMap(lat, lng){
+  const mapEl = document.getElementById('nav-leaflet-map');
+  if(!mapEl) return;
+  if(navLeafletMap){ navLeafletMap.remove(); navLeafletMap=null; navLeafletDot=null; navLeafletCircle=null; }
+  navLeafletMap = L.map(mapEl, {
+    zoomControl: true,
+    attributionControl: true,
+    dragging: true,
+    touchZoom: true,
+    doubleClickZoom: true,
+    scrollWheelZoom: false,
+  }).setView([lat, lng], 17);
+  const CachedLayer = createCachedTileLayer();
+  new CachedLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution:'Tiles &copy; Esri', maxZoom:19, tileSize:256 }).addTo(navLeafletMap);
+  setTimeout(()=>{ if(navLeafletMap) navLeafletMap.invalidateSize(); }, 200);
+}
+
+function updateNavLeafletMap(lat, lng, accM){
+  if(!navLeafletMap){
+    initNavLeafletMap(lat, lng); return;
+  }
+  navLeafletMap.setView([lat, lng], navLeafletMap.getZoom(), {animate:true, duration:0.5});
+  // Remove old markers
+  if(navLeafletDot) navLeafletMap.removeLayer(navLeafletDot);
+  if(navLeafletCircle) navLeafletMap.removeLayer(navLeafletCircle);
+  // Accuracy circle
+  if(accM){
+    navLeafletCircle = L.circle([lat, lng], {
+      radius: accM,
+      color: '#3b82f6',
+      fillColor: '#3b82f6',
+      fillOpacity: 0.12,
+      weight: 1.5,
+    }).addTo(navLeafletMap);
+  }
+  // Position dot
+  navLeafletDot = L.circleMarker([lat, lng], {
+    radius: 8,
+    color: '#fff',
+    fillColor: '#3b82f6',
+    fillOpacity: 1,
+    weight: 2.5,
+  }).addTo(navLeafletMap);
+}
+
 let gpsInfoInterval = null;
 let gpsHealthStage = 0; // 0=idle 1=acquire 2=accuracy 3=stability 4=walk 5=result
 let gpsHealthTimer = null;
