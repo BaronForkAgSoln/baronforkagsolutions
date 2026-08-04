@@ -1660,7 +1660,8 @@ window.switchTab = function(tab){
   if(tab !== 'gpsinfo' && gpsInfoInterval){
     clearInterval(gpsInfoInterval);
     gpsInfoInterval = null;
-    destroyNavMap();
+    // Clean up nav map
+    if(navLeafletMap){navLeafletMap.remove();navLeafletMap=null;navLeafletDot=null;navLeafletCircle=null;}
     if(tab !== 'spray' && tab !== 'calib' && tab !== 'gps') stopGPS();
   }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
