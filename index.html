@@ -395,30 +395,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .spray-map-wrap .leaflet-control-zoom{display:none}
 .spray-map-wrap .leaflet-control-attribution{font-size:8px;opacity:.5;background:rgba(0,0,0,.3);color:#fff}
 .spray-map-wrap .leaflet-control-attribution a{color:#aaa}
-/* ── GPS INFO SCREEN ── */
-.gps-info-screen{background:#0a1628;min-height:calc(100vh - 56px);padding:16px}
-.gps-info-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-bottom:12px}
-.gps-info-card-header{background:rgba(255,255,255,.05);padding:10px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.07)}
-.gps-info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
-.gps-info-row:last-child{border-bottom:none}
-.gps-info-label{font-size:12px;color:rgba(255,255,255,.45)}
-.gps-info-val{font-size:14px;font-weight:600;color:#fff;text-align:right}
-.gps-info-val.good{color:#22c55e}
-.gps-info-val.warn{color:#fbbf24}
-.gps-info-val.bad{color:#ef4444}
-.gps-info-val.dim{color:rgba(255,255,255,.3);font-weight:400}
-.gps-compass-wrap{display:flex;justify-content:center;padding:16px 0 8px}
-.gps-compass-svg{width:120px;height:120px}
-.gps-acquire-msg{text-align:center;padding:40px 20px;color:rgba(255,255,255,.4);font-size:13px;line-height:1.6}
-.gps-acquire-pulse{width:48px;height:48px;border-radius:50%;border:2px solid rgba(34,197,94,.3);margin:0 auto 12px;position:relative}
-.gps-acquire-pulse-inner{position:absolute;inset:6px;border-radius:50%;background:rgba(34,197,94,.15);animation:gps-ping 1.5s ease-in-out infinite}
-.gps-info-fix-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.07)}
-.gps-info-fix-dot{width:8px;height:8px;border-radius:50%;background:#6b7280;flex-shrink:0}
-.gps-info-fix-dot.good{background:#22c55e;box-shadow:0 0 5px #22c55e}
-.gps-info-fix-dot.warn{background:#fbbf24}
-.gps-info-fix-dot.bad{background:#ef4444}
-.gps-info-fix-text{font-size:12px;color:rgba(255,255,255,.5);flex:1}
-.gps-info-fix-count{font-size:11px;color:rgba(255,255,255,.25)}
+/* ── GPS HEALTH CHECK ── */
 .gps-screen{background:#0a1628;color:#fff;min-height:calc(100vh - 56px);display:flex;flex-direction:column}
 .gps-screen-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px;overflow-y:auto}
 .gps-stage-icon{font-size:56px;line-height:1;margin-top:8px}
@@ -787,22 +764,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
         <div class="home-btn-icon">📋</div>
         <div><div class="home-btn-title">Records</div><div class="home-btn-sub">Look back at every spray run and pull a report</div></div>
       </button>
-      <button class="home-btn" style="border-left:5px solid #0e7490" onclick="switchTab('gpsinfo')">
-        <div class="home-btn-icon">📍</div>
-        <div><div class="home-btn-title">GPS Info</div><div class="home-btn-sub">Live GPS coordinates, accuracy, speed, course, and signal quality</div></div>
-      </button>
       <div class="home-version">v1.7</div>
-    </div>
-  </div>
-
-  <!-- GPS INFO -->
-  <div id="screen-gpsinfo" class="screen">
-    <div class="gps-info-screen" id="gps-info-body">
-      <!-- populated by renderGPSInfo() -->
-      <div class="gps-acquire-msg">
-        <div class="gps-acquire-pulse"><div class="gps-acquire-pulse-inner"></div></div>
-        Looking for GPS signal…<br>Step outside for best results
-      </div>
     </div>
   </div>
 
@@ -1607,6 +1569,9 @@ function subscribeToData(){
     if(currentTab==='fields') renderFieldList();
     if(currentTab==='weather') populateWxFieldSel();
     if(currentTab==='hay') renderHay();
+  }, err=>{
+    console.error('Fields snapshot error:', err.code, err.message);
+    showToast('Data error: '+err.message);
   });
   // Records
   if(unsubRecords) unsubRecords();
@@ -1615,12 +1580,14 @@ function subscribeToData(){
     localRecords.sort((a,b)=>new Date(b.dateRaw||0)-new Date(a.dateRaw||0));
     if(currentTab==='records') renderRecords();
     if(currentTab==='fields') renderFieldList();
+  }, err=>{
+    console.error('Records snapshot error:', err.code, err.message);
   });
   // Tank (single doc)
   onSnapshot(doc(db,`users/${currentUser.uid}/tank/current`), snap=>{
     localTank = snap.exists()?snap.data():{};
     if(currentTab==='tank') renderTankSummary();
-  });
+  }, err=>{ console.error('Tank snapshot error:', err.code, err.message); });
   // Hay data
   subscribeHayData();
 }
@@ -1645,12 +1612,6 @@ async function fbSaveTank(data){
 // ── NAVIGATION ───────────────────────────────
 window.switchTab = function(tab){
   currentTab=tab;
-  // Stop GPS info polling when leaving that screen
-  if(tab !== 'gpsinfo' && gpsInfoInterval){
-    clearInterval(gpsInfoInterval);
-    gpsInfoInterval = null;
-    if(tab !== 'spray' && tab !== 'calib' && tab !== 'gps') stopGPS();
-  }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+tab).classList.add('active');
   const hdrBtn=document.getElementById('hdr-action-btn');
@@ -1677,12 +1638,7 @@ window.switchTab = function(tab){
     hdrBtn.textContent='+ Add a Cutting'; hdrBtn.style.display='block';
     appSub.textContent='My Hay';
     renderHay();
-  } else if(tab==='gpsinfo'){
-    hdrBtn.style.display='none';
-    appSub.textContent='GPS Info';
-    startGPS();
-    gpsInfoInterval = setInterval(renderGPSInfo, 1000);
-    renderGPSInfo();
+  } else if(tab==='records'){
     hdrBtn.style.display='none';
     appSub.textContent='Spray Records';
     renderRecords();
@@ -2595,7 +2551,6 @@ function startGPS(){
     pos=>{
       lastGPS=pos.coords;gpsActive=true;setGPSStatus(true,pos.coords);
       updateGPSStatusBar(pos.coords);
-      // GPS info screen — renderGPSInfo called by interval, just update lastGPS
       // Calibration screen
       if(document.getElementById('screen-calib').classList.contains('active')){
         updateCalibGPS(pos.coords);
@@ -4040,175 +3995,10 @@ function updateSprayLeafletView(){
 }
 
 // ══════════════════════════════════════════════
-// GPS INFO SCREEN
-// ══════════════════════════════════════════════
-window.copyGPSCoords = function(){
-  if(!lastGPS){ showToast('No GPS signal yet'); return; }
-  const text = `${lastGPS.latitude.toFixed(6)}, ${lastGPS.longitude.toFixed(6)}`;
-  navigator.clipboard.writeText(text).then(()=>{
-    showToast('Coordinates copied — paste into Maps, email, or text');
-  }).catch(()=>{
-    // Fallback for older browsers
-    const el = document.getElementById('gps-coord-text');
-    if(el){
-      const range = document.createRange();
-      range.selectNode(el);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-      document.execCommand('copy');
-      window.getSelection().removeAllRanges();
-      showToast('Coordinates copied');
-    }
-  });
-};
-
-function renderGPSInfo(){
-  if(currentTab !== 'gpsinfo') return;
-  const el = document.getElementById('gps-info-body');
-  if(!el) return;
-
-  if(!lastGPS){
-    el.innerHTML = `
-      <div class="gps-acquire-msg">
-        <div class="gps-acquire-pulse"><div class="gps-acquire-pulse-inner"></div></div>
-        Looking for GPS signal…<br>Step outside for best results
-      </div>`;
-    return;
-  }
-
-  const g = lastGPS;
-  const accFt  = g.accuracy  ? metersToFt(g.accuracy)  : null;
-  const altFt  = g.altitude  ? Math.round(g.altitude * 3.281) : null;
-  const altAccFt = g.altitudeAccuracy ? metersToFt(g.altitudeAccuracy) : null;
-  const speedMph = g.speed != null && g.speed >= 0 ? (g.speed * 2.237).toFixed(1) : null;
-  const course = g.heading != null && g.heading >= 0 ? g.heading : null;
-  const ts   = new Date(g.timestamp || Date.now());
-  const ageMs = Date.now() - (g.timestamp || Date.now());
-  const ageSec = (ageMs / 1000).toFixed(1);
-
-  // Course compass direction label
-  function courseLabel(deg){
-    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-    return dirs[Math.round(deg/22.5) % 16];
-  }
-
-  // Accuracy class
-  const accCls = accFt ? (accFt < 30 ? 'good' : accFt < 60 ? 'warn' : 'bad') : 'bad';
-  const ageCls = ageMs < 3000 ? 'good' : ageMs < 8000 ? 'warn' : 'bad';
-
-  // Compass SVG needle for course
-  function compassSVG(deg){
-    if(deg == null) return `<svg class="gps-compass-svg" viewBox="0 0 120 120">
-      <circle cx="60" cy="60" r="56" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1.5"/>
-      <text x="60" y="18" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="sans-serif">N</text>
-      <text x="60" y="108" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="sans-serif">S</text>
-      <text x="12" y="64" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="sans-serif">W</text>
-      <text x="108" y="64" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="sans-serif">E</text>
-      <text x="60" y="66" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="11" font-family="sans-serif">No course</text>
-    </svg>`;
-    const r = deg * Math.PI / 180;
-    const nx = 60 + 38*Math.sin(r), ny = 60 - 38*Math.cos(r);
-    const sx = 60 - 22*Math.sin(r), sy = 60 + 22*Math.cos(r);
-    return `<svg class="gps-compass-svg" viewBox="0 0 120 120">
-      <circle cx="60" cy="60" r="56" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.1)" stroke-width="1.5"/>
-      <circle cx="60" cy="60" r="3" fill="rgba(255,255,255,.3)"/>
-      <text x="60" y="18" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11" font-family="sans-serif">N</text>
-      <text x="60" y="108" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11" font-family="sans-serif">S</text>
-      <text x="12" y="64" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11" font-family="sans-serif">W</text>
-      <text x="108" y="64" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11" font-family="sans-serif">E</text>
-      <line x1="60" y1="60" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
-      <line x1="60" y1="60" x2="${sx.toFixed(1)}" y2="${sy.toFixed(1)}" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
-      <text x="60" y="${ny-10}" text-anchor="middle" fill="#22c55e" font-size="10" font-family="sans-serif" font-weight="bold">${Math.round(deg)}°</text>
-    </svg>`;
-  }
-
-  const fixDotCls = accFt ? (accFt < 30 ? 'good' : accFt < 60 ? 'warn' : 'bad') : 'bad';
-
-  el.innerHTML = `
-    <!-- Position -->
-    <div class="gps-info-card">
-      <div class="gps-info-card-header">📍 Position</div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Latitude</span>
-        <span class="gps-info-val">${g.latitude.toFixed(6)}°</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Longitude</span>
-        <span class="gps-info-val">${g.longitude.toFixed(6)}°</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Decimal (tap to copy)</span>
-        <span style="display:flex;align-items:center;gap:8px">
-          <span class="gps-info-val" style="font-size:12px" id="gps-coord-text">${g.latitude.toFixed(6)}, ${g.longitude.toFixed(6)}</span>
-          <button onclick="copyGPSCoords()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">📋 Copy</button>
-        </span>
-      </div>
-    </div>
-
-    <!-- Accuracy -->
-    <div class="gps-info-card">
-      <div class="gps-info-card-header">📐 Accuracy</div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Horizontal accuracy</span>
-        <span class="gps-info-val ${accCls}">${accFt != null ? '±'+accFt+' ft' : '—'}</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Altitude</span>
-        <span class="gps-info-val">${altFt != null ? altFt.toLocaleString()+' ft' : '—'}</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Altitude accuracy</span>
-        <span class="gps-info-val ${altAccFt && altAccFt < 50 ? 'good' : 'warn'}">${altAccFt != null ? '±'+altAccFt+' ft' : '—'}</span>
-      </div>
-    </div>
-
-    <!-- Motion -->
-    <div class="gps-info-card">
-      <div class="gps-info-card-header">🚜 Motion</div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Speed</span>
-        <span class="gps-info-val">${speedMph != null ? speedMph+' MPH' : '—'}</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Course</span>
-        <span class="gps-info-val">${course != null ? Math.round(course)+'° '+courseLabel(course) : '—'}</span>
-      </div>
-      <div class="gps-compass-wrap">${compassSVG(course)}</div>
-    </div>
-
-    <!-- Signal -->
-    <div class="gps-info-card">
-      <div class="gps-info-card-header">📡 Signal</div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Last fix</span>
-        <span class="gps-info-val ${ageCls}">${ageSec} sec ago</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Fix timestamp</span>
-        <span class="gps-info-val" style="font-size:12px">${ts.toLocaleTimeString()}</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Total fixes this session</span>
-        <span class="gps-info-val">${gpsFixCount}</span>
-      </div>
-      <div class="gps-info-row">
-        <span class="gps-info-label">Quality</span>
-        <span class="gps-info-val ${accCls}">${accFt != null ? (accFt < 30 ? 'Good' : accFt < 60 ? 'Marginal' : 'Poor') : 'No fix'}</span>
-      </div>
-      <div class="gps-info-fix-bar">
-        <div class="gps-info-fix-dot ${fixDotCls}"></div>
-        <div class="gps-info-fix-text">${accFt != null ? (accFt < 30 ? 'Good signal — reliable for pass tracking' : accFt < 60 ? 'Marginal — pass tracking may miss strips' : 'Poor signal — move to open sky') : 'No GPS signal'}</div>
-        <div class="gps-info-fix-count">${gpsFixCount} fixes</div>
-      </div>
-    </div>`;
-}
-
-// ══════════════════════════════════════════════
 // GPS HEALTH CHECK
 // ══════════════════════════════════════════════
 let gpsFixCount = 0;
 let gpsLastUpdateMs = 0;
-let gpsInfoInterval = null;
 let gpsHealthStage = 0; // 0=idle 1=acquire 2=accuracy 3=stability 4=walk 5=result
 let gpsHealthTimer = null;
 let gpsHealthReadings = [];
