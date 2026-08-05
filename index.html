@@ -4523,24 +4523,6 @@ function renderNavStatus(){
           <div class="nav-signal-fixes" id="nav-sig-fixes"></div>
         </div>
       </div>
-      <div class="nav-info-card">
-        <div class="nav-info-card-header">🚜 Movement</div>
-        <div class="nav-info-row">
-          <span class="nav-info-label">Speed</span>
-          <span class="nav-info-val" id="nav-speed"></span>
-        </div>
-        <div class="nav-info-row">
-          <span class="nav-info-label">Course</span>
-          <span style="display:flex;align-items:center;gap:10px">
-            <span class="nav-info-val" id="nav-course"></span>
-            <span id="nav-compass"></span>
-          </span>
-        </div>
-        <div class="nav-info-row">
-          <span class="nav-info-label">Last fix</span>
-          <span class="nav-info-val" id="nav-age"></span>
-        </div>
-      </div>`;
     setTimeout(()=>initNavMap(g.latitude,g.longitude),100);
   }
 
@@ -4554,14 +4536,6 @@ function renderNavStatus(){
     document.getElementById('nav-sig-text').textContent=accFt!=null?(accFt<30?`Good — ±${accFt} ft`:accFt<60?`Marginal — ±${accFt} ft`:`Poor — ±${accFt} ft`):'No signal';
     document.getElementById('nav-sig-fixes').textContent=`${_gpsFixCount} fixes`;
   }
-  const speedEl=document.getElementById('nav-speed');
-  if(speedEl) speedEl.textContent=speedMph!=null?`${speedMph} MPH`:'—';
-  const courseEl=document.getElementById('nav-course');
-  if(courseEl) courseEl.textContent=course!=null?`${Math.round(course)}° ${courseLabel(course)}`:'—';
-  const compassEl=document.getElementById('nav-compass');
-  if(compassEl) compassEl.innerHTML=compassSVG(course);
-  const ageEl=document.getElementById('nav-age');
-  if(ageEl){ageEl.textContent=`${(ageMs/1000).toFixed(1)} sec ago`;ageEl.className=`nav-info-val ${ageCls}`;}
   updateNavMap(g.latitude,g.longitude,g.accuracy||null);
 }
 
