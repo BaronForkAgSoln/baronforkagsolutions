@@ -86,6 +86,7 @@
   /* ---------- Page 2: Reading ---------- */
   #readView { padding: 1.4rem clamp(1.25rem, 5vw, 4rem) 4rem; max-width: 46rem; margin: 0 auto; }
   .read-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .read-tools { margin-left: auto; display: flex; gap: 4px; }
   .settings-wrap { position: relative; }
   .settings-menu {
     position: absolute; right: 0; top: calc(100% + 4px);
@@ -138,12 +139,6 @@
     padding-bottom: 1.1rem; margin-bottom: 1.4rem; border-bottom: 1px solid var(--rule);
   }
   .chapter-controls .summary-btn { margin-right: auto; }
-  .ctrl-spacer { flex: 1 1 auto; }
-  .size-btn { font-weight: 600; letter-spacing: 0.02em; min-width: 2.6rem; text-align: center; }
-  @media (max-width: 560px) {
-    .ctrl-spacer { display: none; }
-    .chapter-controls .size-btn { flex: 0 0 auto; }
-  }
   @media (max-width: 560px) {
     .chapter-controls .summary-btn { flex-basis: 100%; margin-right: 0; }
     .chapter-controls #readChapterBtn, .chapter-controls #readContinuousBtn { flex: 1; text-align: center; }
@@ -730,6 +725,10 @@
   <div class="read-top">
     <button class="back-btn" id="backBtn">&larr; Books</button>
     <div class="bookname" id="bookName"></div>
+    <div class="read-tools">
+      <button class="back-btn" id="sizeDown" title="Smaller text">A&minus;</button>
+      <button class="back-btn" id="sizeUp" title="Larger text">A+</button>
+    </div>
   </div>
   <div class="chapter-strip" id="chapterStrip"></div>
   <div id="reader"></div>
@@ -923,9 +922,6 @@ async function loadChapter(code, chapter, keepReading) {
       <button class="read-btn" id="readChapterBtn" title="Read this chapter aloud"><span class="rb-ico">&#9654;</span> Read chapter</button>
       <button class="read-btn" id="readContinuousBtn" title="Read continuously, chapter after chapter"><span class="rb-ico">&#9654;&#9654;</span> Read continuously</button>
       <button class="read-btn" id="copyChapterBtn" title="Copy this chapter">&#x29C9; Copy</button>
-      <span class="ctrl-spacer"></span>
-      <button class="read-btn size-btn" id="sizeDown" title="Smaller text">A&minus;</button>
-      <button class="read-btn size-btn" id="sizeUp" title="Larger text">A+</button>
     </div>`;
   const pager = `
     <div class="pager">
@@ -991,7 +987,6 @@ async function loadChapter(code, chapter, keepReading) {
     }
     const copyCh = $("copyChapterBtn");
     if (copyCh) copyCh.addEventListener("click", copyChapter);
-    wireSizeButtons();
     reportFums(fumsToken);
   } catch (err) {
     reader.innerHTML = `<p class="status error">Couldn't load ${name} ${chapter} (${err.message}).
@@ -2263,17 +2258,13 @@ try {
 } catch (e) {}
 function applySize() {
   document.documentElement.style.setProperty("--fs", SIZES[sizeIdx] + "rem");
-  const d = $("sizeDown"), u = $("sizeUp");
-  if (d) d.disabled = sizeIdx === 0;
-  if (u) u.disabled = sizeIdx === SIZES.length - 1;
+  $("sizeDown").disabled = sizeIdx === 0;
+  $("sizeUp").disabled = sizeIdx === SIZES.length - 1;
   try { localStorage.setItem("bible.textSize", sizeIdx); } catch (e) {}
 }
-function wireSizeButtons() {
-  const d = $("sizeDown"), u = $("sizeUp");
-  if (d) d.addEventListener("click", () => { if (sizeIdx > 0) { sizeIdx--; applySize(); } });
-  if (u) u.addEventListener("click", () => { if (sizeIdx < SIZES.length - 1) { sizeIdx++; applySize(); } });
-  applySize();
-}
+$("sizeDown").addEventListener("click", () => { if (sizeIdx > 0) { sizeIdx--; applySize(); } });
+$("sizeUp").addEventListener("click", () => { if (sizeIdx < SIZES.length - 1) { sizeIdx++; applySize(); } });
+applySize();
 
 $("backBtn").addEventListener("click", () => {
   stopContinuous();
