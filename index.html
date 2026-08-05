@@ -1558,6 +1558,11 @@ const MIN_TICKS = 6;
 let passState=[], passProgress=[], sprayTracking=false, sprayPaused=false, currentPassIdx=-1;
 let gpsWatchId=null, lastGPS=null, gpsActive=false;
 let navLeafletMap=null, navLeafletDot=null, navLeafletCircle=null;
+let sprayLeaflet=null, sprayLeafletLayer=null, spraySatVisible=false;
+let previewLeaflet=null, previewMode='poly';
+let gpsInfoInterval=null;
+let gpsFixCount=0, gpsLastUpdateMs=0;
+let calibFieldId=null, calibStartPos=null, calibTracking=false;
 let _logGrid=null, _logDone=0, _logTotal=0, pendingLogFieldId=null;
 
 // ── Auth state listener ───────────────────────
@@ -1657,14 +1662,15 @@ async function fbSaveTank(data){
 // ── NAVIGATION ───────────────────────────────
 window.switchTab = function(tab){
   currentTab=tab;
-  // Stop GPS info polling when leaving that screen
-  if(tab !== 'gpsinfo' && gpsInfoInterval){
-    clearInterval(gpsInfoInterval);
-    gpsInfoInterval = null;
-    // Clean up nav map
-    if(navLeafletMap){navLeafletMap.remove();navLeafletMap=null;navLeafletDot=null;navLeafletCircle=null;}
-    if(tab !== 'spray' && tab !== 'calib' && tab !== 'gps') stopGPS();
-  }
+  // Clean up nav status screen when leaving it
+  try{
+    if(tab !== 'gpsinfo' && gpsInfoInterval){
+      clearInterval(gpsInfoInterval);
+      gpsInfoInterval = null;
+      if(navLeafletMap){navLeafletMap.remove();navLeafletMap=null;navLeafletDot=null;navLeafletCircle=null;}
+      if(tab !== 'spray' && tab !== 'calib' && tab !== 'gps') stopGPS();
+    }
+  }catch(e){ console.warn('switchTab cleanup error:', e); }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+tab).classList.add('active');
   const hdrBtn=document.getElementById('hdr-action-btn');
@@ -2427,7 +2433,6 @@ function drawSprayCanvas(){
 }
 
 // ── CALIBRATION ────────────────────────────────
-let calibFieldId=null,calibStartPos=null,calibTracking=false;
 
 function startCalibration(fieldId){
   calibFieldId=fieldId;calibStartPos=null;calibTracking=false;
@@ -3804,11 +3809,6 @@ const ESRI_SAT = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Ima
 const ESRI_ATTR = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, GeoEye, Earthstar Geographics';
 const SAT_ZOOM_LEVELS = [14, 16, 18];
 
-let previewLeaflet = null;   // Leaflet map in field edit preview
-let sprayLeaflet = null;     // Leaflet map in spray screen
-let sprayLeafletLayer = null;
-let previewMode = 'poly';    // 'poly' or 'sat'
-let spraySatVisible = false;
 
 // ── Tile cache — localStorage with base64 ────
 const TILE_CACHE_PREFIX = 'bfas_tile_';
@@ -4268,7 +4268,6 @@ function updateNavLeafletMap(lat, lng, accM){
   }).addTo(navLeafletMap);
 }
 
-let gpsInfoInterval = null;
 let gpsHealthStage = 0; // 0=idle 1=acquire 2=accuracy 3=stability 4=walk 5=result
 let gpsHealthTimer = null;
 let gpsHealthReadings = [];
