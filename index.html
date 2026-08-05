@@ -6,8 +6,25 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script>
+// Leaflet guard — if CDN blocked, define stub so app does not crash
+window.addEventListener('error', function(e){
+  if(e.filename && e.filename.includes('leaflet')){
+    window.L = {
+      map:function(){return{setView:function(){return this},remove:function(){},fitBounds:function(){},getZoom:function(){return 16},invalidateSize:function(){},on:function(){return this}}},
+      TileLayer:{extend:function(o){return function(){return{addTo:function(){}}}}},
+      polygon:function(){return{addTo:function(){return this}}},
+      circle:function(){return{addTo:function(){return this}}},
+      circleMarker:function(){return{addTo:function(){return this}}},
+      latLngBounds:function(){return{pad:function(){return this}}},
+      polyline:function(){return{addTo:function(){return this}}},
+    };
+    console.warn('Leaflet blocked by tracking prevention — satellite view disabled');
+  }
+}, true);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <title>Baron Fork Ag Solutions</title>
 <style>
 :root{
@@ -3891,6 +3908,7 @@ async function cacheFieldTiles(field){
 
 // ── Custom Leaflet tile layer with local cache ──
 function createCachedTileLayer(){
+  if(typeof L === 'undefined' || !L.TileLayer) return function(){return{addTo:function(){}}};
   return L.TileLayer.extend({
     createTile(coords, done){
       const img = document.createElement('img');
@@ -3929,6 +3947,7 @@ window.setPreviewMode=function(mode){
 };
 
 function initPreviewLeaflet(){
+  if(typeof L === 'undefined' || !L.map){ showToast('Satellite view not available — tracking prevention is blocking the map library'); setPreviewMode('poly'); return; }
   const corners=getCornersFromList().filter(c=>c.lat&&c.lng);
   if(corners.length<4){ showToast('Mark at least 4 corners first'); setPreviewMode('poly'); return; }
   if(previewLeaflet){ previewLeaflet.remove(); previewLeaflet=null; }
@@ -4007,6 +4026,7 @@ window.toggleSpraySat=function(){
 };
 
 function initSprayLeaflet(){
+  if(typeof L === 'undefined' || !L.map) return;
   const field=localFields.find(f=>f.id===sprayFieldId);
   if(!field) return;
   const corners=field.corners.filter(c=>c.lat&&c.lng);
@@ -4223,6 +4243,7 @@ function renderGPSInfo(){
 // ══════════════════════════════════════════════
 
 function initNavLeafletMap(lat, lng){
+  if(typeof L === 'undefined' || !L.map) return;
   const mapEl = document.getElementById('nav-leaflet-map');
   if(!mapEl) return;
   if(navLeafletMap){ navLeafletMap.remove(); navLeafletMap=null; navLeafletDot=null; navLeafletCircle=null; }
