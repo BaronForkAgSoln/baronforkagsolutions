@@ -1229,9 +1229,9 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
   <!-- CALIBRATION -->
   <div id="screen-calib" class="screen spray-screen">
-    <div style="position:fixed;top:56px;left:0;right:0;bottom:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center;overflow-y:auto;z-index:10">
+    <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 32px;gap:16px;text-align:center;overflow-y:auto;z-index:5">
       <div class="calib-icon" id="calib-icon">🧭</div>
-      <div class="calib-title" id="calib-title">Set Your Spray Direction</div>
+      <div class="calib-title" id="calib-title">Spray Direction Calibration</div>
       <div class="calib-sub" id="calib-sub">Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.</div>
       <div class="calib-status">
         <div class="calib-gps-dot" id="calib-gps-dot"></div>
@@ -2432,7 +2432,7 @@ let calibFieldId=null,calibStartPos=null,calibTracking=false;
 function startCalibration(fieldId){
   calibFieldId=fieldId;calibStartPos=null;calibTracking=false;
   document.getElementById('calib-icon').textContent='🧭';
-  document.getElementById('calib-title').textContent='Set Your Spray Direction';
+  document.getElementById('calib-title').textContent='Spray Direction Calibration';
   document.getElementById('calib-sub').textContent='Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.';
   document.getElementById('calib-bearing').textContent='—°';
   document.getElementById('calib-start-btn').disabled=true;
@@ -2440,7 +2440,7 @@ function startCalibration(fieldId){
   document.getElementById('calib-retry-btn').style.display='none';
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-calib').classList.add('active');
-  document.getElementById('app-sub').textContent='Set Spray Direction';
+  document.getElementById('app-sub').textContent='Spray Direction Calibration';
   document.getElementById('hdr-action-btn').style.display='none';
   document.getElementById('hdr-home-btn').classList.add('visible');
   startGPS();
@@ -2506,7 +2506,7 @@ window.calibRetry=function(){
   document.getElementById('calib-done-btn').disabled=true;
   document.getElementById('calib-bearing').textContent='—°';
   document.getElementById('calib-icon').textContent='🧭';
-  document.getElementById('calib-title').textContent='Set Your Spray Direction';
+  document.getElementById('calib-title').textContent='Spray Direction Calibration';
   document.getElementById('calib-sub').textContent='Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.';
 };
 
