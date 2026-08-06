@@ -480,7 +480,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .gsb-health-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;flex-shrink:0}
 
 /* ── CALIBRATION SCREEN ── */
-.calib-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center}
+.calib-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center;min-height:60vh}
 .calib-icon{font-size:64px;line-height:1}
 .calib-title{font-size:20px;font-weight:700;color:#fff}
 .calib-sub{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:320px}
@@ -1229,7 +1229,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
   <!-- CALIBRATION -->
   <div id="screen-calib" class="screen spray-screen">
-    <div class="calib-body">
+    <div class="calib-body" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:16px;text-align:center">
       <div class="calib-icon" id="calib-icon">🧭</div>
       <div class="calib-title" id="calib-title">Set Your Spray Direction</div>
       <div class="calib-sub" id="calib-sub">Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.</div>
