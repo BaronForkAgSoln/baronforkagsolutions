@@ -587,7 +587,8 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 .btn-row .btn{flex:1}
 
 /* ── SPRAY SCREEN ── */
-.spray-screen{background:var(--g900);color:#fff;display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
+.spray-screen{background:var(--g900);color:#fff}
+.spray-screen.active{display:flex;flex-direction:column;min-height:100vh}
 .spray-header{padding:12px 16px 8px;border-bottom:1px solid rgba(255,255,255,.07)}
 .spray-field-name{font-size:17px;font-weight:700}
 .spray-field-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
@@ -2197,7 +2198,7 @@ function launchSpraySession(field,passes){
   document.getElementById('screen-spray').classList.add('active');
   document.getElementById('app-sub').textContent='Spraying';
   document.getElementById('hdr-action-btn').style.display='none';
-  document.getElementById('hdr-home-btn').classList.remove('visible');
+  document.getElementById('hdr-home-btn').classList.add('visible');
   setTimeout(drawSprayCanvas,80);
   startGPS();
 }
@@ -2441,7 +2442,7 @@ function startCalibration(fieldId){
   document.getElementById('screen-calib').classList.add('active');
   document.getElementById('app-sub').textContent='Set Spray Direction';
   document.getElementById('hdr-action-btn').style.display='none';
-  document.getElementById('hdr-home-btn').classList.remove('visible');
+  document.getElementById('hdr-home-btn').classList.add('visible');
   startGPS();
 }
 
