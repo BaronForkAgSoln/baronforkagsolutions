@@ -1229,7 +1229,7 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
 
   <!-- CALIBRATION -->
   <div id="screen-calib" class="screen spray-screen">
-    <div class="calib-body" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:16px;text-align:center">
+    <div style="position:fixed;top:56px;left:0;right:0;bottom:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:16px;text-align:center;overflow-y:auto;z-index:10">
       <div class="calib-icon" id="calib-icon">🧭</div>
       <div class="calib-title" id="calib-title">Set Your Spray Direction</div>
       <div class="calib-sub" id="calib-sub">Pull up to one corner of your field. Tap Start, drive the full length of that edge, then tap Done at the other end.</div>
@@ -1249,12 +1249,12 @@ html,body{height:100%;font-family:var(--font);background:var(--g100);color:var(-
           </svg>
         </div>
       </div>
-    </div>
-    <div class="calib-btn-panel">
-      <button class="calib-btn cb-start" id="calib-start-btn" onclick="calibStart()" disabled>▶ &nbsp;Start — drive this edge</button>
-      <button class="calib-btn cb-done" id="calib-done-btn" onclick="calibDone()" disabled>✓ &nbsp;Done — save this direction</button>
-      <button class="calib-btn cb-tryagain" id="calib-retry-btn" onclick="calibRetry()" style="display:none">↺ &nbsp;Try again</button>
-      <button class="calib-btn cb-cancel" onclick="calibCancel()">Cancel — go back</button>
+      <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;padding-bottom:32px">
+        <button class="calib-btn cb-start" id="calib-start-btn" onclick="calibStart()" disabled>▶ &nbsp;Start — drive this edge</button>
+        <button class="calib-btn cb-done" id="calib-done-btn" onclick="calibDone()" disabled>✓ &nbsp;Done — save this direction</button>
+        <button class="calib-btn cb-tryagain" id="calib-retry-btn" onclick="calibRetry()" style="display:none">↺ &nbsp;Try again</button>
+        <button class="calib-btn cb-cancel" onclick="calibCancel()">Cancel — go back</button>
+      </div>
     </div>
   </div>
 
